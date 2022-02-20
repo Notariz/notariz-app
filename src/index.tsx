@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import './index.css';
 import { App } from './App';
 import Dashboard from './components/Dashboard';
-import { About } from './components/About';
+import About from './components/About';
 
 ReactDOM.render(
   <BrowserRouter>

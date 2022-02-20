@@ -51,7 +51,7 @@ const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
     }
 ]
 
-export const Emergency: FC = () => {
+function Emergency() {
     const [show, setShow] = useState(false)
 
     function secondsToDhms(seconds: number) {
@@ -97,3 +97,5 @@ export const Emergency: FC = () => {
         </div>
     )
 }
+
+export default Emergency;

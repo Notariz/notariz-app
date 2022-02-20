@@ -1,8 +1,7 @@
-import React, { FC } from 'react';
 import './Claim.css'
 import './Common.css'
 
-export const Claim: FC = () => {
+function Claim() {
     return (
         <div className="claim-container">
             <form
@@ -21,3 +20,5 @@ export const Claim: FC = () => {
         </div>
     )
 }
+
+export default Claim;

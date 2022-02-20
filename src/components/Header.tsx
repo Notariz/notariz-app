@@ -2,13 +2,13 @@ import { WalletNotConnectedError } from '@solana/wallet-adapter-base';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { clusterApiUrl, Connection, LAMPORTS_PER_SOL } from '@solana/web3.js';
-import React, { FC, useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Container, Nav, Navbar } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import './DashboardComponents/Common.css';
 import './Header.css';
 
-export const Header: FC = () => {
+function Header() {
     const { connection } = useConnection();
     const { publicKey } = useWallet();
     const [airdropping, setAirdropping] = useState(false);
@@ -19,7 +19,7 @@ export const Header: FC = () => {
         setAirdropping(true);
         if (!publicKey) throw new WalletNotConnectedError();
 
-        let connection = new Connection(clusterApiUrl('testnet'));
+        let connection = new Connection(clusterApiUrl('devnet'));
 
         connection
             .requestAirdrop(publicKey, LAMPORTS_PER_SOL)
@@ -55,3 +55,5 @@ export const Header: FC = () => {
         </Navbar>
     );
 };
+
+export default Header;

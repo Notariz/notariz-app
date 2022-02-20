@@ -1,10 +1,11 @@
-import React, { FC } from 'react';
 import './Pending.css'
 
-export const Pending: FC = () => {
+function Pending() {
     return (
         <div className="pending-container">
             <p>Hello</p>
         </div>
     )
 }
+
+export default Pending;

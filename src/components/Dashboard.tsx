@@ -1,7 +1,6 @@
-import React, { FC } from 'react';
-import { Emergency } from './DashboardComponents/Emergency';
-import { Claim } from './DashboardComponents/Claim';
-import { Pending } from './DashboardComponents/Pending';
+import Emergency from './DashboardComponents/Emergency';
+import Claim from './DashboardComponents/Claim';
+import Pending from './DashboardComponents/Pending';
 import { Tab, Tabs } from 'react-bootstrap';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
@@ -9,7 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './Dashboard.css';
 import './DashboardComponents/Common.css';
 
-export const Dashboard: FC = () => {
+function Dashboard() {
     const { publicKey } = useWallet();
 
     const renderWalletNotConnected = () => {
