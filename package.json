@@ -4,6 +4,7 @@
     "author": "dichiara25",
     "repository": "https://github.com/Notariz/notariz-app",
     "license": "Apache-2.0",
+    "private" : true,
     "publishConfig": {
         "access": "public"
     },
