@@ -6,3 +6,16 @@
     color: aqua;
 }
 
+.airdrop-button {
+    margin-right: 10px;
+    background: -webkit-linear-gradient(left, rgb(250, 143, 3), rgb(248, 4, 86));
+    color: white;
+}
+
+.airdrop-button:disabled {
+    margin-right: 10px;
+    background: -webkit-linear-gradient(left, rgb(250, 143, 3), rgb(248, 4, 86));
+    color: white;
+    opacity: 0.2;
+}
+

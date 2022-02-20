@@ -1,3 +1,7 @@
+.wallet-adapter-button {
+    background: -webkit-linear-gradient(left, aqua, rgb(22, 153, 153));
+}
+
 .cta-button {
     height: 45px;
     border: 0;
