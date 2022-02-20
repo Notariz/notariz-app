@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { CSSTransition } from 'react-transition-group'
-import './EmergencyModal.css'
 import './Common.css'
 
 function EmergencyModal(props: {show: boolean, onClose: () => void}) {
@@ -26,12 +25,12 @@ function EmergencyModal(props: {show: boolean, onClose: () => void}) {
             timeout={{ enter: 0, exit: 300}}
         >
 
-        <div className={`emergency-modal ${props.show ? 'show' : ''}`} onClick={props.onClose}>
-            <div className="emergency-modal-content" onClick={e => e.stopPropagation()}>
-                <div className="emergency-modal-header">
-                    <h3 className="emergency-modal-title">Add an emergency</h3>
+        <div className={`notariz-modal ${props.show ? 'show' : ''}`} onClick={props.onClose}>
+            <div className="notariz-modal-content" onClick={e => e.stopPropagation()}>
+                <div className="notariz-modal-header">
+                    <h3 className="notariz-modal-title">New emergency address</h3>
                 </div>
-                <div className="emergency-modal-body">
+                <div className="notariz-modal-body">
                     <form
                         onSubmit={(event) => {
                             event.preventDefault();

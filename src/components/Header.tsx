@@ -5,18 +5,22 @@ import { clusterApiUrl, Connection, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { useCallback, useState } from 'react';
 import { Container, Nav, Navbar } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
+import EmergencyModal from './DashboardComponents/EmergencyModal';
 import './DashboardComponents/Common.css';
 import './Header.css';
+import AirdropModal from './AirdropModal';
 
 function Header() {
     const { connection } = useConnection();
     const { publicKey } = useWallet();
     const [airdropping, setAirdropping] = useState(false);
+    const [show, setShow] = useState(false);
 
     const claimAirdrop = useCallback(() => {
         if (airdropping) return;
 
         setAirdropping(true);
+        setShow(true);
         if (!publicKey) throw new WalletNotConnectedError();
 
         let connection = new Connection(clusterApiUrl('devnet'));
@@ -25,7 +29,10 @@ function Header() {
             .requestAirdrop(publicKey, LAMPORTS_PER_SOL)
             .then((confirmation) => connection.confirmTransaction(confirmation, 'processed'))
             .catch(() => alert('Airdrop failed!'))
-            .finally(() => setAirdropping(false));
+            .finally(() => {
+                 setAirdropping(false);
+                 setShow(false);
+                })
     }, [publicKey, connection]);
 
     return (
@@ -49,6 +56,7 @@ function Header() {
                             Airdrop
                         </button>
                     )}
+                    <AirdropModal onClose={() => setShow(false)} show={show} />
                     <WalletMultiButton className="cta-button" />
                 </Navbar.Collapse>
             </Container>

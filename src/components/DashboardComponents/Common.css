@@ -45,3 +45,60 @@ input[type='text'], input[type='number'], input[type='date'] {
     border-radius: 10px;
     margin: 20px auto;
 }
+
+.notariz-modal {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(26, 32, 44, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+    pointer-events: none;
+
+}
+
+.notariz-modal.enter-done {
+    opacity: 1;
+    pointer-events: visible;
+}
+
+.notariz-modal.enter-done .notariz-modal-content {
+    transform: translateY(0);
+}
+
+.notariz-modal.exit {
+    opacity: 0;
+}
+
+.notariz-modal.exit .notariz-modal-content {
+    transform: translateY(-200px);
+}
+
+.notariz-modal-content {
+    width: 500px;
+    background-color: rgb(46, 54, 70);
+    border-radius: 10px;
+    transform: translateY(-200px);
+    transition: all 0.3s ease-in-out;
+}
+
+.notariz-modal-header {
+    padding: 10px;
+    color: white;
+}
+
+.notariz-modal-title {
+    margin: 0;
+}
+
+.notariz-modal-body {
+    padding: 10px;
+    width: 100%;
+    color: white;
+}
+
