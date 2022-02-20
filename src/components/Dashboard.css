@@ -1,0 +1,42 @@
+.dashboard-container {
+    margin-top: 85px;
+}
+
+.dashboard-container .tab-content {
+    position: relative;
+    height: auto;
+    margin-top: -15px;
+    padding-top: 10px;
+    color: #000;
+    z-index: 1000;
+    padding-bottom: 20px;
+}
+
+.dashboard-container .nav-link {
+    color: #617496;
+    font-weight: bold;
+    padding-top: 5px;
+    text-align: center;
+    height: 50px;
+    position: relative;
+    padding-left: 30px;
+    padding-right: 30.4px;
+    border-color:#1a202c;
+    border-radius: 20px;
+
+}
+
+.dashboard-container .nav-tabs {
+    border-bottom: 1px solid #1a202c;
+}
+
+.dashboard-container .nav-link.active {
+    color: white;
+    background-color: #1a202c;
+    border-color:#1a202c;
+}
+
+.dashboard-container .nav-link:hover {
+    border-color:aqua;
+    border-radius: 20px;
+}

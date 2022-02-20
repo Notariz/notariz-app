@@ -1,0 +1,33 @@
+.footer {
+    text-align: center;
+    position: fixed;
+    bottom: 0px;
+    margin-top: 100px;
+    background-color: #1a202c;
+    box-shadow: 0px 10px 20px 10px #1a202c;
+    z-index: 1000;
+    width: 100%;
+}
+
+.footer .footer-text {
+    margin: 20px 20px !important;
+    color: white !important;
+}
+
+.footer span {
+    margin: 0 10px;
+    position: relative;
+    color: white;
+}
+
+.footer span a {
+    text-decoration: none;
+    color: white;
+}
+
+.footer span:not(:first-child):before {
+    content: '|';
+    position: absolute;
+    left: -11px;
+    color: aqua;
+}

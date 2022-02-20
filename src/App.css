@@ -1,0 +1,13 @@
+.App {
+    height: 100vh;
+    background-color: #1a202c;
+    text-align: center;
+    overflow: hidden;
+    overflow: scroll;
+  }
+  
+  .main-container {
+    width: 60%
+  }
+  
+  
