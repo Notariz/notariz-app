@@ -1,9 +1,10 @@
 import { useEffect } from 'react'
 import { CSSTransition } from 'react-transition-group'
-import './Common.css'
+import '../Common.css'
 
-function EmergencyModal(props: {show: boolean, onClose: () => void}) {
-    
+function AddModal(props: {show: boolean, onClose: () => void}) {
+    console.log('add modal');
+
     const closeOnEscapeKeyDown = (e: any) => {
         if ((e.charCode || e.keyCode) === 27) {
             props.onClose()
@@ -28,7 +29,7 @@ function EmergencyModal(props: {show: boolean, onClose: () => void}) {
         <div className={`notariz-modal ${props.show ? 'show' : ''}`} onClick={props.onClose}>
             <div className="notariz-modal-content" onClick={e => e.stopPropagation()}>
                 <div className="notariz-modal-header">
-                    <h3 className="notariz-modal-title">New emergency address</h3>
+                    <h3 className="notariz-modal-title">NEW EMERGENCY ADDRESS</h3>
                 </div>
                 <div className="notariz-modal-body">
                     <form
@@ -63,4 +64,4 @@ function EmergencyModal(props: {show: boolean, onClose: () => void}) {
     )
 }
 
-export default EmergencyModal;
+export default AddModal;

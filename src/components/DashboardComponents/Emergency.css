@@ -10,32 +10,60 @@
     margin-top: 30px;
 }
 
-.emergency-list p {
+.emergency-item {
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.emergency-item p {
     box-sizing: border-box;
     border: solid aqua 1px;
     font-weight: bold;
     border-radius: 15px;
     padding-top: 10px;
-    margin-top: 20px;
+    padding-bottom: 10px;
     height: 50px;
     width: 100%;
     word-spacing: 0.25rem;
 }
 
-.emergency-list i {
+.emergency-item i {
     color: aqua;
 }
 
-.emergency-list button {
-    box-sizing: border-box;
-    border: solid purple 1px;
-    background-color: #1a202c;
+.emergency-item button {
     color: white;
     font-weight: bold;
-    margin-top: 20px;
     border-radius: 15px;
     height: 50px;
     padding-left: 20px;
     padding-right: 20px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.delete-button {
+    box-sizing: border-box;
+    border: solid purple 1px;
+    background-color: #1a202c;
+}
+
+.modify-button {
+    box-sizing: border-box;
+    border: solid aqua 1px;
+    background-color: #1a202c;
+}
+
+.status-button {
+    margin-bottom: 20px;
+    background: -webkit-linear-gradient(left, aqua, rgb(0, 5, 5));
+    background-size: 200% 200%;
+    animation: gradient-animation 4s ease infinite;
+    margin-left: 10px;
+    height: 55px;
+}
+
+.emergency-item button:disabled {
+    opacity: 0.5;
 }
 
