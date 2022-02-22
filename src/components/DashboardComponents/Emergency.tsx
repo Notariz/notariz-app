@@ -64,6 +64,14 @@ function Emergency() {
         return d > 0 ? d + (d === 1 ? " day " : " days ") : "";
     }
 
+    const renderDescription = useCallback(
+        () => (
+            <div className="emergency-item">
+                <p>Your emergencies list will lie here.</p>
+            </div>
+        ), [TEST_EMERGENCY_LIST]
+    );
+
     const renderEmergencyList = useCallback(
         () => (
             <div className="emergency-list">
@@ -106,7 +114,7 @@ function Emergency() {
             <CancelModal onClose={() => setCancelModalShow(false)} show={showCancelModal} />
             <EditModal onClose={() => setEditModalShow(false)} show={showEditModal} />
             <DeleteModal onClose={() => setDeleteModalShow(false)} show={showDeleteModal} />
-            {renderEmergencyList()}
+            {TEST_EMERGENCY_LIST.length > 0 && renderEmergencyList() || renderDescription()}
         </div>
     )
 }

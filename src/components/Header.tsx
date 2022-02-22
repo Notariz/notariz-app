@@ -5,7 +5,6 @@ import { clusterApiUrl, Connection, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { useCallback, useState } from 'react';
 import { Container, Nav, Navbar } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
-import EmergencyModal from './DashboardComponents/EmergencyModal';
 import './DashboardComponents/Common.css';
 import './Header.css';
 import AirdropModal from './AirdropModal';
