@@ -3,7 +3,6 @@ import { Tab, Tabs } from 'react-bootstrap';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { Col, Container, Row } from 'react-bootstrap';
-import Parser from 'html-react-parser';
 import Emergency from './DashboardComponents/Emergency';
 import Claim from './DashboardComponents/Claim';
 import Recovery from './DashboardComponents/Recovery';
@@ -47,7 +46,7 @@ function Dashboard() {
                     eventKey="emergency"
                     title={
                         notificationsCount > 0
-                            ? Parser(`Emergencies <span className="notification-badge">${notificationsCount}</span>`)
+                            ? `Emergencies <span className="notification-badge">${notificationsCount}</span>`
                             : 'Emergencies'
                     }
                     className="tab-content"
