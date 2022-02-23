@@ -106,7 +106,7 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                             )}
                         </button>
                         <button onClick={() => setEditModalShow(true)} className="modify-button">
-                            MODIFY
+                            EDIT
                         </button>
                         <button onClick={() => setDeleteModalShow(true)} className="delete-button">
                             DELETE
