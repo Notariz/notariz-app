@@ -6,7 +6,7 @@ function Footer() {
         <Container fluid className="footer">
             <Row>
                 <Col></Col>
-                <Col>
+                <Col xs={12}>
                     <div className="footer-text">
                         <span><a target="_blank" rel="noreferrer"
                             href="https://github.com/Notariz/notariz-whitepaper">Whitepaper</a>

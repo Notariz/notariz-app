@@ -68,7 +68,7 @@ const Content: FC = () => {
           <Container className="main-container">
             <Row>
               <Col></Col>
-              <Col xs={9}>
+              <Col xs={10}>
                 <WalletMultiButton />
                 <Outlet />
               </Col>

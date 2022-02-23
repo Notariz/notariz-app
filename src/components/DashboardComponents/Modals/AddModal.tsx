@@ -3,7 +3,6 @@ import { CSSTransition } from 'react-transition-group'
 import '../Common.css'
 
 function AddModal(props: {show: boolean, onClose: () => void}) {
-    console.log('add modal');
 
     const closeOnEscapeKeyDown = (e: any) => {
         if ((e.charCode || e.keyCode) === 27) {

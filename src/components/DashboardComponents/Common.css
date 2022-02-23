@@ -3,7 +3,6 @@
 }
 
 .cta-button {
-    height: 45px;
     border: 0;
     width: auto;
     padding-left: 40px;
@@ -13,6 +12,7 @@
     font-size: 16px;
     font-weight: bold;
     color: white;
+    
 }
 
 .confirm-button {
@@ -20,7 +20,8 @@
     background-size: 200% 200%;
     animation: gradient-animation 4s ease infinite;
     margin-left: 10px;
-    height: 55px;
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
 
 .cancel-button {

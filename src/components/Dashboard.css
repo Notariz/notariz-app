@@ -2,8 +2,26 @@
     margin-top: 85px;
 }
 
+.dashboard-container p {
+    box-sizing: border-box;
+    border: solid aqua 1px;
+    font-weight: bold;
+    border-radius: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 100%;
+    word-spacing: 0.25rem;
+    color: white;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.dashboard-container button {
+    margin-bottom: 10px;
+}
+
 .not-connected-container {
-    margin-top: 200px;
+    margin-top: 150px;
 }
 
 .not-connected-container p {
@@ -14,25 +32,24 @@
     box-sizing: border-box;
     border: solid purple 1px;
     border-radius: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
     padding-top: 10px;
     padding-bottom: 10px;
-    margin-bottom: 90px;
-    margin-left: 80px;
-    margin-right: 80px;
+    margin-bottom: 50px;
+}
+
+.not-connected-container, .dashboard-container span {
+    color: aqua;
 }
 
 .not-connected-container .wallet-adapter-button {
-    position: relative;
     justify-content: center;
     align-items: center;
     height: 80px;
     width: 230px;
     font-size: 22px;
-    margin: 0;
-    top: 50%;
-    left: 50%;
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
+    
 }
 
 .dashboard-container .tab-content {
@@ -52,11 +69,12 @@
     text-align: center;
     height: 50px;
     position: relative;
-    padding-left: 30px;
-    padding-right: 30.4px;
+    padding-left: 20px;
+    padding-right: 20px;
     border-color:#1a202c;
     border-radius: 20px;
-
+    margin-bottom: 5px;
+    margin-left: 10px;
 }
 
 .dashboard-container .nav-tabs {
@@ -72,4 +90,15 @@
 .dashboard-container .nav-link:hover {
     border-color:aqua;
     border-radius: 20px;
+}
+
+.dashboard-container .notification-badge {
+    background-color: purple;
+    color: white;
+    margin-left: 5px;
+    padding-left: 7px;
+    padding-right: 7px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    border-radius: 100%;
 }

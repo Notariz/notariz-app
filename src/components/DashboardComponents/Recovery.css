@@ -1,0 +1,19 @@
+.recovery-container {
+    margin-top: 30px;
+}
+
+.recovery-container p {
+    color: white;
+    box-sizing: border-box;
+    border: solid aqua 1px;
+    font-weight: bold;
+    border-radius: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 100%;
+    word-spacing: 0.25rem;
+}
+
+.recovery-container span {
+    color: aqua;
+}

@@ -3,8 +3,7 @@ import { CSSTransition } from 'react-transition-group'
 import '../Common.css'
 
 function CancelModal(props: {show: boolean, onClose: () => void}) {
-    console.log('cancel modal');
-
+    
     const closeOnEscapeKeyDown = (e: any) => {
         if ((e.charCode || e.keyCode) === 27) {
             props.onClose()

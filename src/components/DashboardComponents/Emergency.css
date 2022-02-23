@@ -13,18 +13,8 @@
 .emergency-item {
     margin-top: 50px;
     margin-bottom: 50px;
-}
-
-.emergency-item p {
-    box-sizing: border-box;
-    border: solid aqua 1px;
-    font-weight: bold;
-    border-radius: 15px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    height: 50px;
-    width: 100%;
-    word-spacing: 0.25rem;
+    margin-left: 10%;
+    margin-right: 10%;
 }
 
 .emergency-item i {
@@ -64,6 +54,6 @@
 }
 
 .emergency-item button:disabled {
-    opacity: 0.5;
+    opacity: .2;
 }
 

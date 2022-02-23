@@ -10,6 +10,8 @@
     margin-right: 10px;
     background: -webkit-linear-gradient(left, rgb(250, 143, 3), rgb(248, 4, 86));
     color: white;
+    padding-top: 13px;
+    padding-bottom: 13px;
 }
 
 .airdrop-button:disabled {

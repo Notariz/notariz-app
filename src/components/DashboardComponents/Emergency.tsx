@@ -1,67 +1,66 @@
-import { useCallback, useState } from "react"
-import AddModal from './Modals/AddModal'
-import EditModal from "./Modals/EditModal"
-import CancelModal from "./Modals/CancelModal"
-import DeleteModal from "./Modals/DeleteModal"
-import Emojis from "../utils/Emojis"
-import './Emergency.css'
-import './Common.css'
+import { useCallback, useState } from 'react';
+import { Col, Container, Row } from 'react-bootstrap';
+import AddModal from './Modals/AddModal';
+import EditModal from './Modals/EditModal';
+import CancelModal from './Modals/CancelModal';
+import DeleteModal from './Modals/DeleteModal';
+import Emojis from '../utils/Emojis';
+import './Emergency.css';
+import './Common.css';
 
 interface EmergencyDetails {
-    id: number,
+    id: number;
     pk: string;
     alias: string;
-    amount: number;
-    symbol: string;
+    percentage: number;
     delay: number;
-    claimed: boolean;
-    redeemed: boolean;
+    status: string;
 }
 
 const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
     {
         id: 1,
-        pk: "4cjmQjJuB4WzUqqtt6VLycjXTaRvgL",
-        alias: "Alice",
-        amount: 1,
-        symbol: "SOL",
+        pk: '4cjmQjJuB4WzUqqtt6VLycjXTaRvgL',
+        alias: 'Alice',
+        percentage: 30,
         delay: 95962,
-        claimed: false,
-        redeemed: false
+        status: 'unclaimed',
     },
     {
         id: 2,
-        pk: "sH2FTJKB9naMwYB7zRTch2bNFBpvwj",
-        alias: "Bob",
-        amount: 2,
-        symbol: "SOL",
+        pk: 'sH2FTJKB9naMwYB7zRTch2bNFBpvwj',
+        alias: 'Bob',
+        percentage: 20,
         delay: 4088984,
-        claimed: true,
-        redeemed: false
+        status: 'claimed',
     },
     {
         id: 3,
-        pk: "tt6VLycjXTaRvgLNhz6ZzRTch2bNFB",
-        alias: "Jeff",
-        amount: 3,
-        symbol: "SOL",
+        pk: 'tt6VLycjXTaRvgLNhz6ZzRTch2bNFB',
+        alias: '',
+        percentage: 17,
         delay: 366000,
-        claimed: true,
-        redeemed: true
+        status: 'redeemed',
     },
-]
+];
 
-function Emergency() {
+const WALLET_BALANCE = 1500;
+
+function Emergency(props: { setNotificationCounter: (number: number) => void }) {
     const [showAddModal, setAddModalShow] = useState(false);
     const [showCancelModal, setCancelModalShow] = useState(false);
     const [showEditModal, setEditModalShow] = useState(false);
     const [showDeleteModal, setDeleteModalShow] = useState(false);
 
+    var claimingEmergencies = TEST_EMERGENCY_LIST.filter(function (emergency) {
+        return emergency.status === 'claimed';
+    });
+
     function secondsToDhms(seconds: number) {
         seconds = Number(seconds);
         var d = Math.floor(seconds / (3600 * 24));
 
-        return d > 0 ? d + (d === 1 ? " day " : " days ") : "";
+        return d > 0 ? d + (d === 1 ? ' day ' : ' days ') : '';
     }
 
     const renderDescription = useCallback(
@@ -69,7 +68,8 @@ function Emergency() {
             <div className="emergency-item">
                 <p>Your emergencies list will lie here.</p>
             </div>
-        ), [TEST_EMERGENCY_LIST]
+        ),
+        [TEST_EMERGENCY_LIST]
     );
 
     const renderEmergencyList = useCallback(
@@ -78,45 +78,59 @@ function Emergency() {
                 {TEST_EMERGENCY_LIST.map((value) => (
                     <div key={value.pk} className="emergency-item">
                         <p>
-                            {value.pk.substring(1, 6) + '...' + value.pk.substring(value.pk.length - 5) + ' ' + (value.alias.length > 0 ? '(' + value.alias + ')' : '') + ' '}
+                            {(value.alias.length > 0
+                                ? value.alias +
+                                  ' (' +
+                                  value.pk.substring(1, 6) +
+                                  '...' +
+                                  value.pk.substring(value.pk.length - 5) +
+                                  ')'
+                                : value.pk.substring(1, 6) + '...' + value.pk.substring(value.pk.length - 5)) + ' '}
                             <i className="fa fa-arrow-left"></i>
-                            {' ' + value.amount + ' ' + value.symbol + ' '}
-                            <i className="green">{'after'}</i>
+                            {' ' + (WALLET_BALANCE * value.percentage) / 100 + ' SOL '}
+                            <span>after</span>
                             {' ' + secondsToDhms(value.delay)}
                         </p>
-                        <button onClick={() => setCancelModalShow(true)} className="cta-button status-button" disabled={!value.claimed || value.redeemed}>
-                            {value.claimed === true ? (
-                                value.redeemed === true ? (
-                                    "REDEEMED"
-                                ) : (
-                                    <div>
-                                        <Emojis symbol="⏳" label="sheep" />
-                                        CLAIMED
-                                    </div>
-                                )
+
+                        <button
+                            onClick={() => setCancelModalShow(true)}
+                            className="cta-button status-button"
+                            disabled={value.status !== 'claimed'}
+                        >
+                            {value.status === 'claimed' ? (
+                                <div>
+                                    <Emojis symbol="⏳" label="hourglass" /> {value.status.toUpperCase()}
+                                </div>
                             ) : (
-                                "UNCLAIMED"
+                                value.status.toUpperCase()
                             )}
                         </button>
-                        <button onClick={() => setEditModalShow(true)} className="modify-button">MODIFY</button>
-                        <button onClick={() => setDeleteModalShow(true)} className="delete-button">DELETE</button>
+                        <button onClick={() => setEditModalShow(true)} className="modify-button">
+                            MODIFY
+                        </button>
+                        <button onClick={() => setDeleteModalShow(true)} className="delete-button">
+                            DELETE
+                        </button>
                     </div>
                 ))}
             </div>
         ),
         []
     );
-    
+
     return (
         <div className="emergency-container">
-            <button onClick={() => setAddModalShow(true)} className="cta-button confirm-button">ADD AN EMERGENCY ADDRESS</button>
+            {props.setNotificationCounter(claimingEmergencies.length)}
+            <button onClick={() => setAddModalShow(true)} className="cta-button confirm-button">
+                ADD AN EMERGENCY ADDRESS
+            </button>
             <AddModal onClose={() => setAddModalShow(false)} show={showAddModal} />
             <CancelModal onClose={() => setCancelModalShow(false)} show={showCancelModal} />
             <EditModal onClose={() => setEditModalShow(false)} show={showEditModal} />
             <DeleteModal onClose={() => setDeleteModalShow(false)} show={showDeleteModal} />
-            {TEST_EMERGENCY_LIST.length > 0 && renderEmergencyList() || renderDescription()}
+            {(TEST_EMERGENCY_LIST.length > 0 && renderEmergencyList()) || renderDescription()}
         </div>
-    )
+    );
 }
 
 export default Emergency;
