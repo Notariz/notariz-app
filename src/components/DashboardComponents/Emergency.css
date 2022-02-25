@@ -32,13 +32,7 @@
     margin-right: 5px;
 }
 
-.delete-button {
-    box-sizing: border-box;
-    border: solid purple 1px;
-    background-color: #1a202c;
-}
-
-.modify-button {
+.edit-button {
     box-sizing: border-box;
     border: solid aqua 1px;
     background-color: #1a202c;

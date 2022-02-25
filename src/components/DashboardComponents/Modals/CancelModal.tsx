@@ -3,7 +3,7 @@ import { CSSTransition } from 'react-transition-group'
 import '../Common.css'
 
 function CancelModal(props: {show: boolean, onClose: () => void}) {
-    
+
     const closeOnEscapeKeyDown = (e: any) => {
         if ((e.charCode || e.keyCode) === 27) {
             props.onClose()
@@ -31,7 +31,8 @@ function CancelModal(props: {show: boolean, onClose: () => void}) {
                     <h3 className="notariz-modal-title">CANCEL CLAIM REQUEST</h3>
                 </div>
                 <div className="notariz-modal-body">
-                    <p>Hello</p>
+                    <div className='modal-text'>Do you really want to <span>cancel</span> this claim request?</div>
+                    <button onClick={props.onClose} className="cta-button edit-button">DEFINITELY</button>
                 </div>
             </div>
         </div>

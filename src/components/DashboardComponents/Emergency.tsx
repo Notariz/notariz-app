@@ -1,5 +1,4 @@
-import { useCallback, useState } from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
+import { useCallback, useEffect, useState } from 'react';
 import AddModal from './Modals/AddModal';
 import EditModal from './Modals/EditModal';
 import CancelModal from './Modals/CancelModal';
@@ -7,7 +6,7 @@ import DeleteModal from './Modals/DeleteModal';
 import Emojis from '../utils/Emojis';
 import './Emergency.css';
 import './Common.css';
-
+import { PublicKey } from '@solana/web3.js';
 interface EmergencyDetails {
     id: number;
     pk: string;
@@ -23,7 +22,7 @@ const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
         pk: '4cjmQjJuB4WzUqqtt6VLycjXTaRvgL',
         alias: 'Alice',
         percentage: 30,
-        delay: 95962,
+        delay: 4,
         status: 'unclaimed',
     },
     {
@@ -31,7 +30,7 @@ const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
         pk: 'sH2FTJKB9naMwYB7zRTch2bNFBpvwj',
         alias: 'Bob',
         percentage: 20,
-        delay: 4088984,
+        delay: 2,
         status: 'claimed',
     },
     {
@@ -39,7 +38,7 @@ const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
         pk: 'tt6VLycjXTaRvgLNhz6ZzRTch2bNFB',
         alias: '',
         percentage: 17,
-        delay: 366000,
+        delay: 3,
         status: 'redeemed',
     },
 ];
@@ -51,17 +50,12 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
     const [showCancelModal, setCancelModalShow] = useState(false);
     const [showEditModal, setEditModalShow] = useState(false);
     const [showDeleteModal, setDeleteModalShow] = useState(false);
+    const [emergencyList, setEmergencyList] = useState<EmergencyDetails[]>([]);
+
 
     var claimingEmergencies = TEST_EMERGENCY_LIST.filter(function (emergency) {
         return emergency.status === 'claimed';
     });
-
-    function secondsToDhms(seconds: number) {
-        seconds = Number(seconds);
-        var d = Math.floor(seconds / (3600 * 24));
-
-        return d > 0 ? d + (d === 1 ? ' day ' : ' days ') : '';
-    }
 
     const renderDescription = useCallback(
         () => (
@@ -69,13 +63,13 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                 <p>Your emergencies list will lie here.</p>
             </div>
         ),
-        [TEST_EMERGENCY_LIST]
+        [emergencyList]
     );
 
     const renderEmergencyList = useCallback(
         () => (
             <div className="emergency-list">
-                {TEST_EMERGENCY_LIST.map((value) => (
+                {emergencyList.map((value) => (
                     <div key={value.pk} className="emergency-item">
                         <p>
                             {(value.alias.length > 0
@@ -89,7 +83,7 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                             <i className="fa fa-arrow-left"></i>
                             {' ' + (WALLET_BALANCE * value.percentage) / 100 + ' SOL '}
                             <span>after</span>
-                            {' ' + secondsToDhms(value.delay)}
+                            {' ' + value.delay + ' days'}
                         </p>
 
                         <button
@@ -105,7 +99,7 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                                 value.status.toUpperCase()
                             )}
                         </button>
-                        <button onClick={() => setEditModalShow(true)} className="modify-button">
+                        <button onClick={() => setEditModalShow(true)} className="edit-button">
                             EDIT
                         </button>
                         <button onClick={() => setDeleteModalShow(true)} className="delete-button">
@@ -117,6 +111,10 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
         ),
         []
     );
+
+    useEffect(() => {
+        setEmergencyList(TEST_EMERGENCY_LIST);
+    }, [PublicKey]);
 
     return (
         <div className="emergency-container">

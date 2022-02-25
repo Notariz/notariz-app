@@ -33,7 +33,7 @@ function Dashboard() {
                 </Container>
             </div>
         ),
-        []
+        [publicKey]
     );
 
     useEffect(() => {
