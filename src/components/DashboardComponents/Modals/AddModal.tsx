@@ -10,9 +10,9 @@ interface EmergencyDetails {
     status: string;
 }
 
-function AddModal(props: { show: boolean; onClose: () => void }) {
-    const [formIsCorrect, setFormIsCorrect] = useState(true);
-    const [inputValues, setInputValues] = useState({ pk: '', alias: '', percentage: '', delay: '', status: 'unclaimed' });
+function AddModal(props: { show: boolean; onClose: () => void; sendEmergency: (inputValues: EmergencyDetails) => void }) {
+    const [formIsCorrect, setFormIsCorrect] = useState(false);
+    const [inputValues, setInputValues] = useState<EmergencyDetails>({ pk: '', alias: '', percentage: 0, delay: 0, status: 'unclaimed' });
 
     const closeOnEscapeKeyDown = (e: any) => {
         if ((e.charCode || e.keyCode) === 27) {
@@ -30,28 +30,19 @@ function AddModal(props: { show: boolean; onClose: () => void }) {
 
     const handleInputChange = (e: React.FormEvent<HTMLInputElement>) => {
         const { name, value } = e.currentTarget;
-        setInputValues((prevState) => ({ ...prevState, [name]: value }));
-    };
-
-    const sendEmergency = async () => {
-        console.log(formIsCorrect);
-        if (
+        /* if (
             inputValues.pk != '' &&
-            (inputValues.percentage === "" ? 0 : parseInt(inputValues.percentage)) > 0 &&
-            (inputValues.percentage === "" ? 0 : parseInt(inputValues.percentage)) <= 100 &&
-            (inputValues.delay === "" ? 0 : parseInt(inputValues.delay)) >= 1
+            inputValues.percentage > 0 &&
+            inputValues.percentage <= 100 &&
+            inputValues.delay >= 1
         ) { 
-            parseInt(inputValues.percentage);
-            parseInt(inputValues.delay);
             setFormIsCorrect(true);
-            /* setEmergencyList(); */
-            props.onClose();
-            console.log('Emergency:', inputValues); 
-        }
-        else {
+        } else {
             setFormIsCorrect(false);
-            console.log('Empty input.');
+            console.log(inputValues)
         }
+        */
+        setInputValues((prevState) => ({ ...prevState, [name]: value }));
     };
 
     return (
@@ -69,7 +60,7 @@ function AddModal(props: { show: boolean; onClose: () => void }) {
                         <form
                             onSubmit={(event) => {
                                 event.preventDefault();
-                                sendEmergency();
+                                {!formIsCorrect ? props.onClose() : null};
                                 /* Call program entry point here */
                             }}
                         >
@@ -104,7 +95,7 @@ function AddModal(props: { show: boolean; onClose: () => void }) {
                                 onChange={handleInputChange}
                                 required
                             />
-                            <button type="submit" className="cta-button edit-button">
+                            <button type="submit" onClick={() => props.sendEmergency(inputValues)} className="cta-button edit-button">
                                 Submit
                             </button>
                         </form>

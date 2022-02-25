@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { Children, useCallback, useEffect, useState } from 'react';
 import AddModal from './Modals/AddModal';
 import EditModal from './Modals/EditModal';
 import CancelModal from './Modals/CancelModal';
@@ -47,7 +47,6 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
     const [showEditModal, setEditModalShow] = useState(false);
     const [showDeleteModal, setDeleteModalShow] = useState(false);
     const [emergencyList, setEmergencyList] = useState<EmergencyDetails[]>([]);
-
 
     var claimingEmergencies = TEST_EMERGENCY_LIST.filter(function (emergency) {
         return emergency.status === 'claimed';
@@ -109,6 +108,12 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
         [emergencyList]
     );
 
+    const sendEmergency = async (inputValues: EmergencyDetails) => {
+        setEmergencyList([...emergencyList, inputValues]);
+        console.log(emergencyList);
+        console.log(inputValues);
+    };
+
     useEffect(() => {
         setEmergencyList(TEST_EMERGENCY_LIST);
     }, [PublicKey]);
@@ -119,7 +124,11 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
             <button onClick={() => setAddModalShow(true)} className="cta-button confirm-button">
                 ADD AN EMERGENCY ADDRESS
             </button>
-            <AddModal onClose={() => setAddModalShow(false)} show={showAddModal} />
+            <AddModal 
+                onClose={() => setAddModalShow(false)} 
+                show={showAddModal} 
+                sendEmergency={sendEmergency}
+            />
             <CancelModal onClose={() => setCancelModalShow(false)} show={showCancelModal} />
             <EditModal onClose={() => setEditModalShow(false)} show={showEditModal} />
             <DeleteModal onClose={() => setDeleteModalShow(false)} show={showDeleteModal} />
