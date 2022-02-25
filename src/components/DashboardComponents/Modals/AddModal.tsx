@@ -3,7 +3,6 @@ import { CSSTransition } from 'react-transition-group';
 import '../Common.css';
 
 interface EmergencyDetails {
-    id: number;
     pk: string;
     alias: string;
     percentage: number;
@@ -13,7 +12,7 @@ interface EmergencyDetails {
 
 function AddModal(props: { show: boolean; onClose: () => void }) {
     const [formIsCorrect, setFormIsCorrect] = useState(true);
-    const [inputValues, setInputValues] = useState({ pk: '', percentage: 0, delay: 2 });
+    const [inputValues, setInputValues] = useState({ pk: '', alias: '', percentage: '', delay: '', status: 'unclaimed' });
 
     const closeOnEscapeKeyDown = (e: any) => {
         if ((e.charCode || e.keyCode) === 27) {
@@ -38,10 +37,12 @@ function AddModal(props: { show: boolean; onClose: () => void }) {
         console.log(formIsCorrect);
         if (
             inputValues.pk != '' &&
-            inputValues.percentage > 0 &&
-            inputValues.percentage <= 100 &&
-            inputValues.delay >= 3600
+            (inputValues.percentage === "" ? 0 : parseInt(inputValues.percentage)) > 0 &&
+            (inputValues.percentage === "" ? 0 : parseInt(inputValues.percentage)) <= 100 &&
+            (inputValues.delay === "" ? 0 : parseInt(inputValues.delay)) >= 1
         ) { 
+            parseInt(inputValues.percentage);
+            parseInt(inputValues.delay);
             setFormIsCorrect(true);
             /* setEmergencyList(); */
             props.onClose();
@@ -64,7 +65,7 @@ function AddModal(props: { show: boolean; onClose: () => void }) {
                         </div>
                     </div>
                     <div className="notariz-modal-body">
-                        {!formIsCorrect && <p>Some fields are empty or contain impossible values.</p>}
+                        {!formIsCorrect && <p>Some fields contain impossible values.</p>}
                         <form
                             onSubmit={(event) => {
                                 event.preventDefault();
@@ -75,15 +76,22 @@ function AddModal(props: { show: boolean; onClose: () => void }) {
                             <input
                                 name="pk"
                                 type="text"
-                                placeholder="Your emergency contact's public address"
+                                placeholder="Your emergency's public address"
                                 value={inputValues.pk}
                                 onChange={handleInputChange}
                                 required
                             />
                             <input
+                                name="alias"
+                                type="text"
+                                placeholder="Your emergency's alias (optional)"
+                                value={inputValues.alias}
+                                onChange={handleInputChange}
+                            />
+                            <input
                                 name="percentage"
                                 type="number"
-                                placeholder="Your emergency contact's claimable percentage"
+                                placeholder="Your emergency's claimable percentage"
                                 value={inputValues.percentage}
                                 onChange={handleInputChange}
                                 required

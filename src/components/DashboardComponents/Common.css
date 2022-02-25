@@ -73,6 +73,10 @@ input[type='text'], input[type='number'], input[type='date'] {
     margin: 20px auto;
 }
 
+input[type='text']:disabled {
+    opacity: .2;
+}
+
 .notariz-modal {
     position: fixed;
     left: 0;

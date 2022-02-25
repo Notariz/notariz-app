@@ -8,7 +8,6 @@ import './Emergency.css';
 import './Common.css';
 import { PublicKey } from '@solana/web3.js';
 interface EmergencyDetails {
-    id: number;
     pk: string;
     alias: string;
     percentage: number;
@@ -18,7 +17,6 @@ interface EmergencyDetails {
 
 const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
     {
-        id: 1,
         pk: '4cjmQjJuB4WzUqqtt6VLycjXTaRvgL',
         alias: 'Alice',
         percentage: 30,
@@ -26,7 +24,6 @@ const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
         status: 'unclaimed',
     },
     {
-        id: 2,
         pk: 'sH2FTJKB9naMwYB7zRTch2bNFBpvwj',
         alias: 'Bob',
         percentage: 20,
@@ -34,7 +31,6 @@ const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
         status: 'claimed',
     },
     {
-        id: 3,
         pk: 'tt6VLycjXTaRvgLNhz6ZzRTch2bNFB',
         alias: '',
         percentage: 17,
@@ -56,6 +52,7 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
     var claimingEmergencies = TEST_EMERGENCY_LIST.filter(function (emergency) {
         return emergency.status === 'claimed';
     });
+
 
     const renderDescription = useCallback(
         () => (
@@ -109,7 +106,7 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                 ))}
             </div>
         ),
-        []
+        [emergencyList]
     );
 
     useEffect(() => {
