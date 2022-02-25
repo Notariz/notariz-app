@@ -30,7 +30,7 @@ function AirdropModal(props: {show: boolean, onClose: () => void}) {
                     <h3 className="notariz-modal-title">Airdrop</h3>
                 </div>
                 <div className="notariz-modal-body">
-                    <p>Requesting a 1 SOL airdrop to Solana's devnet RPC. This should not take too long!</p>
+                    <p>Requesting a <span>1 SOL</span> airdrop to Solana's devnet RPC. This should not take too long!</p>
                 </div>
             </div>
         </div>

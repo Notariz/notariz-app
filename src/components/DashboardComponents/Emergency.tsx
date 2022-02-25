@@ -47,11 +47,11 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
     const [showEditModal, setEditModalShow] = useState(false);
     const [showDeleteModal, setDeleteModalShow] = useState(false);
     const [emergencyList, setEmergencyList] = useState<EmergencyDetails[]>([]);
+    const [formIsCorrect, setFormIsCorrect] = useState(false);
 
     var claimingEmergencies = TEST_EMERGENCY_LIST.filter(function (emergency) {
         return emergency.status === 'claimed';
     });
-
 
     const renderDescription = useCallback(
         () => (
@@ -61,6 +61,26 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
         ),
         [emergencyList]
     );
+
+    const sendEmergency = async (inputValues: EmergencyDetails) => {
+        if (
+            inputValues.pk != '' &&
+            inputValues.percentage > 0 &&
+            inputValues.percentage <= 100 &&
+            inputValues.delay >= 1
+        ) {
+            setFormIsCorrect(true);
+            setEmergencyList([...emergencyList, inputValues]);
+            console.log(emergencyList);
+        } else {
+            setFormIsCorrect(false);
+            console.log(inputValues);
+        }
+    };
+
+    useEffect(() => {
+        setEmergencyList(TEST_EMERGENCY_LIST);
+    }, [PublicKey]);
 
     const renderEmergencyList = useCallback(
         () => (
@@ -108,26 +128,17 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
         [emergencyList]
     );
 
-    const sendEmergency = async (inputValues: EmergencyDetails) => {
-        setEmergencyList([...emergencyList, inputValues]);
-        console.log(emergencyList);
-        console.log(inputValues);
-    };
-
-    useEffect(() => {
-        setEmergencyList(TEST_EMERGENCY_LIST);
-    }, [PublicKey]);
-
     return (
         <div className="emergency-container">
             {props.setNotificationCounter(claimingEmergencies.length)}
             <button onClick={() => setAddModalShow(true)} className="cta-button confirm-button">
                 ADD AN EMERGENCY ADDRESS
             </button>
-            <AddModal 
-                onClose={() => setAddModalShow(false)} 
-                show={showAddModal} 
+            <AddModal
+                onClose={() => setAddModalShow(false)}
+                show={showAddModal}
                 sendEmergency={sendEmergency}
+                formIsCorrect={formIsCorrect}
             />
             <CancelModal onClose={() => setCancelModalShow(false)} show={showCancelModal} />
             <EditModal onClose={() => setEditModalShow(false)} show={showEditModal} />
