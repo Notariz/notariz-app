@@ -16,6 +16,7 @@ function AddModal(props: {
     sendEmergency: (inputValues: EmergencyDetails) => void;
     formIsCorrect: boolean;
 }) {
+    const [isSubmited, setIsSubmited] = useState(false);
     const [inputValues, setInputValues] = useState<EmergencyDetails>({
         pk: '',
         alias: '',
@@ -43,6 +44,8 @@ function AddModal(props: {
         setInputValues((prevState) => ({ ...prevState, [name]: value }));
     };
 
+    const renderErrorMessage = useCallback(() => <p>Some fields contain impossible values.</p>, [props.formIsCorrect]);
+
     return (
         <CSSTransition in={props.show} unmountOnExit timeout={{ enter: 0, exit: 300 }}>
             <div className={`notariz-modal ${props.show ? 'show' : ''}`} onClick={props.onClose}>
@@ -54,27 +57,32 @@ function AddModal(props: {
                         </div>
                     </div>
                     <div className="notariz-modal-body">
-                        {!props.formIsCorrect && <p>Some fields contain impossible values.</p>}
+                        {isSubmited && !props.formIsCorrect ? renderErrorMessage() : null}
                         <form
                             onSubmit={(event) => {
                                 event.preventDefault();
                                 {
-                                    props.formIsCorrect ? props.onClose() : null;
-                                }
-                                {
+                                    setIsSubmited(true);
                                     props.formIsCorrect
-                                        ? setInputValues({
+                                        ? (setInputValues({
                                               pk: '',
                                               alias: '',
                                               percentage: 0,
                                               delay: 0,
                                               status: 'unclaimed',
-                                          })
+                                          }),
+                                          props.onClose(),
+                                          setIsSubmited(false))
                                         : null;
                                 }
                                 /* Call program entry point here */
                             }}
                         >
+                            {isSubmited && !props.formIsCorrect ? (
+                                <span className="hint">
+                                    Your emergency's public address should be 32-to-44-character long.
+                                </span>
+                            ) : null}
                             <input
                                 name="pk"
                                 type="text"
@@ -83,26 +91,27 @@ function AddModal(props: {
                                 onChange={handleInputChange}
                                 required
                             />
+                            {isSubmited && !props.formIsCorrect ? (
+                                <span className="hint">A percentage should be comprised between 1 to 100.</span>
+                            ) : null}
                             <input
-                                name="alias"
-                                type="text"
-                                placeholder="Your emergency's alias (optional)"
-                                value={inputValues.alias}
-                                onChange={handleInputChange}
-                            />
-                            <input
+                                id="add-modal-percentage"
                                 name="percentage"
                                 type="number"
                                 placeholder="Your emergency's claimable percentage"
-                                value={inputValues.percentage}
+                                value={inputValues.percentage === 0 ? NaN : inputValues.percentage}
                                 onChange={handleInputChange}
                                 required
                             />
+                            {isSubmited && !props.formIsCorrect ? (
+                                <span className="hint">Your withdrawal period value should be greater than 0.</span>
+                            ) : null}
                             <input
+                                id="add-modal-delay"
                                 name="delay"
                                 type="number"
                                 placeholder="Your withdrawal period (in days)"
-                                value={inputValues.delay}
+                                value={inputValues.delay === 0 ? NaN : inputValues.delay}
                                 onChange={handleInputChange}
                                 required
                             />

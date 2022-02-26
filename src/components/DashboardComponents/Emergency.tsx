@@ -128,9 +128,12 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
         [emergencyList]
     );
 
+    useEffect(() => {
+        props.setNotificationCounter(claimingEmergencies.length)
+    }, [claimingEmergencies.length])
+
     return (
         <div className="emergency-container">
-            {props.setNotificationCounter(claimingEmergencies.length)}
             <button onClick={() => setAddModalShow(true)} className="cta-button confirm-button">
                 ADD AN EMERGENCY ADDRESS
             </button>

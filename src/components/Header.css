@@ -1,5 +1,6 @@
 .navbar {
     background-color: #1a202c;
+    z-index: 0;
 }
 
 .fs-3 p {

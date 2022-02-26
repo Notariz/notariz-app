@@ -40,8 +40,7 @@ function Dashboard() {
         document.title = `${notificationsCount > 0 ? `(${notificationsCount})` : ''} Notariz`;
     });
 
-    const renderWalletConnected = () => {
-        return (
+    const renderWalletConnected = useCallback(() => (
             <Tabs defaultActiveKey="emergency" id="tabs" className="mb-3">
                 <Tab
                     eventKey="emergency"
@@ -64,8 +63,8 @@ function Dashboard() {
                     <Wallet />
                 </Tab>
             </Tabs>
-        );
-    };
+        ), [publicKey, notificationsCount]
+    );
 
     return (
         <div className="dashboard-container">

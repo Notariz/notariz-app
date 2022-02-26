@@ -6,6 +6,13 @@ span {
     color:aqua;
 }
 
+.hint {
+    opacity: .5;
+    font-size: smaller;
+    color: white !important;
+    font-weight: 400;
+}
+
 .cta-button {
     border: 0;
     width: auto;
@@ -127,6 +134,8 @@ input[type='text']:disabled {
     padding: 20px;
     color: white;
     font-weight: bold;
+    z-index: auto;
+
 }
 
 .notariz-modal-title {
@@ -144,8 +153,8 @@ input[type='text']:disabled {
 }
 
 .notariz-modal-body .modal-text {
-    margin-top: 20px;
-    margin-bottom: 30px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .notariz-modal-body .delete-button {

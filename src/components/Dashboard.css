@@ -1,5 +1,6 @@
 .dashboard-container {
     margin-top: 85px;
+    z-index: 0;
 }
 
 .dashboard-container p {
