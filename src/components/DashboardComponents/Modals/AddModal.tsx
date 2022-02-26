@@ -13,7 +13,7 @@ interface EmergencyDetails {
 function AddModal(props: {
     show: boolean;
     onClose: () => void;
-    sendEmergency: (inputValues: EmergencyDetails) => void;
+    addEmergency: (inputValues: EmergencyDetails) => void;
     formIsCorrect: boolean;
 }) {
     const [isSubmited, setIsSubmited] = useState(false);
@@ -95,7 +95,6 @@ function AddModal(props: {
                                 <span className="hint">A percentage should be comprised between 1 to 100.</span>
                             ) : null}
                             <input
-                                id="add-modal-percentage"
                                 name="percentage"
                                 type="number"
                                 placeholder="Your emergency's claimable percentage"
@@ -107,7 +106,6 @@ function AddModal(props: {
                                 <span className="hint">Your withdrawal period value should be greater than 0.</span>
                             ) : null}
                             <input
-                                id="add-modal-delay"
                                 name="delay"
                                 type="number"
                                 placeholder="Your withdrawal period (in days)"
@@ -117,7 +115,7 @@ function AddModal(props: {
                             />
                             <button
                                 type="submit"
-                                onClick={() => props.sendEmergency(inputValues)}
+                                onClick={() => props.addEmergency(inputValues)}
                                 className="cta-button edit-button"
                             >
                                 Submit

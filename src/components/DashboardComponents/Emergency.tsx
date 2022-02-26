@@ -3,6 +3,7 @@ import AddModal from './Modals/AddModal';
 import EditModal from './Modals/EditModal';
 import CancelModal from './Modals/CancelModal';
 import DeleteModal from './Modals/DeleteModal';
+import AliasModal from './Modals/AliasModal';
 import Emojis from '../utils/Emojis';
 import './Emergency.css';
 import './Common.css';
@@ -13,6 +14,11 @@ interface EmergencyDetails {
     percentage: number;
     delay: number;
     status: string;
+}
+
+interface EmergencyAlias {
+    pk: string;
+    alias: string;
 }
 
 const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
@@ -46,11 +52,17 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
     const [showCancelModal, setCancelModalShow] = useState(false);
     const [showEditModal, setEditModalShow] = useState(false);
     const [showDeleteModal, setDeleteModalShow] = useState(false);
+    const [showAliasModal, setAliasModalShow] = useState(false);
     const [emergencyList, setEmergencyList] = useState<EmergencyDetails[]>([]);
     const [formIsCorrect, setFormIsCorrect] = useState(false);
+    const [selectedPk, setSelectedPk] = useState('');
 
-    var claimingEmergencies = TEST_EMERGENCY_LIST.filter(function (emergency) {
+    var claimingEmergencies = emergencyList.filter(function (emergency) {
         return emergency.status === 'claimed';
+    });
+
+    var selectedEmergency = emergencyList.filter(function (emergency) {
+        return emergency.pk === selectedPk;
     });
 
     const renderDescription = useCallback(
@@ -62,7 +74,7 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
         [emergencyList]
     );
 
-    const sendEmergency = async (inputValues: EmergencyDetails) => {
+    const addEmergency = async (inputValues: EmergencyDetails) => {
         if (
             inputValues.pk != '' &&
             inputValues.percentage > 0 &&
@@ -71,10 +83,23 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
         ) {
             setFormIsCorrect(true);
             setEmergencyList([...emergencyList, inputValues]);
-            console.log(emergencyList);
         } else {
             setFormIsCorrect(false);
-            console.log(inputValues);
+        }
+    };
+
+    const editEmergencyAlias = async (inputValue: string) => {
+        const id = selectedEmergency[0].pk;
+        const newEmergencies = [...emergencyList];
+        console.log(formIsCorrect)
+        if (inputValue != '') {
+            setFormIsCorrect(true);
+            {newEmergencies.map((value) =>
+                value.pk === id ? value.alias = inputValue : value.alias
+            )};
+            setEmergencyList(newEmergencies);
+        } else {
+            setFormIsCorrect(false);
         }
     };
 
@@ -88,14 +113,22 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                 {emergencyList.map((value) => (
                     <div key={value.pk} className="emergency-item">
                         <p>
-                            {(value.alias.length > 0
-                                ? value.alias +
-                                  ' (' +
-                                  value.pk.substring(1, 6) +
-                                  '...' +
-                                  value.pk.substring(value.pk.length - 5) +
-                                  ')'
-                                : value.pk.substring(1, 6) + '...' + value.pk.substring(value.pk.length - 5)) + ' '}
+                            <span
+                                onClick={() => {
+                                    setAliasModalShow(true);
+                                    setSelectedPk(value.pk);
+                                }}
+                                className="receiver-text"
+                            >
+                                {(value.alias.length > 0
+                                    ? value.alias +
+                                      ' (' +
+                                      value.pk.substring(0, 5) +
+                                      '...' +
+                                      value.pk.substring(value.pk.length - 5) +
+                                      ')'
+                                    : value.pk.substring(0, 5) + '...' + value.pk.substring(value.pk.length - 5)) + ' '}
+                            </span>
                             <i className="fa fa-arrow-left"></i>
                             {' ' + (WALLET_BALANCE * value.percentage) / 100 + ' SOL '}
                             <span>after</span>
@@ -129,8 +162,8 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
     );
 
     useEffect(() => {
-        props.setNotificationCounter(claimingEmergencies.length)
-    }, [claimingEmergencies.length])
+        props.setNotificationCounter(claimingEmergencies.length);
+    }, [claimingEmergencies.length]);
 
     return (
         <div className="emergency-container">
@@ -140,12 +173,18 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
             <AddModal
                 onClose={() => setAddModalShow(false)}
                 show={showAddModal}
-                sendEmergency={sendEmergency}
+                addEmergency={addEmergency}
                 formIsCorrect={formIsCorrect}
             />
             <CancelModal onClose={() => setCancelModalShow(false)} show={showCancelModal} />
             <EditModal onClose={() => setEditModalShow(false)} show={showEditModal} />
             <DeleteModal onClose={() => setDeleteModalShow(false)} show={showDeleteModal} />
+            <AliasModal
+                onClose={() => setAliasModalShow(false)}
+                show={showAliasModal}
+                editEmergencyAlias={editEmergencyAlias}
+                formIsCorrect={formIsCorrect}
+            />
             {(TEST_EMERGENCY_LIST.length > 0 && renderEmergencyList()) || renderDescription()}
         </div>
     );

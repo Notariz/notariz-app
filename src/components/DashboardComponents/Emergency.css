@@ -47,7 +47,19 @@
     height: 55px;
 }
 
+.status-button:hover {
+    opacity: .8;
+}
+
 .emergency-item button:disabled {
     opacity: .2;
 }
 
+.receiver-text {
+    color: white !important;
+}
+
+.receiver-text:hover {
+    opacity: .8;
+    cursor: pointer;
+}
