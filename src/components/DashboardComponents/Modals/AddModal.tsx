@@ -92,7 +92,7 @@ function AddModal(props: {
                                 required
                             />
                             {isSubmited && !props.formIsCorrect ? (
-                                <span className="hint">A percentage should be comprised between 1 to 100.</span>
+                                <span className="hint">A percentage should be an integer comprised between 1 to 100.</span>
                             ) : null}
                             <input
                                 name="percentage"
@@ -103,7 +103,7 @@ function AddModal(props: {
                                 required
                             />
                             {isSubmited && !props.formIsCorrect ? (
-                                <span className="hint">Your withdrawal period value should be greater than 0.</span>
+                                <span className="hint">Your withdrawal period value should be an integer greater than 0.</span>
                             ) : null}
                             <input
                                 name="delay"

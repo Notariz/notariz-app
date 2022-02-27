@@ -1,9 +1,7 @@
-import { Children, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import AddModal from './Modals/AddModal';
-import EditModal from './Modals/EditModal';
-import CancelModal from './Modals/CancelModal';
 import DeleteModal from './Modals/DeleteModal';
-import AliasModal from './Modals/AliasModal';
+import EditModal from './Modals/EditModal';
 import Emojis from '../utils/Emojis';
 import './Emergency.css';
 import './Common.css';
@@ -16,32 +14,34 @@ interface EmergencyDetails {
     status: string;
 }
 
-interface EmergencyAlias {
-    pk: string;
-    alias: string;
-}
-
 const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
     {
         pk: '4cjmQjJuB4WzUqqtt6VLycjXTaRvgL',
         alias: 'Alice',
         percentage: 30,
         delay: 4,
-        status: 'unclaimed',
+        status: 'claimed',
     },
     {
-        pk: 'sH2FTJKB9naMwYB7zRTch2bNFBpvwj',
+        pk: '9sH2FTJKB9naMwYB7zRTch2bNFBpvwj',
         alias: 'Bob',
         percentage: 20,
         delay: 2,
         status: 'claimed',
     },
     {
-        pk: 'tt6VLycjXTaRvgLNhz6ZzRTch2bNFB',
+        pk: '5tt6VLycjXTaRvgLNhz6ZzRTch2bNFB',
         alias: '',
         percentage: 17,
         delay: 3,
         status: 'redeemed',
+    },
+    {
+        pk: '7dsjIzdlck45dzLdldqnmPadmcnAodzs',
+        alias: 'Carol',
+        percentage: 5,
+        delay: 7,
+        status: 'unclaimed',
     },
 ];
 
@@ -49,13 +49,12 @@ const WALLET_BALANCE = 1500;
 
 function Emergency(props: { setNotificationCounter: (number: number) => void }) {
     const [showAddModal, setAddModalShow] = useState(false);
-    const [showCancelModal, setCancelModalShow] = useState(false);
-    const [showEditModal, setEditModalShow] = useState(false);
     const [showDeleteModal, setDeleteModalShow] = useState(false);
-    const [showAliasModal, setAliasModalShow] = useState(false);
+    const [showEditModal, setEditModalShow] = useState(false);
     const [emergencyList, setEmergencyList] = useState<EmergencyDetails[]>([]);
     const [formIsCorrect, setFormIsCorrect] = useState(false);
     const [selectedPk, setSelectedPk] = useState('');
+    const [selectedField, setSelectedField] = useState('');
 
     var claimingEmergencies = emergencyList.filter(function (emergency) {
         return emergency.status === 'claimed';
@@ -68,7 +67,7 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
     const renderDescription = useCallback(
         () => (
             <div className="emergency-item">
-                <p>Your emergencies list will lie here.</p>
+                <p>Your emergencies will lie here.</p>
             </div>
         ),
         [emergencyList]
@@ -79,7 +78,9 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
             inputValues.pk != '' &&
             inputValues.percentage > 0 &&
             inputValues.percentage <= 100 &&
-            inputValues.delay >= 1
+            inputValues.delay >= 1 &&
+            inputValues.delay == Math.round(inputValues.delay) &&
+            inputValues.percentage == Math.round(inputValues.percentage)
         ) {
             setFormIsCorrect(true);
             setEmergencyList([...emergencyList, inputValues]);
@@ -88,19 +89,55 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
         }
     };
 
-    const editEmergencyAlias = async (inputValue: string) => {
+    const editEmergency = async (inputValue: any) => {
         const id = selectedEmergency[0].pk;
         const newEmergencies = [...emergencyList];
-        console.log(formIsCorrect)
-        if (inputValue != '') {
-            setFormIsCorrect(true);
-            {newEmergencies.map((value) =>
-                value.pk === id ? value.alias = inputValue : value.alias
-            )};
-            setEmergencyList(newEmergencies);
-        } else {
-            setFormIsCorrect(false);
+        switch (selectedField) {
+            case 'alias':
+                if (inputValue != '') {
+                    setFormIsCorrect(true);
+                    newEmergencies.map((value) => (value.pk === id ? (value.alias = inputValue) : value.alias));
+                    setEmergencyList(newEmergencies);
+                } else {
+                    setFormIsCorrect(false);
+                }
+            case 'percentage':
+                if (inputValue > 0 && inputValue <= 100 && Math.round(inputValue) == inputValue) {
+                    setFormIsCorrect(true);
+                    newEmergencies.map((value) =>
+                        value.pk === id ? (value.percentage = inputValue) : value.percentage
+                    );
+                    setEmergencyList(newEmergencies);
+                } else {
+                    setFormIsCorrect(false);
+                }
+            case 'delay':
+                if (inputValue >= 1 && Math.round(inputValue) == inputValue) {
+                    setFormIsCorrect(true);
+                    newEmergencies.map((value) => (value.pk === id ? (value.delay = inputValue) : value.delay));
+                    setEmergencyList(newEmergencies);
+                } else {
+                    setFormIsCorrect(false);
+                }
+            case 'cancel':
+                setFormIsCorrect(true);
+                newEmergencies.map((value) =>
+                    value.status === 'claimed' ? (value.status = 'unclaimed') : value.status
+                );
+                setEmergencyList(newEmergencies);
+            default:
+                console.log('No selected field.');
         }
+    };
+
+    const deleteEmergency = async () => {
+        const id = selectedEmergency[0].pk;
+        const newEmergencies = emergencyList.filter(function(emergency) {
+            return emergency.pk != id;
+        });
+
+        setEmergencyList(newEmergencies);
+        console.log(selectedPk);
     };
 
     useEffect(() => {
@@ -115,7 +152,8 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                         <p>
                             <span
                                 onClick={() => {
-                                    setAliasModalShow(true);
+                                    setEditModalShow(true);
+                                    setSelectedField('alias');
                                     setSelectedPk(value.pk);
                                 }}
                                 className="receiver-text"
@@ -130,13 +168,36 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                                     : value.pk.substring(0, 5) + '...' + value.pk.substring(value.pk.length - 5)) + ' '}
                             </span>
                             <i className="fa fa-arrow-left"></i>
-                            {' ' + (WALLET_BALANCE * value.percentage) / 100 + ' SOL '}
+                            <span
+                                onClick={() => {
+                                    setEditModalShow(true);
+                                    setSelectedField('percentage');
+                                    setSelectedPk(value.pk);
+                                }}
+                                className="receiver-text"
+                            >
+                                {' ' + (WALLET_BALANCE * value.percentage) / 100}
+                            </span>
+                            {' SOL '}
                             <span>after</span>
-                            {' ' + value.delay + ' days'}
+                            <span
+                                onClick={() => {
+                                    setEditModalShow(true);
+                                    setSelectedField('delay');
+                                    setSelectedPk(value.pk);
+                                }}
+                                className="receiver-text"
+                            >
+                                {' ' + value.delay + ' days'}
+                            </span>
                         </p>
 
                         <button
-                            onClick={() => setCancelModalShow(true)}
+                            onClick={() => {
+                                setEditModalShow(true);
+                                setSelectedField('cancel');
+                                setSelectedPk(value.pk);
+                            }}
                             className="cta-button status-button"
                             disabled={value.status !== 'claimed'}
                         >
@@ -148,10 +209,13 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                                 value.status.toUpperCase()
                             )}
                         </button>
-                        <button onClick={() => setEditModalShow(true)} className="edit-button">
-                            EDIT
-                        </button>
-                        <button onClick={() => setDeleteModalShow(true)} className="delete-button">
+                        <button
+                            onClick={() => {
+                                setDeleteModalShow(true);
+                                setSelectedPk(value.pk);
+                            }}
+                            className="delete-button"
+                        >
                             DELETE
                         </button>
                     </div>
@@ -176,16 +240,22 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                 addEmergency={addEmergency}
                 formIsCorrect={formIsCorrect}
             />
-            <CancelModal onClose={() => setCancelModalShow(false)} show={showCancelModal} />
-            <EditModal onClose={() => setEditModalShow(false)} show={showEditModal} />
-            <DeleteModal onClose={() => setDeleteModalShow(false)} show={showDeleteModal} />
-            <AliasModal
-                onClose={() => setAliasModalShow(false)}
-                show={showAliasModal}
-                editEmergencyAlias={editEmergencyAlias}
-                formIsCorrect={formIsCorrect}
+            <DeleteModal
+                onClose={() => setDeleteModalShow(false)}
+                show={showDeleteModal}
+                deleteEmergency={deleteEmergency}
+                selectedField={selectedField}
             />
-            {(TEST_EMERGENCY_LIST.length > 0 && renderEmergencyList()) || renderDescription()}
+            <EditModal
+                onClose={() => {
+                    setEditModalShow(false);
+                }}
+                show={showEditModal}
+                editEmergency={editEmergency}
+                formIsCorrect={formIsCorrect}
+                selectedField={selectedField}
+            />
+            {(emergencyList.length > 0 && renderEmergencyList()) || renderDescription()}
         </div>
     );
 }
