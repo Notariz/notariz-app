@@ -53,7 +53,7 @@
     height: 10px;
     justify-content: center;
     position: relative;
-    color: white;
+    color: white !important;
     font-weight: bold;
     opacity: .8;
   }
