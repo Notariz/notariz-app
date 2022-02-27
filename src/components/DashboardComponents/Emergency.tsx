@@ -80,7 +80,8 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
             inputValues.percentage <= 100 &&
             inputValues.delay >= 1 &&
             inputValues.delay == Math.round(inputValues.delay) &&
-            inputValues.percentage == Math.round(inputValues.percentage)
+            inputValues.percentage == Math.round(inputValues.percentage) &&
+            inputValues.alias.length <= 5
         ) {
             setFormIsCorrect(true);
             setEmergencyList([...emergencyList, inputValues]);
@@ -94,13 +95,14 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
         const newEmergencies = [...emergencyList];
         switch (selectedField) {
             case 'alias':
-                if (inputValue != '') {
+                if (inputValue.length <= 5) {
                     setFormIsCorrect(true);
                     newEmergencies.map((value) => (value.pk === id ? (value.alias = inputValue) : value.alias));
                     setEmergencyList(newEmergencies);
                 } else {
                     setFormIsCorrect(false);
                 }
+                break;
             case 'percentage':
                 if (inputValue > 0 && inputValue <= 100 && Math.round(inputValue) == inputValue) {
                     setFormIsCorrect(true);
@@ -111,6 +113,7 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                 } else {
                     setFormIsCorrect(false);
                 }
+                break;
             case 'delay':
                 if (inputValue >= 1 && Math.round(inputValue) == inputValue) {
                     setFormIsCorrect(true);
@@ -119,14 +122,14 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                 } else {
                     setFormIsCorrect(false);
                 }
+                break;
             case 'cancel':
                 setFormIsCorrect(true);
                 newEmergencies.map((value) =>
                     value.status === 'claimed' ? (value.status = 'unclaimed') : value.status
                 );
                 setEmergencyList(newEmergencies);
-            default:
-                console.log('No selected field.');
+                break;
         }
     };
 
@@ -137,7 +140,6 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
         });
 
         setEmergencyList(newEmergencies);
-        console.log(selectedPk);
     };
 
     useEffect(() => {
@@ -254,6 +256,7 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                 editEmergency={editEmergency}
                 formIsCorrect={formIsCorrect}
                 selectedField={selectedField}
+                selectedPk={selectedPk}
             />
             {(emergencyList.length > 0 && renderEmergencyList()) || renderDescription()}
         </div>

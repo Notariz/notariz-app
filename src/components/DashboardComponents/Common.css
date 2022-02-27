@@ -131,11 +131,14 @@ input[type='text']:disabled {
 }
 
 .notariz-modal-header {
-    padding: 20px;
+    padding-top: 20px;
     color: white;
     font-weight: bold;
     z-index: auto;
+}
 
+.notariz-modal-header h3 {
+    font-size: 22px;
 }
 
 .notariz-modal-title {

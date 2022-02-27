@@ -14,10 +14,12 @@ function EditModal(props: {
     show: boolean;
     onClose: () => void;
     selectedField: string;
+    selectedPk: string;
     formIsCorrect: boolean;
     editEmergency: (inputValue: string) => void;
 }) {
     const [inputValue, setInputValue] = useState('');
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
     const closeOnEscapeKeyDown = (e: any) => {
         if ((e.charCode || e.keyCode) === 27) {
@@ -40,7 +42,7 @@ function EditModal(props: {
                     <div className="notariz-modal-header">
                         {props.selectedField === 'alias' && (
                             <div>
-                                <h3 className="notariz-modal-title">EDIT NICKNAME</h3>
+                                <h3 className="notariz-modal-title">Edit nickname</h3>
                                 <div className="notariz-modal-text">
                                     Nicknames are publicly stored in the <span>blockchain</span>, keep them simple to
                                     ensure your emergency's privacy.
@@ -49,17 +51,17 @@ function EditModal(props: {
                         )}
                         {props.selectedField === 'percentage' && (
                             <div>
-                                <h3 className="notariz-modal-title">EDIT PERCENTAGE</h3>
+                                <h3 className="notariz-modal-title">Edit percentage</h3>
                             </div>
                         )}
                         {props.selectedField === 'delay' && (
                             <div>
-                                <h3 className="notariz-modal-title">EDIT WITHDRAWAL PERIOD</h3>
+                                <h3 className="notariz-modal-title">Edit withdrawal period</h3>
                             </div>
                         )}
                         {props.selectedField === 'cancel' && (
                             <div>
-                                <h3 className="notariz-modal-title">CLAIM REQUEST</h3>
+                                <h3 className="notariz-modal-title">Claim request</h3>
                                 <div className="notariz-modal-text">
                                     Rejecting this claim request will also cancel the <span>others</span>.
                                 </div>
@@ -70,45 +72,76 @@ function EditModal(props: {
                         <form
                             onSubmit={(event) => {
                                 event.preventDefault();
+                                setIsSubmitted(true);
                                 {
-                                    props.formIsCorrect ? props.onClose() : null;
+                                    props.formIsCorrect ? (props.onClose(), setIsSubmitted(false)) : null;
                                 }
                                 /* Call program entry point here */
                             }}
                         >
-                            {props.selectedField === 'alias' &&
-                                <input
-                                    name="alias"
-                                    type="text"
-                                    placeholder={"Your emergency's nickname"}
-                                    value={inputValue}
-                                    onChange={(e) => setInputValue(e.target.value)}
-                                    required
-                                />
-                            }
-                            {props.selectedField === 'percentage' &&
-                                <input
-                                    name="percentage"
-                                    type="number"
-                                    placeholder={"Your emergency's claimable percentage"}
-                                    value={inputValue}
-                                    onChange={(e) => setInputValue(e.target.value)}
-                                    required
-                                />
-                            }
-                            {props.selectedField === 'delay' &&
-                                <input
-                                    name="delay"
-                                    type="number"
-                                    placeholder={"Your withdrawal period (in days)"}
-                                    value={inputValue}
-                                    onChange={(e) => setInputValue(e.target.value)}
-                                    required
-                                />
-                            }
+                            {props.selectedField === 'alias' && (
+                                <div>
+                                    <span className="hint">Your emergency's pk is {props.selectedPk}</span>
+                                    {!props.formIsCorrect && isSubmitted ? (
+                                        <div>
+                                            <span className="hint">
+                                                Your emergency's nickname should be 5-character long max.
+                                            </span>
+                                        </div>
+                                    ) : null}
+                                    <input
+                                        name="alias"
+                                        type="text"
+                                        placeholder={"Your emergency's nickname"}
+                                        value={inputValue}
+                                        onChange={(e) => setInputValue(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                            )}
+                            {props.selectedField === 'percentage' && (
+                                <div>
+                                    {!props.formIsCorrect && isSubmitted ? (
+                                        <div>
+                                            <span className="hint">
+                                                A percentage should be an integer comprised between 1 to 100.
+                                            </span>
+                                        </div>
+                                    ) : null}
+                                    <input
+                                        name="percentage"
+                                        type="number"
+                                        placeholder={"Your emergency's claimable percentage"}
+                                        value={inputValue}
+                                        onChange={(e) => setInputValue(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                            )}
+                            {props.selectedField === 'delay' && (
+                                <div>
+                                    {!props.formIsCorrect && isSubmitted ? (
+                                        <div>
+                                            <span className="hint">
+                                                Your withdrawal period value should be an integer greater than 0.
+                                            </span>
+                                        </div>
+                                    ) : null}
+                                    <input
+                                        name="delay"
+                                        type="number"
+                                        placeholder={'Your withdrawal period (in days)'}
+                                        value={inputValue}
+                                        onChange={(e) => setInputValue(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                            )}
                             <button
                                 type="submit"
-                                onClick={() => props.editEmergency(inputValue)}
+                                onClick={() => {
+                                    props.editEmergency(inputValue);
+                                }}
                                 className="cta-button edit-button"
                             >
                                 {props.selectedField === 'cancel' ? 'Reject' : 'Submit'}
