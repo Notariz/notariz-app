@@ -1,7 +1,59 @@
-.claim-container {
+.claim-emergency-container {
     position: relative;
     color: white;
     text-align: center;
     display: block;
     margin-top: 30px;
+}
+
+.claim-emergency-container h3 {
+    margin-top: 20px;
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+.claim-emergency-list {
+    margin-top: 30px;
+}
+
+.claim-emergency-sub-list {
+    background-color: #1e2430;
+    padding-top: 20px;
+    padding: 10px;
+    margin-top: 30px;
+    border-radius: 20px;
+}
+
+.claim-emergency-item {
+    margin-top: 40px;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.claim-emergency-item i {
+    color: rgb(255, 0, 85);
+}
+
+.claim-emergency-item button {
+    color: white;
+    font-weight: bold;
+    border-radius: 15px;
+    height: 50px;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.claim-emergency-item button:disabled {
+    opacity: .2;
+}
+
+.receiver-text {
+    color: white !important;
+}
+
+.receiver-text:hover {
+    opacity: .7;
+    cursor: pointer;
 }

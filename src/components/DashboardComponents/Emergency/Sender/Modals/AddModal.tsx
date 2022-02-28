@@ -3,7 +3,7 @@ import { CSSTransition } from 'react-transition-group';
 import '../../../Common.css';
 
 interface EmergencyDetails {
-    pk: string;
+    receiver: string;
     alias: string;
     percentage: number;
     delay: number;
@@ -19,7 +19,7 @@ function AddModal(props: {
 }) {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [inputValues, setInputValues] = useState<EmergencyDetails>({
-        pk: '',
+        receiver: '',
         alias: '',
         percentage: 0,
         delay: 0,
@@ -61,7 +61,7 @@ function AddModal(props: {
                                     setIsSubmitted(true);
                                     props.formIsCorrect
                                         ? (setInputValues({
-                                              pk: '',
+                                              receiver: '',
                                               alias: '',
                                               percentage: 0,
                                               delay: 0,
@@ -81,10 +81,10 @@ function AddModal(props: {
                                 </span>
                             ) : null}
                             <input
-                                name="pk"
+                                name="receiver"
                                 type="text"
                                 placeholder="Your emergency's public address"
-                                value={inputValues.pk}
+                                value={inputValues.receiver}
                                 onChange={handleInputChange}
                                 required
                             />

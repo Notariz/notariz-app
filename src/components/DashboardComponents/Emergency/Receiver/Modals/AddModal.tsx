@@ -2,6 +2,16 @@ import { useState, useEffect } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import '../../../Common.css';
 
+interface EmergencyDetails {
+    sender: string;
+    receiver: string;
+    alias: string;
+    percentage: number;
+    delay: number;
+    status: string;
+    timestamp: number;
+}
+
 function AddSenderModal(props: { show: boolean; onClose: () => void; formIsCorrect: boolean; addSender: (inputValue: string) => void }) {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [inputValue, setInputValue] = useState('');
@@ -43,7 +53,7 @@ function AddSenderModal(props: { show: boolean; onClose: () => void; formIsCorre
                             <input
                                 name="pk"
                                 type="text"
-                                placeholder="Your emergency's public address"
+                                placeholder="Your sender's public address"
                                 value={inputValue}
                                 onChange={(e) => setInputValue(e.target.value)}
                                 required

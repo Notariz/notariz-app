@@ -3,7 +3,7 @@ import { CSSTransition } from 'react-transition-group';
 import '../../../Common.css';
 
 interface EmergencyDetails {
-    pk: string;
+    receiver: string;
     alias: string;
     percentage: number;
     delay: number;
@@ -14,7 +14,7 @@ function EditModal(props: {
     show: boolean;
     onClose: () => void;
     selectedField: string;
-    selectedPk: string;
+    selectedreceiver: string;
     formIsCorrect: boolean;
     editEmergency: (inputValue: string) => void;
 }) {
@@ -81,7 +81,7 @@ function EditModal(props: {
                         >
                             {props.selectedField === 'alias' && (
                                 <div>
-                                    <span className="hint">Your emergency's pk is {props.selectedPk}</span>
+                                    <span className="hint">Your emergency's receiver is {props.selectedreceiver}</span>
                                     {!props.formIsCorrect && isSubmitted ? (
                                         <div>
                                             <span className="hint">

@@ -43,7 +43,7 @@
     margin-bottom: 50px;
 }
 
-.not-connected-container h3 {
+h3 {
     font-size: 42px;
     background: -webkit-linear-gradient(left, #eee, #333);
     -webkit-background-clip: text;

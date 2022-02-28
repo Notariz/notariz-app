@@ -164,3 +164,20 @@ input[type='text']:disabled {
 }
 
 
+.edit-button {
+    box-sizing: border-box;
+    border: solid rgb(255, 0, 85) 1px;
+    background-color: #1a202c;
+}
+
+.status-button {
+    margin-bottom: 20px;
+    background: -webkit-linear-gradient(left, rgb(255, 0, 85), rgb(248, 85, 125));
+    animation: gradient-animation 4s ease infinite;
+    margin-left: 10px;
+    height: 55px;
+}
+
+.status-button:hover {
+    opacity: .8;
+}
