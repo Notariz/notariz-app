@@ -13,7 +13,7 @@
     -webkit-tap-highlight-color: rgba(0,0,0,0);
     -webkit-tap-highlight-color: transparent;
     margin-top: 30px;
-  }
+}
   
   .wrg-toggle-input {
     border: 0;
@@ -75,19 +75,33 @@
     background-color: purple;
   }
   
-  .wrg-toggle-circle{
+  .wrg-toggle-circle {
     transition: all .5s cubic-bezier(.23,1,.32,1) 0ms;
     position: absolute;
     top: -2px;
     left: -2px;
     width: 45px;
     height: 45px;
-    border: 1px solid #4d4d4d;
     border-radius: 50%;
     background-color: #fafafa;
     box-sizing: border-box;
     transition: all .25s ease;
   }
+
+  .wrg-toggle:hover .wrg-toggle-circle {
+      width: 60px;
+      height: 60px;
+      top: -7px;
+  }
+
+  .wrg-toggle:hover span {
+      opacity: 1;
+  }
+
+  .wrg-toggle:hover .wrg-toggle-container {
+    background-color: rgb(255, 0, 85);
+    width: 150px;
+ }
 
   .wrg-toggle--checked .wrg-toggle-check{
     opacity: 1;

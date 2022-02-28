@@ -17,14 +17,13 @@ function Dashboard() {
     const { publicKey } = useWallet();
     const [notificationsCount, setNotificationsCount] = useState(0);
     const [emergencyProfile, setEmergencyProfile] = useState('sender');
-
-    console.log(emergencyProfile);
+    const [recoveryProfile, setRecoveryProfile] = useState('sender');
 
     const renderWalletNotConnected = useCallback(
         () => (
             <div className="not-connected-container">
                 <Container>
-                    <p>Think of tomorrow.</p>
+                    <h3>Think of tomorrow.</h3>
                     <Row>
                         <Col></Col>
                         <Col>
@@ -43,6 +42,11 @@ function Dashboard() {
         else if (emergencyProfile === 'receiver') setEmergencyProfile('sender');
     };
 
+    const setRecoveryToggle = () => {
+        if (recoveryProfile === 'sender') setRecoveryProfile('receiver');
+        else if (recoveryProfile === 'receiver') setRecoveryProfile('sender');
+    };
+
     useEffect(() => {
         document.title = `${notificationsCount > 0 ? `(${notificationsCount})` : ''} Notariz`;
     });
@@ -59,12 +63,13 @@ function Dashboard() {
                     }
                     className="tab-content"
                 >
-                    <ToggleButton emergencyProfile={emergencyProfile} setEmergencyToggle={setEmergencyToggle} />
+                    <ToggleButton profile={emergencyProfile} setToggle={setEmergencyToggle} />
                     {emergencyProfile === 'sender' && (
                         <Emergency setNotificationCounter={(number) => setNotificationsCount(number)} />
                     ) || <Claim />}
                 </Tab>
                 <Tab eventKey="recovery" title="Recovery addresses" className="tab-content">
+                    <ToggleButton profile={recoveryProfile} setToggle={setRecoveryToggle} />
                     <Recovery />
                 </Tab>
                 <Tab eventKey="wallet" title="Wallet" className="tab-content">
@@ -72,7 +77,7 @@ function Dashboard() {
                 </Tab>
             </Tabs>
         ),
-        [publicKey, notificationsCount, emergencyProfile]
+        [publicKey, notificationsCount, emergencyProfile, recoveryProfile]
     );
 
     return (

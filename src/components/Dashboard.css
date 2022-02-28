@@ -9,7 +9,7 @@
 
 .dashboard-container p {
     box-sizing: border-box;
-    border: solid aqua 1px;
+    border: solid rgb(255, 0, 85) 1px;
     font-weight: bold;
     border-radius: 15px;
     padding-top: 10px;
@@ -34,8 +34,8 @@
     font-size: 32px;
     background-color: #1a202c;
     box-sizing: border-box;
-    border: solid purple 1px;
-    border-radius: 10px;
+    border: solid rgb(255, 0, 85) 1px;
+    border-radius: 15px;
     padding-left: 40px;
     padding-right: 40px;
     padding-top: 10px;
@@ -43,17 +43,29 @@
     margin-bottom: 50px;
 }
 
+.not-connected-container h3 {
+    font-size: 42px;
+    background: -webkit-linear-gradient(left, #eee, #333);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 50px;
+}
+
 .not-connected-container, .dashboard-container span {
-    color: aqua;
+    color: rgb(255, 0, 85);
 }
 
 .not-connected-container .wallet-adapter-button {
     justify-content: center;
     align-items: center;
-    height: 80px;
+    height: 70px;
     width: 230px;
     font-size: 22px;
-    
+    border-radius: 10px;
+}
+
+.wallet-adapter-button:hover {
+    opacity: .7;
 }
 
 .dashboard-container .tab-content {
@@ -93,8 +105,9 @@
 }
 
 .dashboard-container .nav-link:hover {
-    border-color:aqua;
+    border-color: purple;
     border-radius: 20px;
+    color: white;
 }
 
 .dashboard-container .notification-badge {

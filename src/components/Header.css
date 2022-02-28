@@ -4,7 +4,7 @@
 }
 
 .fs-3 p {
-    color: aqua;
+    color: rgb(255, 0, 85);
 }
 
 .airdrop-button {
@@ -13,6 +13,7 @@
     color: white;
     padding-top: 13px;
     padding-bottom: 13px;
+    height: 48px;
 }
 
 .airdrop-button:disabled {

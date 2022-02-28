@@ -1,9 +1,9 @@
 .wallet-adapter-button {
-    background: -webkit-linear-gradient(left, aqua, rgb(22, 153, 153));
+    background: -webkit-linear-gradient(left, rgb(255, 0, 85), rgb(243, 109, 142));
 }
 
 span {
-    color:aqua;
+    color:rgb(255, 0, 85);
 }
 
 .hint {
@@ -27,6 +27,10 @@ span {
     color: white;
 }
 
+.cta-button:hover, .confirm-button:hover, .delete-button:hover, .edit-button:hover, .cancel-button:hover {
+    opacity: .7;
+}
+
 .delete-button {
     box-sizing: border-box;
     border: solid purple 1px;
@@ -37,35 +41,25 @@ span {
 
 .edit-button {
     box-sizing: border-box;
-    border: solid aqua 1px;
+    border: solid rgb(248, 4, 86) 1px;
     background-color: #1a202c;
     padding-top: 10px;
     padding-bottom: 10px;
 }
 
 .confirm-button {
-    background: -webkit-linear-gradient(left, aqua, rgb(0, 5, 5));
-    background-size: 200% 200%;
+    background: -webkit-linear-gradient(left, rgb(255, 0, 85), rgb(243, 110, 143));
     animation: gradient-animation 4s ease infinite;
     padding-top: 20px;
     padding-bottom: 20px;
 }
 
 .cancel-button {
-    background: -webkit-linear-gradient(left, purple, rgb(0, 5, 5));
+    background: -webkit-linear-gradient(purple, rgb(0, 5, 5));
     background-size: 200% 200%;
     animation: gradient-animation 4s ease infinite;
     padding-top: 20px;
     padding-bottom: 20px;
-}
-
-.status-button {
-    margin-bottom: 20px;
-    background: -webkit-linear-gradient(left, aqua, rgb(0, 5, 5));
-    background-size: 200% 200%;
-    animation: gradient-animation 4s ease infinite;
-    margin-left: 10px;
-    height: 55px;
 }
 
 input[type='text'], input[type='number'], input[type='date'] {
@@ -132,6 +126,7 @@ input[type='text']:disabled {
 
 .notariz-modal-header {
     padding-top: 20px;
+    padding-bottom: 10px;
     color: white;
     font-weight: bold;
     z-index: auto;

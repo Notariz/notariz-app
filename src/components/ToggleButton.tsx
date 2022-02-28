@@ -1,8 +1,8 @@
 import './ToggleButton.css'
 
-function ToggleButton(props: {emergencyProfile: string; setEmergencyToggle: () => void}) {
+function ToggleButton(props: {profile: string; setToggle: () => void}) {
     return(
-        <div onClick={props.setEmergencyToggle}  className={`wrg-toggle ${props.emergencyProfile === 'sender' ? 'wrg-toggle--checked' : ''}`}>
+        <div onClick={props.setToggle}  className={`wrg-toggle ${props.profile === 'sender' ? 'wrg-toggle--checked' : ''}`}>
             <div className="wrg-toggle-container">
                 <div className="wrg-toggle-check">
                     <span>Sender</span>

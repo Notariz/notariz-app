@@ -5,7 +5,7 @@
 .recovery-container p {
     color: white;
     box-sizing: border-box;
-    border: solid aqua 1px;
+    border: solid rgb(255, 0, 85) 1px;
     font-weight: bold;
     border-radius: 15px;
     padding-top: 10px;

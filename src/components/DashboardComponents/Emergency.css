@@ -17,7 +17,7 @@
 }
 
 .emergency-item i {
-    color: aqua;
+    color: rgb(255, 0, 85);
 }
 
 .emergency-item button {
@@ -33,14 +33,13 @@
 
 .edit-button {
     box-sizing: border-box;
-    border: solid aqua 1px;
+    border: solid rgb(255, 0, 85) 1px;
     background-color: #1a202c;
 }
 
 .status-button {
     margin-bottom: 20px;
-    background: -webkit-linear-gradient(left, aqua, rgb(0, 5, 5));
-    background-size: 200% 200%;
+    background: -webkit-linear-gradient(left, rgb(255, 0, 85), rgb(248, 85, 125));
     animation: gradient-animation 4s ease infinite;
     margin-left: 10px;
     height: 55px;
