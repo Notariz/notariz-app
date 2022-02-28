@@ -2,16 +2,18 @@ import { useCallback, useEffect, useState } from 'react';
 import AddModal from './Modals/AddModal';
 import DeleteModal from './Modals/DeleteModal';
 import EditModal from './Modals/EditModal';
-import Emojis from '../utils/Emojis';
+import Emojis from '../../../utils/Emojis';
 import './Emergency.css';
-import './Common.css';
+import '../../Common.css';
 import { PublicKey } from '@solana/web3.js';
+
 interface EmergencyDetails {
     pk: string;
     alias: string;
     percentage: number;
     delay: number;
     status: string;
+    timestamp: number;
 }
 
 const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
@@ -21,6 +23,7 @@ const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
         percentage: 30,
         delay: 4,
         status: 'claimed',
+        timestamp: 300
     },
     {
         pk: '9sH2FTJKB9naMwYB7zRTch2bNFBpvwj',
@@ -28,6 +31,7 @@ const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
         percentage: 20,
         delay: 2,
         status: 'claimed',
+        timestamp: 300
     },
     {
         pk: '5tt6VLycjXTaRvgLNhz6ZzRTch2bNFB',
@@ -35,6 +39,7 @@ const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
         percentage: 17,
         delay: 3,
         status: 'redeemed',
+        timestamp: 0
     },
     {
         pk: '7dsjIzdlck45dzLdldqnmPadmcnAodzs',
@@ -42,6 +47,7 @@ const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
         percentage: 5,
         delay: 7,
         status: 'unclaimed',
+        timestamp: 0
     },
 ];
 
@@ -73,9 +79,15 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
         [emergencyList]
     );
 
+    const renderItemField = useCallback(
+        (claimed: boolean) => (
+            <span>{claimed === true ? 'in' : 'after'}</span>
+        ), [emergencyList]
+    );
+
     const addEmergency = async (inputValues: EmergencyDetails) => {
         if (
-            inputValues.pk != '' &&
+            inputValues.pk.length >= 32 && inputValues.pk.length <= 44 &&
             inputValues.percentage > 0 &&
             inputValues.percentage <= 100 &&
             inputValues.delay >= 1 &&
@@ -181,7 +193,7 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                                 {' ' + (WALLET_BALANCE * value.percentage) / 100}
                             </span>
                             {' SOL '}
-                            <span>after</span>
+                            {renderItemField(value.status === 'claimed' ? true : false)}
                             <span
                                 onClick={() => {
                                     setEditModalShow(true);

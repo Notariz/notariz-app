@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { CSSTransition } from 'react-transition-group';
-import '../Common.css';
+import '../../../Common.css';
 
 interface EmergencyDetails {
     pk: string;
@@ -8,6 +8,7 @@ interface EmergencyDetails {
     percentage: number;
     delay: number;
     status: string;
+    timestamp: number;
 }
 
 function AddModal(props: {
@@ -23,6 +24,7 @@ function AddModal(props: {
         percentage: 0,
         delay: 0,
         status: 'unclaimed',
+        timestamp: 0
     });
 
     const closeOnEscapeKeyDown = (e: any) => {
@@ -64,6 +66,7 @@ function AddModal(props: {
                                               percentage: 0,
                                               delay: 0,
                                               status: 'unclaimed',
+                                              timestamp: 0
                                           }),
                                           props.onClose(),
                                           setIsSubmitted(false))

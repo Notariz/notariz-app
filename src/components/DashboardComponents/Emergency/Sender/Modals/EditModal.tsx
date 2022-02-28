@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { CSSTransition } from 'react-transition-group';
-import '../Common.css';
+import '../../../Common.css';
 
 interface EmergencyDetails {
     pk: string;

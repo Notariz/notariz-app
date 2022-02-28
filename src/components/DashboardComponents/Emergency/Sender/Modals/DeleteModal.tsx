@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { CSSTransition } from 'react-transition-group';
-import '../Common.css';
+import '../../../Common.css';
 
 function DeleteModal(props: {
     show: boolean;

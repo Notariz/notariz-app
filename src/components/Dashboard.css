@@ -1,5 +1,5 @@
 .dashboard-container {
-    margin-top: 85px;
+    margin-top: 10vh;
     z-index: 0;
     align-items: center;
     display:flex;
@@ -49,7 +49,7 @@
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-bottom: 10vh;
+    margin-bottom: 7vh;
 }
 
 .not-connected-container, .dashboard-container span {

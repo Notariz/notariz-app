@@ -4,9 +4,9 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { Col, Container, Row } from 'react-bootstrap';
 import Parser from 'html-react-parser';
-import Emergency from './DashboardComponents/Emergency';
-import Claim from './DashboardComponents/Claim';
-import Recovery from './DashboardComponents/Recovery';
+import Emergency from './DashboardComponents/Emergency/Sender/Emergency';
+import ClaimEmergency from './DashboardComponents/Emergency/Receiver/ClaimEmergency';
+import Recovery from './DashboardComponents/Recovery/Sender/Recovery';
 import ToggleButton from './ToggleButton';
 import Wallet from './DashboardComponents/Wallet';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -66,7 +66,7 @@ function Dashboard() {
                     <ToggleButton profile={emergencyProfile} setToggle={setEmergencyToggle} />
                     {emergencyProfile === 'sender' && (
                         <Emergency setNotificationCounter={(number) => setNotificationsCount(number)} />
-                    ) || <Claim />}
+                    ) || <ClaimEmergency />}
                 </Tab>
                 <Tab eventKey="recovery" title="Recovery addresses" className="tab-content">
                     <ToggleButton profile={recoveryProfile} setToggle={setRecoveryToggle} />
