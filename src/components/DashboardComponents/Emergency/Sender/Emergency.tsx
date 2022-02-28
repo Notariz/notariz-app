@@ -23,7 +23,7 @@ const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
         percentage: 30,
         delay: 4,
         status: 'claimed',
-        timestamp: 300
+        timestamp: 300,
     },
     {
         receiver: '9sH2FTJKB9naMwYB7zRTch2bNFBpvwj',
@@ -31,7 +31,7 @@ const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
         percentage: 20,
         delay: 2,
         status: 'claimed',
-        timestamp: 300
+        timestamp: 300,
     },
     {
         receiver: '5tt6VLycjXTaRvgLNhz6ZzRTch2bNFB',
@@ -39,7 +39,7 @@ const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
         percentage: 17,
         delay: 3,
         status: 'redeemed',
-        timestamp: 0
+        timestamp: 0,
     },
     {
         receiver: '7dsjIzdlck45dzLdldqnmPadmcnAodzs',
@@ -47,7 +47,7 @@ const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
         percentage: 5,
         delay: 7,
         status: 'unclaimed',
-        timestamp: 0
+        timestamp: 0,
     },
 ];
 
@@ -80,14 +80,14 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
     );
 
     const renderItemField = useCallback(
-        (claimed: boolean) => (
-            <span>{claimed === true ? 'in' : 'after'}</span>
-        ), [emergencyList]
+        (claimed: boolean) => <span>{claimed === true ? 'in' : 'after'}</span>,
+        [emergencyList]
     );
 
     const addEmergency = async (inputValues: EmergencyDetails) => {
         if (
-            inputValues.receiver.length >= 32 && inputValues.receiver.length <= 44 &&
+            inputValues.receiver.length >= 32 &&
+            inputValues.receiver.length <= 44 &&
             inputValues.percentage > 0 &&
             inputValues.percentage <= 100 &&
             inputValues.delay >= 1 &&
@@ -147,7 +147,7 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
 
     const deleteEmergency = async () => {
         const id = selectedEmergency[0].receiver;
-        const newEmergencies = emergencyList.filter(function(emergency) {
+        const newEmergencies = emergencyList.filter(function (emergency) {
             return emergency.receiver != id;
         });
 
@@ -162,77 +162,81 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
         () => (
             <div className="emergency-list">
                 {emergencyList.map((value, index) => (
-                    <div key={value.receiver} className="emergency-item">
-                        <h3>{'Emergency ' + (index + 1)}</h3>
-                        <p>
-                            <span
-                                onClick={() => {
-                                    setEditModalShow(true);
-                                    setSelectedField('alias');
-                                    setSelectedreceiver(value.receiver);
-                                }}
-                                className="receiver-text"
-                            >
-                                {(value.alias.length > 0
-                                    ? value.alias +
-                                      ' (' +
-                                      value.receiver.substring(0, 5) +
-                                      '...' +
-                                      value.receiver.substring(value.receiver.length - 5) +
-                                      ')'
-                                    : value.receiver.substring(0, 5) + '...' + value.receiver.substring(value.receiver.length - 5)) + ' '}
-                            </span>
-                            <i className="fa fa-arrow-left"></i>
-                            <span
-                                onClick={() => {
-                                    setEditModalShow(true);
-                                    setSelectedField('percentage');
-                                    setSelectedreceiver(value.receiver);
-                                }}
-                                className="receiver-text"
-                            >
-                                {' ' + (WALLET_BALANCE * value.percentage) / 100}
-                            </span>
-                            {' SOL '}
-                            {renderItemField(value.status === 'claimed' ? true : false)}
-                            <span
-                                onClick={() => {
-                                    setEditModalShow(true);
-                                    setSelectedField('delay');
-                                    setSelectedreceiver(value.receiver);
-                                }}
-                                className="receiver-text"
-                            >
-                                {' ' + value.delay + ' days'}
-                            </span>
-                        </p>
+                    <div className="emergency-item-background">
+                        <div key={value.receiver} className="emergency-item">
+                            <h3>{'Emergency ' + (index + 1)}</h3>
+                            <p>
+                                <span
+                                    onClick={() => {
+                                        setEditModalShow(true);
+                                        setSelectedField('alias');
+                                        setSelectedreceiver(value.receiver);
+                                    }}
+                                    className="receiver-text"
+                                >
+                                    {(value.alias.length > 0
+                                        ? value.alias +
+                                          ' (' +
+                                          value.receiver.substring(0, 5) +
+                                          '...' +
+                                          value.receiver.substring(value.receiver.length - 5) +
+                                          ')'
+                                        : value.receiver.substring(0, 5) +
+                                          '...' +
+                                          value.receiver.substring(value.receiver.length - 5)) + ' '}
+                                </span>
+                                <i className="fa fa-arrow-left"></i>
+                                <span
+                                    onClick={() => {
+                                        setEditModalShow(true);
+                                        setSelectedField('percentage');
+                                        setSelectedreceiver(value.receiver);
+                                    }}
+                                    className="receiver-text"
+                                >
+                                    {' ' + (WALLET_BALANCE * value.percentage) / 100}
+                                </span>
+                                {' SOL '}
+                                {renderItemField(value.status === 'claimed' ? true : false)}
+                                <span
+                                    onClick={() => {
+                                        setEditModalShow(true);
+                                        setSelectedField('delay');
+                                        setSelectedreceiver(value.receiver);
+                                    }}
+                                    className="receiver-text"
+                                >
+                                    {' ' + value.delay + ' days'}
+                                </span>
+                            </p>
 
-                        <button
-                            onClick={() => {
-                                setEditModalShow(true);
-                                setSelectedField('cancel');
-                                setSelectedreceiver(value.receiver);
-                            }}
-                            className="cta-button status-button"
-                            disabled={value.status !== 'claimed'}
-                        >
-                            {value.status === 'claimed' ? (
-                                <div>
-                                    <Emojis symbol="⏳" label="hourglass" /> {value.status.toUpperCase()}
-                                </div>
-                            ) : (
-                                value.status.toUpperCase()
-                            )}
-                        </button>
-                        <button
-                            onClick={() => {
-                                setDeleteModalShow(true);
-                                setSelectedreceiver(value.receiver);
-                            }}
-                            className="delete-button"
-                        >
-                            DELETE
-                        </button>
+                            <button
+                                onClick={() => {
+                                    setEditModalShow(true);
+                                    setSelectedField('cancel');
+                                    setSelectedreceiver(value.receiver);
+                                }}
+                                className="cta-button status-button"
+                                disabled={value.status !== 'claimed'}
+                            >
+                                {value.status === 'claimed' ? (
+                                    <div>
+                                        <Emojis symbol="⏳" label="hourglass" /> {value.status.toUpperCase()}
+                                    </div>
+                                ) : (
+                                    value.status.toUpperCase()
+                                )}
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setDeleteModalShow(true);
+                                    setSelectedreceiver(value.receiver);
+                                }}
+                                className="delete-button"
+                            >
+                                DELETE
+                            </button>
+                        </div>
                     </div>
                 ))}
             </div>
