@@ -9,7 +9,7 @@
 
 .dashboard-container p {
     box-sizing: border-box;
-    border: solid rgb(255, 0, 85) 1px;
+    border: solid rgb(253, 29, 104) 1px;
     font-weight: bold;
     border-radius: 15px;
     padding-top: 10px;
@@ -25,7 +25,7 @@
 }
 
 .not-connected-container {
-    margin-top: 150px;
+    margin-top: 10vh;
 }
 
 .not-connected-container p {
@@ -34,7 +34,7 @@
     font-size: 32px;
     background-color: #1a202c;
     box-sizing: border-box;
-    border: solid rgb(255, 0, 85) 1px;
+    border: solid rgb(253, 29, 104) 1px;
     border-radius: 15px;
     padding-left: 40px;
     padding-right: 40px;
@@ -47,12 +47,13 @@
     font-size: 42px;
     background: -webkit-linear-gradient(left, #eee, #333);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-bottom: 50px;
+    margin-bottom: 10vh;
 }
 
 .not-connected-container, .dashboard-container span {
-    color: rgb(255, 0, 85);
+    color: rgb(253, 29, 104);
 }
 
 .not-connected-container .wallet-adapter-button {

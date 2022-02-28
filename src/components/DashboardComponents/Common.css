@@ -1,9 +1,9 @@
 .wallet-adapter-button {
-    background: -webkit-linear-gradient(left, rgb(255, 0, 85), rgb(243, 109, 142));
+    background: -webkit-linear-gradient(left, rgb(253, 29, 104), rgb(243, 109, 142));
 }
 
 span {
-    color:rgb(255, 0, 85);
+    color:rgb(253, 29, 104);
 }
 
 .hint {
@@ -41,14 +41,14 @@ span {
 
 .edit-button {
     box-sizing: border-box;
-    border: solid rgb(248, 4, 86) 1px;
+    border: solid rgb(253, 29, 104) 1px;
     background-color: #1a202c;
     padding-top: 10px;
     padding-bottom: 10px;
 }
 
 .confirm-button {
-    background: -webkit-linear-gradient(left, rgb(255, 0, 85), rgb(243, 110, 143));
+    background: -webkit-linear-gradient(left, rgb(253, 29, 104), rgb(243, 110, 143));
     animation: gradient-animation 4s ease infinite;
     padding-top: 20px;
     padding-bottom: 20px;

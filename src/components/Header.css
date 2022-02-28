@@ -4,12 +4,12 @@
 }
 
 .fs-3 p {
-    color: rgb(255, 0, 85);
+    color: rgb(253, 29, 104);
 }
 
 .airdrop-button {
     margin-right: 10px;
-    background: -webkit-linear-gradient(left, rgb(250, 143, 3), rgb(248, 4, 86));
+    background: -webkit-linear-gradient(left, rgb(250, 143, 3), rgb(253, 29, 104));
     color: white;
     padding-top: 13px;
     padding-bottom: 13px;
@@ -18,7 +18,7 @@
 
 .airdrop-button:disabled {
     margin-right: 10px;
-    background: -webkit-linear-gradient(left, rgb(250, 143, 3), rgb(248, 4, 86));
+    background: -webkit-linear-gradient(left, rgb(250, 143, 3), rgb(253, 29, 104));
     color: white;
     opacity: 0.2;
 }
