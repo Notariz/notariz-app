@@ -25,9 +25,10 @@
 }
 
 .claim-emergency-item {
-    margin-top: 40px;
+    margin-top: 30px;
     margin-left: 10%;
     margin-right: 10%;
+    padding-bottom: 15px;
 }
 
 .claim-emergency-item i {
