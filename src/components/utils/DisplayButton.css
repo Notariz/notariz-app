@@ -1,0 +1,118 @@
+.display-button .wrg-toggle {
+    touch-action: pan-x;
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+    background-color: transparent;
+    border: 0;
+    padding: 0;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-tap-highlight-color: transparent;
+    margin-top: 7px;
+    margin-right: 10px;
+}
+
+.display-button .wrg-toggle-input {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+.display-button .wrg-toggle-check,
+.wrg-toggle-uncheck {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    top: 0;
+    bottom: 0;
+    margin-top: auto;
+    margin-bottom: auto;
+    line-height: 0;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+
+.display-button .wrg-toggle-check {
+    left: 8px;
+}
+
+.display-button .wrg-toggle-uncheck {
+    opacity: 1;
+    right: 10px;
+}
+
+.display-button .wrg-toggle-uncheck span,
+.display-button .wrg-toggle-check span {
+    align-items: center;
+    display: flex;
+    height: 10px;
+    justify-content: center;
+    position: relative;
+    color: white !important;
+    font-weight: bold;
+    opacity: 0.8;
+}
+
+.display-button .wrg-toggle-uncheck span {
+    margin-left: -10px;
+}
+
+.display-button .wrg-toggle-check span {
+    margin-left: 10px;
+}
+
+.display-button .wrg-toggle-container {
+    width: 100px;
+    height: 40px;
+    padding: 0;
+    border-radius: 30px;
+    transition: all 0.2s ease;
+    background-color: #2b2f38;
+}
+
+.display-button .wrg-toggle-circle {
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: #fafafa;
+    box-sizing: border-box;
+    transition: all 0.25s ease;
+}
+
+.display-button .wrg-toggle:hover .wrg-toggle-circle {
+    width: 60px;
+    height: 60px;
+    top: -9px;
+}
+
+.display-button .wrg-toggle:hover span {
+    opacity: 1;
+}
+
+.display-button .wrg-toggle:hover .wrg-toggle-container {
+    background-color: rgb(253, 29, 104);
+    width: 100px;
+}
+
+.display-button .wrg-toggle--checked .wrg-toggle-check {
+    opacity: 1;
+}
+.display-button .wrg-toggle--checked .wrg-toggle-uncheck {
+    opacity: 0;
+}
+.display-button .wrg-toggle--checked .wrg-toggle-circle {
+    left: 60px;
+}

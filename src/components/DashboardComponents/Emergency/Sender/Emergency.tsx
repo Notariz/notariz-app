@@ -227,15 +227,17 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                                     value.status.toUpperCase()
                                 )}
                             </button>
-                            <button
-                                onClick={() => {
-                                    setDeleteModalShow(true);
-                                    setSelectedreceiver(value.receiver);
-                                }}
-                                className="delete-button"
-                            >
-                                DELETE
-                            </button>
+                            {value.status === 'unclaimed' ? (
+                                <button
+                                    onClick={() => {
+                                        setDeleteModalShow(true);
+                                        setSelectedreceiver(value.receiver);
+                                    }}
+                                    className="delete-button"
+                                >
+                                    DELETE
+                                </button>
+                            ) : null}
                         </div>
                     </div>
                 ))}

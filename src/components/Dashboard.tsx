@@ -7,7 +7,7 @@ import Parser from 'html-react-parser';
 import Emergency from './DashboardComponents/Emergency/Sender/Emergency';
 import ClaimEmergency from './DashboardComponents/Emergency/Receiver/ClaimEmergency';
 import Recovery from './DashboardComponents/Recovery/Sender/Recovery';
-import ToggleButton from './ToggleButton';
+import ProfileButton from './utils/ProfileButton';
 import Wallet from './DashboardComponents/Wallet';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Dashboard.css';
@@ -63,13 +63,13 @@ function Dashboard() {
                     }
                     className="tab-content"
                 >
-                    <ToggleButton profile={emergencyProfile} setToggle={setEmergencyToggle} />
+                    <ProfileButton profile={emergencyProfile} setToggle={setEmergencyToggle} />
                     {emergencyProfile === 'sender' && (
                         <Emergency setNotificationCounter={(number) => setNotificationsCount(number)} />
                     ) || <ClaimEmergency />}
                 </Tab>
                 <Tab eventKey="recovery" title="Recovery addresses" className="tab-content">
-                    <ToggleButton profile={recoveryProfile} setToggle={setRecoveryToggle} />
+                    <ProfileButton profile={recoveryProfile} setToggle={setRecoveryToggle} />
                     <Recovery />
                 </Tab>
                 <Tab eventKey="wallet" title="Wallet" className="tab-content">

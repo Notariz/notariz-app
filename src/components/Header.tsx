@@ -3,17 +3,19 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { clusterApiUrl, Connection, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { useCallback, useState } from 'react';
-import { Container, Nav, Navbar } from 'react-bootstrap';
+import { Container, Nav, Navbar, ToggleButton } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import './DashboardComponents/Common.css';
 import './Header.css';
 import AirdropModal from './AirdropModal';
+import DisplayButton from './utils/DisplayButton';
 
 function Header() {
     const { connection } = useConnection();
     const { publicKey } = useWallet();
     const [airdropping, setAirdropping] = useState(false);
     const [show, setShow] = useState(false);
+    const [dark, setDark] = useState(true);
 
     const claimAirdrop = useCallback(() => {
         if (airdropping) return;
@@ -34,6 +36,10 @@ function Header() {
                 })
     }, [publicKey, connection]);
 
+    const setDisplayToggle = () => {
+        setDark(!dark)
+    };
+
     return (
         <Navbar expand="lg" variant="dark" fixed="top">
             <Container>
@@ -50,6 +56,7 @@ function Header() {
                             <p>About</p>
                         </NavLink>
                     </Nav>
+                    <DisplayButton dark={dark} setToggle={setDisplayToggle} />
                     {publicKey && (
                         <button className="cta-button airdrop-button" onClick={claimAirdrop} disabled={airdropping}>
                             Airdrop
