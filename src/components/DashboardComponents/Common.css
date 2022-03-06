@@ -120,6 +120,8 @@ input[type='text']:disabled {
     border-radius: 10px;
     transform: translateY(-200px);
     transition: all 0.3s ease-in-out;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 .notariz-modal-header {

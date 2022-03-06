@@ -14,7 +14,7 @@ function EditModal(props: {
     show: boolean;
     onClose: () => void;
     selectedField: string;
-    selectedreceiver: string;
+    selectedReceiver: string;
     formIsCorrect: boolean;
     editEmergency: (inputValue: string) => void;
 }) {
@@ -44,8 +44,7 @@ function EditModal(props: {
                             <div>
                                 <h3 className="notariz-modal-title">Edit nickname</h3>
                                 <div className="notariz-modal-text">
-                                    Nicknames are publicly stored in the <span>blockchain</span>, keep them simple to
-                                    ensure your emergency's privacy.
+                                    Nicknames are stored in your sole <span>browser</span>, they will not persist on another one. Make sure to write them down!
                                 </div>
                             </div>
                         )}
@@ -81,7 +80,7 @@ function EditModal(props: {
                         >
                             {props.selectedField === 'alias' && (
                                 <div>
-                                    <span className="hint">Your emergency's receiver is {props.selectedreceiver}</span>
+                                    <span className="hint">Your emergency's public key is {props.selectedReceiver}</span>
                                     {!props.formIsCorrect && isSubmitted ? (
                                         <div>
                                             <span className="hint">

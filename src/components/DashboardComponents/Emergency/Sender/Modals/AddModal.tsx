@@ -96,18 +96,6 @@ function AddModal(props: {
                             />
                             {isSubmitted && !props.formIsCorrect ? (
                                 <span className="hint">
-                                    For privacy reasons, your emergency's nickname should be 5-character long max.
-                                </span>
-                            ) : null}
-                            <input
-                                name="alias"
-                                type="text"
-                                placeholder="Your emergency's nickname (optional)"
-                                value={inputValues.alias}
-                                onChange={handleInputChange}
-                            />
-                            {isSubmitted && !props.formIsCorrect ? (
-                                <span className="hint">
                                     A percentage should be an integer comprised between 1 to 100.
                                 </span>
                             ) : null}

@@ -9,17 +9,20 @@ import { PublicKey } from '@solana/web3.js';
 
 interface EmergencyDetails {
     receiver: string;
-    alias: string;
     percentage: number;
     delay: number;
     status: string;
     timestamp: number;
 }
 
+interface EmergencyAlias {
+    receiver: string;
+    alias: string;
+}
+
 const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
     {
         receiver: 'JBu1AL4obBcCMqKBBxhpWCNUt136ijcuMZLFvTP7iWdB',
-        alias: 'Alice',
         percentage: 30,
         delay: 4,
         status: 'claimed',
@@ -27,7 +30,6 @@ const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
     },
     {
         receiver: '3VQwtcntVQN1mj1MybQw8qK7Li3KNrrgNskSQwZAPGNr',
-        alias: 'Bob',
         percentage: 20,
         delay: 2,
         status: 'claimed',
@@ -35,7 +37,6 @@ const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
     },
     {
         receiver: '2V7t5NaKY7aGkwytCWQgvUYZfEr9XMwNChhJEakTExk6',
-        alias: '',
         percentage: 17,
         delay: 3,
         status: 'redeemed',
@@ -43,11 +44,17 @@ const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
     },
     {
         receiver: '7KVswB9vkCgeM3SHP7aGDijvdRAHK8P5wi9JXViCrtYh',
-        alias: 'Carol',
         percentage: 5,
         delay: 7,
         status: 'unclaimed',
         timestamp: 0,
+    },
+];
+
+const TEST_ALIAS_LIST: EmergencyAlias[] = [
+    {
+        receiver: '7KVswB9vkCgeM3SHP7aGDijvdRAHK8P5wi9JXViCrtYh',
+        alias: 'Carol'
     },
 ];
 
@@ -58,8 +65,12 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
     const [showDeleteModal, setDeleteModalShow] = useState(false);
     const [showEditModal, setEditModalShow] = useState(false);
     const [emergencyList, setEmergencyList] = useState<EmergencyDetails[]>([]);
+    const [aliasList, setAliasList] = useState<EmergencyAlias[]>(() => {
+        const initialValue = JSON.parse(localStorage.getItem("aliasList") || "");
+        return initialValue;
+    });
     const [formIsCorrect, setFormIsCorrect] = useState(false);
-    const [selectedreceiver, setSelectedreceiver] = useState('');
+    const [selectedReceiver, setSelectedReceiver] = useState('');
     const [selectedField, setSelectedField] = useState('');
     const [emergencyIsMentioned, setEmergencyIsMentioned] = useState(false);
 
@@ -68,7 +79,7 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
     });
 
     var selectedEmergency = emergencyList.filter(function (emergency) {
-        return emergency.receiver === selectedreceiver;
+        return emergency.receiver === selectedReceiver;
     });
 
     const renderDescription = useCallback(
@@ -93,15 +104,18 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
             inputValues.percentage <= 100 &&
             inputValues.delay >= 1 &&
             inputValues.delay == Math.round(inputValues.delay) &&
-            inputValues.percentage == Math.round(inputValues.percentage) &&
-            inputValues.alias.length <= 5
+            inputValues.percentage == Math.round(inputValues.percentage)
         ) {
             var emergency = emergencyList.filter(function (value) {
                 return value.receiver === inputValues.receiver;
             });
 
             setFormIsCorrect(true);
-            emergency.length > 0 ? setEmergencyIsMentioned(true) : (setEmergencyList([...emergencyList, inputValues]), setEmergencyIsMentioned(false));
+            emergency.length > 0
+                ? setEmergencyIsMentioned(true)
+                : (setEmergencyList([...emergencyList, inputValues]),
+                  setAliasList([...aliasList, { receiver: inputValues.receiver, alias: '' }]),
+                  setEmergencyIsMentioned(false));
         } else {
             setFormIsCorrect(false);
         }
@@ -110,12 +124,16 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
     const editEmergency = async (inputValue: any) => {
         const id = selectedEmergency[0].receiver;
         const newEmergencies = [...emergencyList];
+
         switch (selectedField) {
             case 'alias':
-                if (inputValue.length <= 5) {
+                if (inputValue.length <= 15) {
                     setFormIsCorrect(true);
-                    newEmergencies.map((value) => (value.receiver === id ? (value.alias = inputValue) : value.alias));
-                    setEmergencyList(newEmergencies);
+                    newEmergencies.map((value) =>
+                        value.receiver === id
+                            ? setAliasList([...aliasList, { receiver: id, alias: inputValue }])
+                            : null
+                    );
                 } else {
                     setFormIsCorrect(false);
                 }
@@ -163,6 +181,10 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
         setEmergencyList(TEST_EMERGENCY_LIST);
     }, [PublicKey]);
 
+    useEffect(() => {
+        localStorage.setItem("aliasList", JSON.stringify(aliasList));
+    }, [aliasList])
+
     const renderEmergencyList = useCallback(
         () => (
             <div className="emergency-list">
@@ -175,27 +197,27 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                                     onClick={() => {
                                         setEditModalShow(true);
                                         setSelectedField('alias');
-                                        setSelectedreceiver(value.receiver);
+                                        setSelectedReceiver(value.receiver);
                                     }}
                                     className="receiver-text"
                                 >
-                                    {(value.alias.length > 0
-                                        ? value.alias +
-                                          ' (' +
-                                          value.receiver.substring(0, 5) +
-                                          '...' +
-                                          value.receiver.substring(value.receiver.length - 5) +
-                                          ')'
-                                        : value.receiver.substring(0, 5) +
-                                          '...' +
-                                          value.receiver.substring(value.receiver.length - 5)) + ' '}
+                                    {aliasList.map((alias, index) => (
+                                        <span key={index.toString()} className="receiver-name">
+                                            {alias.receiver === value.receiver && alias.alias + ' '}                   
+                                        </span>
+                                    ))}
+                                    
+                                    {value.receiver.substring(0, 5) +
+                                        '...' +
+                                        value.receiver.substring(value.receiver.length - 5) +
+                                        ' '}
                                 </span>
                                 <i className="fa fa-arrow-left"></i>
                                 <span
                                     onClick={() => {
                                         setEditModalShow(true);
                                         setSelectedField('percentage');
-                                        setSelectedreceiver(value.receiver);
+                                        setSelectedReceiver(value.receiver);
                                     }}
                                     className="receiver-text"
                                 >
@@ -207,7 +229,7 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                                     onClick={() => {
                                         setEditModalShow(true);
                                         setSelectedField('delay');
-                                        setSelectedreceiver(value.receiver);
+                                        setSelectedReceiver(value.receiver);
                                     }}
                                     className="receiver-text"
                                 >
@@ -219,7 +241,7 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                                 onClick={() => {
                                     setEditModalShow(true);
                                     setSelectedField('cancel');
-                                    setSelectedreceiver(value.receiver);
+                                    setSelectedReceiver(value.receiver);
                                 }}
                                 className="cta-button status-button"
                                 disabled={value.status !== 'claimed'}
@@ -236,7 +258,7 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                                 <button
                                     onClick={() => {
                                         setDeleteModalShow(true);
-                                        setSelectedreceiver(value.receiver);
+                                        setSelectedReceiver(value.receiver);
                                     }}
                                     className="delete-button"
                                 >
@@ -248,8 +270,10 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                 ))}
             </div>
         ),
-        [emergencyList]
+        [emergencyList, aliasList]
     );
+
+    console.log(aliasList);
 
     useEffect(() => {
         props.setNotificationCounter(claimingEmergencies.length);
@@ -281,7 +305,7 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                 editEmergency={editEmergency}
                 formIsCorrect={formIsCorrect}
                 selectedField={selectedField}
-                selectedreceiver={selectedreceiver}
+                selectedReceiver={selectedReceiver}
             />
             {(emergencyList.length > 0 && renderEmergencyList()) || renderDescription()}
         </div>
