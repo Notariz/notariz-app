@@ -35,7 +35,8 @@ function AddSenderModal(props: { show: boolean; onClose: () => void; formIsCorre
             <div className={`notariz-modal ${props.show ? 'show' : ''}`} onClick={props.onClose}>
                 <div className="notariz-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="notariz-modal-header">
-                        <h3 className="notariz-modal-title">New sender address</h3>
+                        <span><h3 className="notariz-modal-title">New sender address</h3>
+                        </span>
                     </div>
                     <div className="notariz-modal-body">
                         <form
@@ -43,7 +44,7 @@ function AddSenderModal(props: { show: boolean; onClose: () => void; formIsCorre
                                 event.preventDefault();
                                 {
                                     setIsSubmitted(true);
-                                    props.formIsCorrect
+                                    props.formIsCorrect && isSubmitted
                                         ? (setInputValue(''), props.onClose(), setIsSubmitted(false))
                                         : null;
                                 }
@@ -61,7 +62,6 @@ function AddSenderModal(props: { show: boolean; onClose: () => void; formIsCorre
                             <button
                                 onClick={() => {
                                     props.addSender(inputValue);
-                                    props.onClose();
                                 }}
                                 className="cta-button edit-button"
                             >

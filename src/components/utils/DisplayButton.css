@@ -59,7 +59,6 @@
     position: relative;
     color: white !important;
     font-weight: bold;
-    opacity: 0.8;
 }
 
 .display-button .wrg-toggle-uncheck span {
@@ -114,5 +113,5 @@
     opacity: 0;
 }
 .display-button .wrg-toggle--checked .wrg-toggle-circle {
-    left: 60px;
+    left: 55px;
 }

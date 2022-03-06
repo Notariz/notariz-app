@@ -5,10 +5,11 @@ import { clusterApiUrl, Connection, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { useCallback, useState } from 'react';
 import { Container, Nav, Navbar, ToggleButton } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
-import './DashboardComponents/Common.css';
-import './Header.css';
 import AirdropModal from './AirdropModal';
 import DisplayButton from './utils/DisplayButton';
+import NotarizLogo from '../img/logo.png';
+import './DashboardComponents/Common.css';
+import './Header.css';
 
 function Header() {
     const { connection } = useConnection();
@@ -44,17 +45,12 @@ function Header() {
         <Navbar expand="lg" variant="dark" fixed="top">
             <Container>
                 <Navbar.Brand className="fs-3" href="/">
-                    <p>Notariz</p>
+                    <img height="50px" width="100px" alt="Notariz" src={NotarizLogo}></img>
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
-                        <NavLink className="nav-link" to="/Dashboard">
-                            <p>Dashboard</p>
-                        </NavLink>
-                        <NavLink className="nav-link" to="/About">
-                            <p>About</p>
-                        </NavLink>
+                        
                     </Nav>
                     <DisplayButton dark={dark} setToggle={setDisplayToggle} />
                     {publicKey && (

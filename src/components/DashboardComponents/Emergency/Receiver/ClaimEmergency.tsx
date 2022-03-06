@@ -78,14 +78,16 @@ const TEST_SENDER_LIST: EmergencyDetails[][] = [
         {
             sender: 'GR8wiP7NfHR8nihLjiADRoRM7V7aUvtTfUnkBy8Zkd5T',
             receiver: 'EAC7jtzsoQwCbXj1M3DapWrNLnc3MBwXAarvWDPr2ZV9',
-            alias: 'Carol',
-            percentage: 5,
+            alias: 'Alice',
+            percentage: 10,
             delay: 7,
             status: 'claimed',
             timestamp: 0,
         },
     ],
 ];
+
+const WALLET_BALANCE = 1500;
 
 const RECEIVER_WALLET_ADDRESS = 'HSH3LftAhgNEQmpNRuE1ghnbqVHsxt8edvid1zdLxH5C';
 
@@ -97,47 +99,60 @@ function Claim() {
 
     const addSender = async (inputValue: string) => {
         if (inputValue.length >= 32 && inputValue.length <= 44) {
+            setFormIsCorrect(true);
+
             var sender = emergencyList.filter(function (emergency) {
                 return emergency.sender === inputValue;
             });
-            setFormIsCorrect(true);
+
             setSenderList([...senderList, sender]);
         } else {
             setFormIsCorrect(false);
         }
+        console.log(senderList);
     };
 
     const renderSenderList = useCallback(
         () => (
             <div className="claim-emergency-list">
                 {senderList.map((receiver, sender) => (
-                    <div key={sender} className='claim-emergency-sub-list'>
+                    <div key={sender} className="claim-emergency-sub-list">
                         <h3>
-                            {'Sender ' + (sender + 1) + ': ' + senderList[sender][0].sender.substring(0, 5) +
+                            {'Sender ' +
+                                (sender + 1) +
+                                ' (' +
+                                senderList[sender][0].sender.substring(0, 5) +
                                 '...' +
-                                senderList[sender][0].sender.substring(senderList[sender][0].sender.length - 5)
-                            }
+                                senderList[sender][0].sender.substring(senderList[sender][0].sender.length - 5) +
+                                ')'}
                         </h3>
                         {receiver.map((sender) => (
                             <div key={sender.receiver} className="claim-emergency-item">
                                 <p>
                                     {sender.receiver === RECEIVER_WALLET_ADDRESS
-                                        ? 'Me'
+                                        ? 'Me '
                                         : sender.alias.length > 0
                                         ? sender.alias +
                                           ' (' +
                                           sender.receiver.substring(0, 5) +
                                           '...' +
                                           sender.receiver.substring(sender.receiver.length - 5) +
-                                          ')'
+                                          ') '
                                         : sender.receiver.substring(0, 5) +
                                           '...' +
-                                          sender.receiver.substring(sender.receiver.length - 5)}
+                                          sender.receiver.substring(sender.receiver.length - 5) +
+                                          ' '}
+                                    <i className="fa fa-arrow-left"></i>
+                                    {' ' + (WALLET_BALANCE * sender.percentage) / 100 + ' SOL '}
+                                    <span>{sender.status === 'claimed' ? 'in' : 'after'}</span>
+                                    {' ' + sender.delay + ' days'}
                                 </p>
                                 {sender.receiver === RECEIVER_WALLET_ADDRESS ? (
-                                    <button className="cta-button status-button" disabled={sender.status === 'claimed'}>
-                                        {sender.status === 'claimed' ? 'Claimed' : 'Claim'}
-                                    </button>
+                                    sender.status === 'claimed' ? (
+                                        <button className="cta-button status-button">Claimed</button>
+                                    ) : (
+                                        <button className="cta-button status-button">Claim</button>
+                                    )
                                 ) : (
                                     <button className="cta-button status-button" disabled={sender.status !== 'claimed'}>
                                         Reject
@@ -151,8 +166,6 @@ function Claim() {
         ),
         [senderList]
     );
-
-    console.log(senderList);
 
     const renderDescription = useCallback(
         () => (
@@ -170,6 +183,8 @@ function Claim() {
     useEffect(() => {
         setSenderList(TEST_SENDER_LIST);
     }, [PublicKey]);
+
+    console.log(formIsCorrect)
 
     return (
         <div className="claim-emergency-container">
