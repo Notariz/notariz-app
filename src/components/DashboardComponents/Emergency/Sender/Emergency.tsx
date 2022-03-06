@@ -18,7 +18,7 @@ interface EmergencyDetails {
 
 const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
     {
-        receiver: '4cjmQjJuB4WzUqqtt6VLycjXTaRvgL',
+        receiver: 'JBu1AL4obBcCMqKBBxhpWCNUt136ijcuMZLFvTP7iWdB',
         alias: 'Alice',
         percentage: 30,
         delay: 4,
@@ -26,7 +26,7 @@ const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
         timestamp: 300,
     },
     {
-        receiver: '9sH2FTJKB9naMwYB7zRTch2bNFBpvwj',
+        receiver: '3VQwtcntVQN1mj1MybQw8qK7Li3KNrrgNskSQwZAPGNr',
         alias: 'Bob',
         percentage: 20,
         delay: 2,
@@ -34,7 +34,7 @@ const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
         timestamp: 300,
     },
     {
-        receiver: '5tt6VLycjXTaRvgLNhz6ZzRTch2bNFB',
+        receiver: '2V7t5NaKY7aGkwytCWQgvUYZfEr9XMwNChhJEakTExk6',
         alias: '',
         percentage: 17,
         delay: 3,
@@ -42,7 +42,7 @@ const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
         timestamp: 0,
     },
     {
-        receiver: '7dsjIzdlck45dzLdldqnmPadmcnAodzs',
+        receiver: '7KVswB9vkCgeM3SHP7aGDijvdRAHK8P5wi9JXViCrtYh',
         alias: 'Carol',
         percentage: 5,
         delay: 7,
@@ -61,6 +61,7 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
     const [formIsCorrect, setFormIsCorrect] = useState(false);
     const [selectedreceiver, setSelectedreceiver] = useState('');
     const [selectedField, setSelectedField] = useState('');
+    const [emergencyIsMentioned, setEmergencyIsMentioned] = useState(false);
 
     var claimingEmergencies = emergencyList.filter(function (emergency) {
         return emergency.status === 'claimed';
@@ -95,8 +96,12 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
             inputValues.percentage == Math.round(inputValues.percentage) &&
             inputValues.alias.length <= 5
         ) {
+            var emergency = emergencyList.filter(function (value) {
+                return value.receiver === inputValues.receiver;
+            });
+
             setFormIsCorrect(true);
-            setEmergencyList([...emergencyList, inputValues]);
+            emergency.length > 0 ? setEmergencyIsMentioned(true) : (setEmergencyList([...emergencyList, inputValues]), setEmergencyIsMentioned(false));
         } else {
             setFormIsCorrect(false);
         }
@@ -163,7 +168,7 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
             <div className="emergency-list">
                 {emergencyList.map((value, index) => (
                     <div className="emergency-item-background">
-                        <div key={value.receiver} className="emergency-item">
+                        <div key={index.toString()} className="emergency-item">
                             <h3>{'Emergency ' + (index + 1)}</h3>
                             <p>
                                 <span
@@ -260,6 +265,7 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                 show={showAddModal}
                 addEmergency={addEmergency}
                 formIsCorrect={formIsCorrect}
+                emergencyIsMentioned={emergencyIsMentioned}
             />
             <DeleteModal
                 onClose={() => setDeleteModalShow(false)}

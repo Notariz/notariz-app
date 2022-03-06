@@ -51,40 +51,27 @@ const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
         status: 'unclaimed',
         timestamp: 0,
     },
+    {
+        sender: '3VQwtcntVQN1mj1MybQw8qK7Li3KNrrgNskSQwZAPGNr',
+        receiver: 'JBu1AL4obBcCMqKBBxhpWCNUt136ijcuMZLFvTP7iWdB',
+        alias: 'Carol',
+        percentage: 5,
+        delay: 7,
+        status: 'unclaimed',
+        timestamp: 0,
+    },
 ];
 
-const TEST_SENDER_LIST: EmergencyDetails[][] = [
-    [
-        {
-            sender: '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
-            receiver: 'HSH3LftAhgNEQmpNRuE1ghnbqVHsxt8edvid1zdLxH5C',
-            alias: 'Carol',
-            percentage: 5,
-            delay: 7,
-            status: 'unclaimed',
-            timestamp: 0,
-        },
-    ],
-    [
-        {
-            sender: 'GR8wiP7NfHR8nihLjiADRoRM7V7aUvtTfUnkBy8Zkd5T',
-            receiver: 'HSH3LftAhgNEQmpNRuE1ghnbqVHsxt8edvid1zdLxH5C',
-            alias: 'Carol',
-            percentage: 5,
-            delay: 7,
-            status: 'claimed',
-            timestamp: 0,
-        },
-        {
-            sender: 'GR8wiP7NfHR8nihLjiADRoRM7V7aUvtTfUnkBy8Zkd5T',
-            receiver: 'EAC7jtzsoQwCbXj1M3DapWrNLnc3MBwXAarvWDPr2ZV9',
-            alias: 'Alice',
-            percentage: 10,
-            delay: 7,
-            status: 'claimed',
-            timestamp: 0,
-        },
-    ],
+const TEST_SENDER_LIST: EmergencyDetails[] = [
+    {
+        sender: '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+        receiver: 'HSH3LftAhgNEQmpNRuE1ghnbqVHsxt8edvid1zdLxH5C',
+        alias: 'Carol',
+        percentage: 5,
+        delay: 7,
+        status: 'unclaimed',
+        timestamp: 0,
+    }
 ];
 
 const WALLET_BALANCE = 1500;
@@ -92,74 +79,77 @@ const WALLET_BALANCE = 1500;
 const RECEIVER_WALLET_ADDRESS = 'HSH3LftAhgNEQmpNRuE1ghnbqVHsxt8edvid1zdLxH5C';
 
 function Claim() {
-    const [senderList, setSenderList] = useState<EmergencyDetails[][]>([]);
+    const [senderList, setSenderList] = useState<EmergencyDetails[]>([]);
     const [emergencyList, setEmergencyList] = useState<EmergencyDetails[]>([]);
     const [showAddSenderModal, setAddSenderModalShow] = useState(false);
     const [formIsCorrect, setFormIsCorrect] = useState(false);
+    const [senderExists, setSenderExists] = useState(false);
+    const [senderIsMentioned, setSenderIsMentioned] = useState(false);
 
     const addSender = async (inputValue: string) => {
         if (inputValue.length >= 32 && inputValue.length <= 44) {
             setFormIsCorrect(true);
 
             var sender = emergencyList.filter(function (emergency) {
-                return emergency.sender === inputValue;
+                return emergency.receiver == RECEIVER_WALLET_ADDRESS && emergency.sender === inputValue;
             });
 
-            setSenderList([...senderList, sender]);
+            var receiver = senderList.filter(function (emergency) {
+                return emergency.receiver === RECEIVER_WALLET_ADDRESS && emergency.sender === inputValue;
+            })
+
+            sender.length > 0 ? (receiver.length > 0 ? setSenderIsMentioned(true) : (setSenderList([...senderList, sender[0]]), setSenderExists(true), setSenderIsMentioned(false))) : setSenderExists(false);
         } else {
             setFormIsCorrect(false);
         }
-        console.log(senderList);
     };
 
     const renderSenderList = useCallback(
         () => (
             <div className="claim-emergency-list">
-                {senderList.map((receiver, sender) => (
-                    <div key={sender} className="claim-emergency-sub-list">
-                        <h3>
-                            {'Sender ' +
-                                (sender + 1) +
-                                ' (' +
-                                senderList[sender][0].sender.substring(0, 5) +
-                                '...' +
-                                senderList[sender][0].sender.substring(senderList[sender][0].sender.length - 5) +
-                                ')'}
-                        </h3>
-                        {receiver.map((sender) => (
-                            <div key={sender.receiver} className="claim-emergency-item">
-                                <p>
-                                    {sender.receiver === RECEIVER_WALLET_ADDRESS
-                                        ? 'Me '
-                                        : sender.alias.length > 0
-                                        ? sender.alias +
-                                          ' (' +
-                                          sender.receiver.substring(0, 5) +
-                                          '...' +
-                                          sender.receiver.substring(sender.receiver.length - 5) +
-                                          ') '
-                                        : sender.receiver.substring(0, 5) +
-                                          '...' +
-                                          sender.receiver.substring(sender.receiver.length - 5) +
-                                          ' '}
-                                    <i className="fa fa-arrow-left"></i>
-                                    {' ' + (WALLET_BALANCE * sender.percentage) / 100 + ' SOL '}
-                                    <span>{sender.status === 'claimed' ? 'in' : 'after'}</span>
-                                    {' ' + sender.delay + ' days'}
-                                </p>
-                                {sender.receiver === RECEIVER_WALLET_ADDRESS ? (
-                                    sender.status === 'claimed' ? (
-                                        <button className="cta-button status-button">Claimed</button>
-                                    ) : (
-                                        <button className="cta-button status-button">Claim</button>
-                                    )
+                {senderList.map((value, index) => (
+                    <div className="claim-emergency-background">
+                        <div key={index.toString()} className="claim-emergency-item">
+                            <h3>
+                                {'Sender ' +
+                                    (index + 1) +
+                                    ' (' +
+                                    value.sender.substring(0, 5) +
+                                    '...' +
+                                    value.sender.substring(value.sender.length - 5) +
+                                    ')'}
+                            </h3>
+                            <p>
+                                {value.receiver === RECEIVER_WALLET_ADDRESS
+                                    ? 'Me '
+                                    : value.alias.length > 0
+                                    ? value.alias +
+                                      ' (' +
+                                      value.receiver.substring(0, 5) +
+                                      '...' +
+                                      value.receiver.substring(value.receiver.length - 5) +
+                                      ') '
+                                    : value.receiver.substring(0, 5) +
+                                      '...' +
+                                      value.receiver.substring(value.receiver.length - 5) +
+                                      ' '}
+                                <i className="fa fa-arrow-left"></i>
+                                {' ' + (WALLET_BALANCE * value.percentage) / 100 + ' SOL '}
+                                <span>{value.status === 'claimed' ? 'in' : 'after'}</span>
+                                {' ' + value.delay + ' days'}
+                            </p>
+                            {value.receiver === RECEIVER_WALLET_ADDRESS ? (
+                                value.status === 'claimed' ? (
+                                    <button className="cta-button status-button">Claimed</button>
                                 ) : (
-                                    <button className="cta-button status-button" disabled={sender.status !== 'claimed'}>
-                                        Reject
-                                    </button>
-                                )}
-                            </div>
-                        ))}
+                                    <button className="cta-button status-button">Claim</button>
+                                )
+                            ) : (
+                                <button className="cta-button status-button" disabled={value.status !== 'claimed'}>
+                                    Reject
+                                </button>
+                            )}
+                        </div>
                     </div>
                 ))}
             </div>
@@ -184,8 +174,6 @@ function Claim() {
         setSenderList(TEST_SENDER_LIST);
     }, [PublicKey]);
 
-    console.log(formIsCorrect)
-
     return (
         <div className="claim-emergency-container">
             <button onClick={() => setAddSenderModalShow(true)} className="cta-button confirm-button">
@@ -197,6 +185,8 @@ function Claim() {
                 show={showAddSenderModal}
                 addSender={addSender}
                 formIsCorrect={formIsCorrect}
+                senderExists={senderExists}
+                senderIsMentioned={senderIsMentioned}
             />
         </div>
     );

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import '../../../Common.css';
 
@@ -12,7 +12,14 @@ interface EmergencyDetails {
     timestamp: number;
 }
 
-function AddSenderModal(props: { show: boolean; onClose: () => void; formIsCorrect: boolean; addSender: (inputValue: string) => void }) {
+function AddSenderModal(props: {
+    show: boolean;
+    onClose: () => void;
+    formIsCorrect: boolean;
+    senderExists: boolean;
+    senderIsMentioned: boolean;
+    addSender: (inputValue: string) => void;
+}) {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [inputValue, setInputValue] = useState('');
 
@@ -30,12 +37,28 @@ function AddSenderModal(props: { show: boolean; onClose: () => void; formIsCorre
         //eslint-disable-next-line
     }, []);
 
+    const renderFormErrorMessage = useCallback(
+        () => <span className="hint">Your sender's public address should be 32-to-44-character long.</span>,
+        [inputValue]
+    );
+
+    const renderSenderDoesNotExistErrorMessage = useCallback(
+        () => <span className="hint">You are not mentioned on this sender's emergency list.</span>,
+        [inputValue]
+    );
+
+    const renderSenderIsAlreadyMentionedErrorMessage = useCallback(
+        () => <span className="hint">This sender is already mentioned in your senders list.</span>,
+        [inputValue]
+    );
+
     return (
         <CSSTransition in={props.show} unmountOnExit timeout={{ enter: 0, exit: 300 }}>
             <div className={`notariz-modal ${props.show ? 'show' : ''}`} onClick={props.onClose}>
                 <div className="notariz-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="notariz-modal-header">
-                        <span><h3 className="notariz-modal-title">New sender address</h3>
+                        <span>
+                            <h3 className="notariz-modal-title">New sender address</h3>
                         </span>
                     </div>
                     <div className="notariz-modal-body">
@@ -44,13 +67,16 @@ function AddSenderModal(props: { show: boolean; onClose: () => void; formIsCorre
                                 event.preventDefault();
                                 {
                                     setIsSubmitted(true);
-                                    props.formIsCorrect && isSubmitted
+                                    props.formIsCorrect && props.senderExists && !props.senderIsMentioned
                                         ? (setInputValue(''), props.onClose(), setIsSubmitted(false))
                                         : null;
                                 }
                                 /* Call program entry point here */
                             }}
                         >
+                            {!props.formIsCorrect && isSubmitted && renderFormErrorMessage()}
+                            {!props.senderExists && props.formIsCorrect && isSubmitted && renderSenderDoesNotExistErrorMessage()}
+                            {props.senderIsMentioned && isSubmitted && renderSenderIsAlreadyMentionedErrorMessage()}
                             <input
                                 name="pk"
                                 type="text"
@@ -60,6 +86,7 @@ function AddSenderModal(props: { show: boolean; onClose: () => void; formIsCorre
                                 required
                             />
                             <button
+                                type="submit"
                                 onClick={() => {
                                     props.addSender(inputValue);
                                 }}
