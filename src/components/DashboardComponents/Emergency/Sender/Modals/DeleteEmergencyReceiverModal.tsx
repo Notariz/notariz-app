@@ -3,7 +3,7 @@ import { CSSTransition } from 'react-transition-group';
 import Emojis from '../../../../utils/Emojis';
 import '../../../Common.css';
 
-function DeleteModal(props: {
+function DeleteEmergencyReceiverModal(props: {
     show: boolean;
     onClose: () => void;
     selectedField: string;
@@ -44,4 +44,4 @@ function DeleteModal(props: {
     );
 }
 
-export default DeleteModal;
+export default DeleteEmergencyReceiverModal;

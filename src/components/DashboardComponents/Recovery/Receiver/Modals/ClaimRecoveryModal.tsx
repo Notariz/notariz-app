@@ -28,8 +28,6 @@ function ClaimRecoveryModal(props: {
         //eslint-disable-next-line
     }, []);
 
-    console.log(props.selectedSender);
-
     return (
         <CSSTransition in={props.show} unmountOnExit timeout={{ enter: 0, exit: 300 }}>
             <div className={`notariz-modal ${props.show ? 'show' : ''}`} onClick={props.onClose}>
@@ -40,6 +38,7 @@ function ClaimRecoveryModal(props: {
                         </span>
                     </div>
                     <div className="notariz-modal-body">
+                        <div className='hint'>You will receive 100% of this sending address assets</div>
                         <button
                             type="submit"
                             onClick={() => {

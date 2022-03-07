@@ -11,7 +11,7 @@ import {
     TorusWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
 import { clusterApiUrl } from '@solana/web3.js';
-import { FC, ReactNode, useMemo } from 'react';
+import { FC, ReactNode, useMemo, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { Outlet } from "react-router-dom";
 import Header from './components/Header';
@@ -62,9 +62,11 @@ const Context: FC<{ children: ReactNode }> = ({ children }) => {
 };
 
 const Content: FC = () => {
+    const [dark, setDark] = useState(true);
+
     return (
         <div className='App'>
-          <Header />
+          <Header dark={dark} />
           <Container className="main-container">
             <Row>
               <Col></Col>
@@ -75,7 +77,7 @@ const Content: FC = () => {
               <Col></Col>
             </Row>
           </Container>
-          <Footer />
+          <Footer dark={dark} />
         </div>
       );
 };

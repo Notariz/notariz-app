@@ -11,7 +11,7 @@ interface EmergencyDetails {
     redeem_request_timestamp: number;
 }
 
-function ClaimModal(props: {
+function ClaimEmergencyModal(props: {
     show: boolean;
     onClose: () => void;
     claimRequest: () => void;
@@ -30,8 +30,6 @@ function ClaimModal(props: {
         };
         //eslint-disable-next-line
     }, []);
-
-    console.log(props.selectedSender);
 
     return (
         <CSSTransition in={props.show} unmountOnExit timeout={{ enter: 0, exit: 300 }}>
@@ -73,4 +71,4 @@ function ClaimModal(props: {
     );
 }
 
-export default ClaimModal;
+export default ClaimEmergencyModal;

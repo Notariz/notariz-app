@@ -2,8 +2,8 @@ import { useCallback, useState, useEffect } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import Countdown from 'react-countdown';
 import { PublicKey } from '@solana/web3.js';
-import AddSenderModal from './Modals/AddModal';
-import ClaimModal from './Modals/ClaimModal';
+import AddEmergencySenderModal from './Modals/AddEmergencySenderModal';
+import ClaimEmergencyModal from './Modals/ClaimEmergencyModal';
 import Emojis from '../../../utils/Emojis';
 import './ClaimEmergency.css';
 import '../../Common.css';
@@ -68,7 +68,7 @@ const WALLET_BALANCE = 1500;
 
 const WITHDRAWAL_PERIOD = 4;
 
-function Claim() {
+function ClaimEmergency() {
     const { publicKey } = useWallet();
 
     const [senderList, setSenderList] = useState<EmergencyDetails[]>([]);
@@ -120,7 +120,7 @@ function Claim() {
             <div className="claim-emergency-list">
                 {senderList.map((value, index) => (
                     <div className="claim-emergency-background">
-                        <div key={index.toString()} className="claim-emergency-item">
+                        <div key={value.sender} className="claim-emergency-item">
                             <h3>
                                 {'Sender ' + (index + 1) }
                             </h3>
@@ -194,7 +194,7 @@ function Claim() {
                 ADD A SENDING ADDRESS
             </button>
             {senderList.length > 0 ? renderSenderList() : renderDescription()}
-            <AddSenderModal
+            <AddEmergencySenderModal
                 onClose={() => setAddSenderModalShow(false)}
                 show={showAddSenderModal}
                 addSender={addSender}
@@ -202,7 +202,7 @@ function Claim() {
                 senderExists={senderExists}
                 senderIsMentioned={senderIsMentioned}
             />
-            <ClaimModal
+            <ClaimEmergencyModal
                 onClose={() => setClaimModalShow(false)}
                 show={showClaimModal}
                 claimRequest={claimRequest}
@@ -214,4 +214,4 @@ function Claim() {
     );
 }
 
-export default Claim;
+export default ClaimEmergency;

@@ -13,7 +13,7 @@ interface EmergencyDetails {
     timestamp: number;
 }
 
-function AddSenderModal(props: {
+function AddEmergencySenderModal(props: {
     show: boolean;
     onClose: () => void;
     formIsCorrect: boolean;
@@ -108,4 +108,4 @@ function AddSenderModal(props: {
     );
 }
 
-export default AddSenderModal;
+export default AddEmergencySenderModal;

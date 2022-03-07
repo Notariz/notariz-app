@@ -7,11 +7,11 @@ import { Container, Nav, Navbar, ToggleButton } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import AirdropModal from './AirdropModal';
 import DisplayButton from './utils/DisplayButton';
-import NotarizLogo from '../img/logo.png';
+import NotarizLogo from '../img/logo.png'
 import './DashboardComponents/Common.css';
 import './Header.css';
 
-function Header() {
+function Header(props: {dark: boolean}) {
     const { connection } = useConnection();
     const { publicKey } = useWallet();
     const [airdropping, setAirdropping] = useState(false);

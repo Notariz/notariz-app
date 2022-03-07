@@ -1,7 +1,7 @@
 import { Col, Container, Row } from "react-bootstrap";
 import "./Footer.css";
 
-function Footer() {
+function Footer(props: {dark: boolean}) {
     return (
         <Container fluid className="footer">
             <Row>

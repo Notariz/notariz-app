@@ -1,28 +1,28 @@
 import { useEffect, useState, useCallback } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { CSSTransition } from 'react-transition-group';
 import Emojis from '../../../../utils/Emojis';
 import '../../../Common.css';
 
-interface EmergencyDetails {
+interface RecoveryAddress {
+    sender: string;
     receiver: string;
-    share: number;
-    claim_request_timestamp: number;
-    redeem_request_timestamp: number;
+    redeemed: boolean;
 }
 
-function AddModal(props: {
+function AddRecoveryReceivingModal(props: {
     show: boolean;
     onClose: () => void;
-    addEmergency: (inputValues: EmergencyDetails) => void;
     formIsCorrect: boolean;
-    emergencyIsMentioned: boolean;
+    isMentioned: boolean;
+    addRecovery: (inputValue: RecoveryAddress) => void;
 }) {
+    const { publicKey } = useWallet();
     const [isSubmitted, setIsSubmitted] = useState(false);
-    const [inputValues, setInputValues] = useState<EmergencyDetails>({
+    const [inputValue, setInputValue] = useState<RecoveryAddress>({
+        sender: publicKey?.toString() ? publicKey.toString() : '',
         receiver: '',
-        share: 0,
-        claim_request_timestamp: 0,
-        redeem_request_timestamp: 0
+        redeemed: false
     });
 
     const closeOnEscapeKeyDown = (e: any) => {
@@ -41,7 +41,7 @@ function AddModal(props: {
 
     const handleInputChange = (e: React.FormEvent<HTMLInputElement>) => {
         const { name, value } = e.currentTarget;
-        setInputValues((prevState) => ({ ...prevState, [name]: value }));
+        setInputValue((prevState) => ({ ...prevState, [name]: value }));
     };
 
     return (
@@ -49,7 +49,7 @@ function AddModal(props: {
             <div className={`notariz-modal ${props.show ? 'show' : ''}`} onClick={props.onClose}>
                 <div className="notariz-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="notariz-modal-header">
-                        <h3 className="notariz-modal-title">New receiving emergency address</h3>
+                        <h3 className="notariz-modal-title">New receiving recovery address</h3>
                     </div>
                     <div className="notariz-modal-body">
                         <form
@@ -57,12 +57,11 @@ function AddModal(props: {
                                 event.preventDefault();
                                 {
                                     setIsSubmitted(true);
-                                    props.formIsCorrect && !props.emergencyIsMentioned
-                                        ? (setInputValues({
+                                    props.formIsCorrect && !props.isMentioned
+                                        ? (setInputValue({
+                                              sender: publicKey?.toString() ? publicKey.toString() : '',
                                               receiver: '',
-                                              share: 0,
-                                              claim_request_timestamp: 0,
-                                              redeem_request_timestamp: 0
+                                              redeemed: false
                                           }),
                                           props.onClose(),
                                           setIsSubmitted(false))
@@ -71,43 +70,30 @@ function AddModal(props: {
                                 /* Call program entry point here */
                             }}
                         >
-                            {isSubmitted && props.emergencyIsMentioned ? (
-                                <span className="hint">
-                                    This emergency is already mentioned in your list.
-                                </span>
-                            ) : null}
                             {isSubmitted && !props.formIsCorrect ? (
                                 <span className="hint">
-                                    Your emergency's public address should be 32-to-44-character long.
+                                    Your receiving recovery address should be 32-to-44-character long.
                                 </span>
+                            ) : null}
+                            {isSubmitted && props.isMentioned ? (
+                                <span className="hint">This recovery address already exists.</span>
                             ) : null}
                             <input
                                 name="receiver"
                                 type="text"
-                                placeholder="Your emergency's public address"
-                                value={inputValues.receiver}
-                                onChange={handleInputChange}
-                                required
-                            />
-                            {isSubmitted && !props.formIsCorrect ? (
-                                <span className="hint">
-                                    A share should be an integer comprised between 1 to 100.
-                                </span>
-                            ) : null}
-                            <input
-                                name="share"
-                                type="number"
-                                placeholder="Your emergency's claimable share"
-                                value={inputValues.share === 0 ? NaN : inputValues.share}
+                                placeholder="Your receiving recovery address"
+                                value={inputValue.receiver}
                                 onChange={handleInputChange}
                                 required
                             />
                             <button
                                 type="submit"
-                                onClick={() => props.addEmergency(inputValues)}
+                                onClick={() => props.addRecovery(inputValue)}
                                 className="cta-button edit-button"
                             >
-                                <div><Emojis symbol="✔️" label="check" /> {' Submit'}</div>
+                                <div>
+                                    <Emojis symbol="✔️" label="check" /> {' Submit'}
+                                </div>{' '}
                             </button>
                         </form>
                     </div>
@@ -117,4 +103,4 @@ function AddModal(props: {
     );
 }
 
-export default AddModal;
+export default AddRecoveryReceivingModal;

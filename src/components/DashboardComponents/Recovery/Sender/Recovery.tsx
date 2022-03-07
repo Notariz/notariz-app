@@ -1,18 +1,20 @@
 import { PublicKey } from '@solana/web3.js';
 import { useCallback, useEffect, useState } from 'react';
-import AddRecoveryModal from './Modals/AddRecoveryModal';
+import AddRecoveryReceivingModal from './Modals/AddRecoveryReceivingModal';
 import DeleteRecoveryModal from './Modals/DeleteRecoveryModal';
 import './Recovery.css';
 
 interface RecoveryAddress {
     sender: string;
     receiver: string;
+    redeemed: boolean;
 }
 
 const TEST_RECOVERY_ADDRESS: RecoveryAddress[] = [
     {
         sender: '3dCjBWJyjGwiNk3Q45WzvMhfmz4Weod2ABjQuzhfqzD3',
         receiver: '5ZLaVaVJdvdqGmvnS4jYgJ7k54Kdev7f1q5LDytjwqJ6',
+        redeemed: false
     },
 ];
 
@@ -37,7 +39,7 @@ function Recovery() {
             <div>
                 {recoveryList.map((value, index) => (
                     <div className="recovery-item-background">
-                        <div key={index.toString()} className="recovery-item">
+                        <div key={value.receiver} className="recovery-item">
                             <h3>{'Recovery address ' + (index + 1)}</h3>
                             <p>
                                 {'Me '}
@@ -56,6 +58,7 @@ function Recovery() {
                                     value.receiver.substring(value.receiver.length - 5) +
                                     ' '}
                             </p>
+                            <button className='cta-button status-button' disabled>{value.redeemed ? 'Sent' : 'Unclaimed'}</button>
                             <button
                                 onClick={() => (setSelectedReceiver(value.receiver), setDeleteModalShow(true))}
                                 className="cta-button delete-button"
@@ -79,7 +82,7 @@ function Recovery() {
             setFormIsCorrect(true);
             recovery.length > 0
                 ? setIsMentioned(true)
-                : (setRecoveryList([...recoveryList, { sender: inputValue.sender, receiver: inputValue.receiver }]),
+                : (setRecoveryList([...recoveryList, { sender: inputValue.sender, receiver: inputValue.receiver, redeemed: false }]),
                   setIsMentioned(false));
         } else {
             setFormIsCorrect(false);
@@ -102,7 +105,7 @@ function Recovery() {
             <button onClick={() => setAddModalShow(true)} className="cta-button confirm-button">
                 ADD A RECEIVING ADDRESS
             </button>
-            <AddRecoveryModal
+            <AddRecoveryReceivingModal
                 formIsCorrect={formIsCorrect}
                 isMentioned={isMentioned}
                 addRecovery={addRecovery}

@@ -1,7 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 import { useCallback, useEffect, useState } from 'react';
-import AddRecoveryModal from './Modals/AddRecoveryModal';
-import ClaimRecoveryModal from './Modals/ClaimRecoveryModal';
+import AddRecoverySendingModal from './Modals/AddRecoverySendingModal';
+import ClaimRecoveryModal from './Modals/ClaimRecoveryModal'
 import '../Sender/Recovery.css';
 
 interface RecoveryAddress {
@@ -44,7 +44,7 @@ function ClaimRecovery() {
             <div>
                 {recoveryList.map((value, index) => (
                     <div className="recovery-item-background">
-                        <div key={index.toString()} className="recovery-item">
+                        <div key={value.sender} className="recovery-item">
                             <h3>{'Recovery address ' + (index + 1)}</h3>
                             <p>
                                 {value.sender.substring(0, 5) + '...' + value.sender.substring(value.sender.length - 5) + ' '}
@@ -53,7 +53,7 @@ function ClaimRecovery() {
                                 <span><i className="fa fa-arrow-right"></i></span>
                                 {' Me'}
                             </p>
-                            <button onClick={() => (setSelectedSender(value.sender), setClaimModalShow(true))} className='cta-button status-button' disabled={value.redeemed}>{value.redeemed ? 'Redeemed' : 'Claim'}</button>
+                            <button onClick={() => (setSelectedSender(value.sender), setClaimModalShow(true))} className='cta-button status-button' disabled={value.redeemed}>{value.redeemed ? 'Received' : 'Redeem'}</button>
                         </div>
                     </div>
                 ))}
@@ -94,7 +94,7 @@ function ClaimRecovery() {
             <button onClick={() => setAddModalShow(true)} className="cta-button confirm-button">
                 ADD A SENDING ADDRESS
             </button>
-            <AddRecoveryModal
+            <AddRecoverySendingModal
                 formIsCorrect={formIsCorrect}
                 isMentioned={isMentioned}
                 addRecovery={addRecovery}

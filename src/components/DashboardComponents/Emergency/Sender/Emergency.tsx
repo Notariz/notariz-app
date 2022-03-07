@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import Countdown from 'react-countdown';
-import AddModal from './Modals/AddModal';
-import DeleteModal from './Modals/DeleteModal';
-import EditModal from './Modals/EditModal';
+import AddEmergencyReceiverModal from './Modals/AddEmergencyReceiverModal';
+import DeleteEmergencyReceiverModal from './Modals/DeleteEmergencyReceiverModal';
+import EditEmergencyReceiverModal from './Modals/EditEmergencyReceiverModal';
 import Emojis from '../../../utils/Emojis';
 import './Emergency.css';
 import '../../Common.css';
@@ -165,7 +165,7 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
             <div>
                 {emergencyList.map((value, index) => (
                     <div className="emergency-item-background">
-                        <div key={index.toString()} className="emergency-item">
+                        <div key={value.receiver} className="emergency-item">
                             <h3>{'Emergency ' + (index + 1)}</h3>
                             <p>
                                 {'Me '}
@@ -254,20 +254,20 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
             <button onClick={() => setAddModalShow(true)} className="cta-button confirm-button">
                 ADD A RECEIVING ADDRESS
             </button>
-            <AddModal
+            <AddEmergencyReceiverModal
                 onClose={() => setAddModalShow(false)}
                 show={showAddModal}
                 addEmergency={addEmergency}
                 formIsCorrect={formIsCorrect}
                 emergencyIsMentioned={emergencyIsMentioned}
             />
-            <DeleteModal
+            <DeleteEmergencyReceiverModal
                 onClose={() => setDeleteModalShow(false)}
                 show={showDeleteModal}
                 deleteEmergency={deleteEmergency}
                 selectedField={selectedField}
             />
-            <EditModal
+            <EditEmergencyReceiverModal
                 onClose={() => {
                     setEditModalShow(false);
                 }}

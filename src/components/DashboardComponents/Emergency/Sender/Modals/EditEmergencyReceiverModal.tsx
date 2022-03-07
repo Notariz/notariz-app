@@ -11,7 +11,7 @@ interface EmergencyDetails {
     status: string;
 }
 
-function EditModal(props: {
+function EditEmergencyReceiverModal(props: {
     show: boolean;
     onClose: () => void;
     selectedField: string;
@@ -154,4 +154,4 @@ function EditModal(props: {
     );
 }
 
-export default EditModal;
+export default EditEmergencyReceiverModal;

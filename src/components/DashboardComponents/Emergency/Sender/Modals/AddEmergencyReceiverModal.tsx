@@ -1,28 +1,28 @@
 import { useEffect, useState, useCallback } from 'react';
-import { useWallet } from '@solana/wallet-adapter-react';
 import { CSSTransition } from 'react-transition-group';
 import Emojis from '../../../../utils/Emojis';
 import '../../../Common.css';
 
-interface RecoveryAddress {
-    sender: string;
+interface EmergencyDetails {
     receiver: string;
-    redeemed: boolean;
+    share: number;
+    claim_request_timestamp: number;
+    redeem_request_timestamp: number;
 }
 
-function AddRecoveryModal(props: {
+function AddEmergencyReceiverModal(props: {
     show: boolean;
     onClose: () => void;
+    addEmergency: (inputValues: EmergencyDetails) => void;
     formIsCorrect: boolean;
-    isMentioned: boolean;
-    addRecovery: (inputValue: RecoveryAddress) => void;
+    emergencyIsMentioned: boolean;
 }) {
-    const { publicKey } = useWallet();
     const [isSubmitted, setIsSubmitted] = useState(false);
-    const [inputValue, setInputValue] = useState<RecoveryAddress>({
-        sender: '',
-        receiver: publicKey?.toString() ? publicKey.toString() : '',
-        redeemed: false
+    const [inputValues, setInputValues] = useState<EmergencyDetails>({
+        receiver: '',
+        share: 0,
+        claim_request_timestamp: 0,
+        redeem_request_timestamp: 0
     });
 
     const closeOnEscapeKeyDown = (e: any) => {
@@ -41,7 +41,7 @@ function AddRecoveryModal(props: {
 
     const handleInputChange = (e: React.FormEvent<HTMLInputElement>) => {
         const { name, value } = e.currentTarget;
-        setInputValue((prevState) => ({ ...prevState, [name]: value }));
+        setInputValues((prevState) => ({ ...prevState, [name]: value }));
     };
 
     return (
@@ -49,7 +49,7 @@ function AddRecoveryModal(props: {
             <div className={`notariz-modal ${props.show ? 'show' : ''}`} onClick={props.onClose}>
                 <div className="notariz-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="notariz-modal-header">
-                        <h3 className="notariz-modal-title">New sending recovery address</h3>
+                        <h3 className="notariz-modal-title">New receiving emergency address</h3>
                     </div>
                     <div className="notariz-modal-body">
                         <form
@@ -57,11 +57,12 @@ function AddRecoveryModal(props: {
                                 event.preventDefault();
                                 {
                                     setIsSubmitted(true);
-                                    props.formIsCorrect && !props.isMentioned
-                                        ? (setInputValue({
-                                              sender: '',
-                                              receiver: publicKey?.toString() ? publicKey.toString() : '',
-                                              redeemed: false
+                                    props.formIsCorrect && !props.emergencyIsMentioned
+                                        ? (setInputValues({
+                                              receiver: '',
+                                              share: 0,
+                                              claim_request_timestamp: 0,
+                                              redeem_request_timestamp: 0
                                           }),
                                           props.onClose(),
                                           setIsSubmitted(false))
@@ -70,30 +71,43 @@ function AddRecoveryModal(props: {
                                 /* Call program entry point here */
                             }}
                         >
-                            {isSubmitted && !props.formIsCorrect ? (
+                            {isSubmitted && props.emergencyIsMentioned ? (
                                 <span className="hint">
-                                    Your sending recovery address should be 32-to-44-character long.
+                                    This emergency is already mentioned in your list.
                                 </span>
                             ) : null}
-                            {isSubmitted && props.isMentioned ? (
-                                <span className="hint">This recovery address already exists.</span>
+                            {isSubmitted && !props.formIsCorrect ? (
+                                <span className="hint">
+                                    Your emergency's public address should be 32-to-44-character long.
+                                </span>
                             ) : null}
                             <input
-                                name="sender"
+                                name="receiver"
                                 type="text"
-                                placeholder="Your sending recovery address"
-                                value={inputValue.sender}
+                                placeholder="Your emergency's public address"
+                                value={inputValues.receiver}
+                                onChange={handleInputChange}
+                                required
+                            />
+                            {isSubmitted && !props.formIsCorrect ? (
+                                <span className="hint">
+                                    A share should be an integer comprised between 1 to 100.
+                                </span>
+                            ) : null}
+                            <input
+                                name="share"
+                                type="number"
+                                placeholder="Your emergency's claimable share"
+                                value={inputValues.share === 0 ? NaN : inputValues.share}
                                 onChange={handleInputChange}
                                 required
                             />
                             <button
                                 type="submit"
-                                onClick={() => props.addRecovery(inputValue)}
+                                onClick={() => props.addEmergency(inputValues)}
                                 className="cta-button edit-button"
                             >
-                                <div>
-                                    <Emojis symbol="✔️" label="check" /> {' Submit'}
-                                </div>{' '}
+                                <div><Emojis symbol="✔️" label="check" /> {' Submit'}</div>
                             </button>
                         </form>
                     </div>
@@ -103,4 +117,4 @@ function AddRecoveryModal(props: {
     );
 }
 
-export default AddRecoveryModal;
+export default AddEmergencyReceiverModal;

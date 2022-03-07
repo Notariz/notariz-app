@@ -30,6 +30,6 @@
     margin-right: 10%;
 }
 
-button:disabled {
+button:disabled, button:disabled:hover {
     opacity: .2;
 }
