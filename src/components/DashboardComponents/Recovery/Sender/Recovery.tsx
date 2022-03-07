@@ -100,7 +100,7 @@ function Recovery() {
     return (
         <div className="recovery-container">
             <button onClick={() => setAddModalShow(true)} className="cta-button confirm-button">
-                ADD AN EMERGENCY ADDRESS
+                ADD A RECEIVING ADDRESS
             </button>
             <AddRecoveryModal
                 formIsCorrect={formIsCorrect}

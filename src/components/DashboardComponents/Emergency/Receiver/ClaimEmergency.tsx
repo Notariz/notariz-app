@@ -191,7 +191,7 @@ function Claim() {
     return (
         <div className="claim-emergency-container">
             <button onClick={() => setAddSenderModalShow(true)} className="cta-button confirm-button">
-                ADD A SENDER ADDRESS
+                ADD A SENDING ADDRESS
             </button>
             {senderList.length > 0 ? renderSenderList() : renderDescription()}
             <AddSenderModal

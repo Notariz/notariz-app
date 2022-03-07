@@ -106,7 +106,7 @@ h3 {
 }
 
 .dashboard-container .nav-link:hover {
-    border-color: purple;
+    border-color: #1a202c;
     border-radius: 20px;
     color: white;
 }

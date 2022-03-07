@@ -214,7 +214,7 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                             >
                                 {value.claim_request_timestamp > 0
                                     ? value.redeem_request_timestamp > 0
-                                        ? (<div>{'Redeemed'}</div>)
+                                        ? (<div>{'Sent'}</div>)
                                         : ('Claimed')
                                     : 'Unclaimed'}
                             </button>
@@ -252,7 +252,7 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
     return (
         <div className="emergency-container">
             <button onClick={() => setAddModalShow(true)} className="cta-button confirm-button">
-                ADD AN EMERGENCY ADDRESS
+                ADD A RECEIVING ADDRESS
             </button>
             <AddModal
                 onClose={() => setAddModalShow(false)}

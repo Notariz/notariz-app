@@ -7,6 +7,7 @@ import '../../../Common.css';
 interface RecoveryAddress {
     sender: string;
     receiver: string;
+    redeemed: boolean;
 }
 
 function AddRecoveryModal(props: {
@@ -20,7 +21,8 @@ function AddRecoveryModal(props: {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [inputValue, setInputValue] = useState<RecoveryAddress>({
         sender: '',
-        receiver: publicKey?.toString() ? publicKey.toString() : ''
+        receiver: publicKey?.toString() ? publicKey.toString() : '',
+        redeemed: false
     });
 
     const closeOnEscapeKeyDown = (e: any) => {
@@ -58,7 +60,8 @@ function AddRecoveryModal(props: {
                                     props.formIsCorrect && !props.isMentioned
                                         ? (setInputValue({
                                               sender: '',
-                                              receiver: publicKey?.toString() ? publicKey.toString() : ''
+                                              receiver: publicKey?.toString() ? publicKey.toString() : '',
+                                              redeemed: false
                                           }),
                                           props.onClose(),
                                           setIsSubmitted(false))
@@ -76,7 +79,7 @@ function AddRecoveryModal(props: {
                                 <span className="hint">This recovery address already exists.</span>
                             ) : null}
                             <input
-                                name="receiver"
+                                name="sender"
                                 type="text"
                                 placeholder="Your sending recovery address"
                                 value={inputValue.sender}

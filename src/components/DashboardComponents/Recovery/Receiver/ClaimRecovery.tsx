@@ -1,18 +1,26 @@
 import { PublicKey } from '@solana/web3.js';
 import { useCallback, useEffect, useState } from 'react';
-import AddRecoveryModal from '../Sender/Modals/AddRecoveryModal';
+import AddRecoveryModal from './Modals/AddRecoveryModal';
+import ClaimRecoveryModal from './Modals/ClaimRecoveryModal';
 import '../Sender/Recovery.css';
 
 interface RecoveryAddress {
     sender: string;
     receiver: string;
+    redeemed: boolean;
 }
 
 const TEST_RECOVERY_ADDRESS: RecoveryAddress[] = [
     {
         sender: '5ZLaVaVJdvdqGmvnS4jYgJ7k54Kdev7f1q5LDytjwqJ6',
-        receiver: '3dCjBWJyjGwiNk3Q45WzvMhfmz4Weod2ABjQuzhfqzD3'
+        receiver: '3dCjBWJyjGwiNk3Q45WzvMhfmz4Weod2ABjQuzhfqzD3',
+        redeemed: false
     },
+    {
+        sender: '95y9LhviCVzdPwfJ2gHUuQkax8jj1fbQ19imhesbPJjM',
+        receiver: '3dCjBWJyjGwiNk3Q45WzvMhfmz4Weod2ABjQuzhfqzD3',
+        redeemed: false
+    }
 ];
 
 const WALLET_BALANCE = 1500;
@@ -20,7 +28,7 @@ const WALLET_BALANCE = 1500;
 function ClaimRecovery() {
     const [recoveryList, setRecoveryList] = useState<RecoveryAddress[]>([]);
     const [showAddModal, setAddModalShow] = useState(false);
-    const [showDeleteModal, setDeleteModalShow] = useState(false);
+    const [showClaimModal, setClaimModalShow] = useState(false);
     const [formIsCorrect, setFormIsCorrect] = useState(false);
     const [isMentioned, setIsMentioned] = useState(false);
     const [selectedSender, setSelectedSender] = useState('');
@@ -45,7 +53,7 @@ function ClaimRecovery() {
                                 <span><i className="fa fa-arrow-right"></i></span>
                                 {' Me'}
                             </p>
-                            <button onClick={() => (setSelectedSender(value.sender), setDeleteModalShow(true))} className='cta-button delete-button'>DELETE</button>
+                            <button onClick={() => (setSelectedSender(value.sender), setClaimModalShow(true))} className='cta-button status-button' disabled={value.redeemed}>{value.redeemed ? 'Redeemed' : 'Claim'}</button>
                         </div>
                     </div>
                 ))}
@@ -63,20 +71,20 @@ function ClaimRecovery() {
             setFormIsCorrect(true);
             recovery.length > 0
                 ? setIsMentioned(true)
-                : (setRecoveryList([...recoveryList, { sender: inputValue.sender, receiver: inputValue.receiver }]),
+                : (setRecoveryList([...recoveryList, { sender: inputValue.sender, receiver: inputValue.receiver, redeemed: false }]),
                   setIsMentioned(false));
         } else {
             setFormIsCorrect(false);
         }
     };
 
-    const deleteRecovery = async () => {
+    const claimRequest = async () => {
         const id = selectedRecovery[0].sender;
-        const newRecoveries = recoveryList.filter(function (recovery) {
-            return recovery.sender != id;
-        });
-
-        setRecoveryList(newRecoveries);
+        const newSenders = [...recoveryList];
+        newSenders.map((value) =>
+            (value.sender === id ? value.redeemed = true : null)
+        );
+        setRecoveryList(newSenders);
     };
 
     useEffect(() => setRecoveryList(TEST_RECOVERY_ADDRESS), [PublicKey]);
@@ -84,7 +92,7 @@ function ClaimRecovery() {
     return (
         <div className="recovery-container">
             <button onClick={() => setAddModalShow(true)} className="cta-button confirm-button">
-                ADD AN EMERGENCY ADDRESS
+                ADD A SENDING ADDRESS
             </button>
             <AddRecoveryModal
                 formIsCorrect={formIsCorrect}
@@ -95,13 +103,14 @@ function ClaimRecovery() {
                 }}
                 show={showAddModal}
             />
-            {/*
-            <DeleteRecoveryModal
-                onClose={() => setDeleteModalShow(false)}
-                show={showDeleteModal}
-                deleteRecovery={deleteRecovery}
-                selectedReceiver={selectedReceiver}
-            />*/}
+            <ClaimRecoveryModal
+                onClose={() => setClaimModalShow(false)}
+                show={showClaimModal}
+                claimRequest={claimRequest}
+                selectedSender={recoveryList.filter((recovery) => {
+                    return selectedSender === recovery.sender;
+                })}
+            />
             <div className="recovery-list">{recoveryList.length > 0 ? renderRecoveryList() : renderDescription()}</div>
         </div>
     );

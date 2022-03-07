@@ -6,7 +6,6 @@
     margin-top: 30px;
 }
 
-
 .recovery-container span {
     color: rgb(255, 0, 85);
 }
@@ -29,4 +28,8 @@
 .recovery-item {
     margin-left: 10%;
     margin-right: 10%;
+}
+
+button:disabled {
+    opacity: .2;
 }
