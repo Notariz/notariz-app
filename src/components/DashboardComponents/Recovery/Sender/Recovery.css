@@ -17,3 +17,7 @@
 .recovery-container span {
     color: aqua;
 }
+
+.recovery-container h3 {
+    font-size: 18px;
+}

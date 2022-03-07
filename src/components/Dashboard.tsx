@@ -16,8 +16,14 @@ import './DashboardComponents/Common.css';
 function Dashboard() {
     const { publicKey } = useWallet();
     const [notificationsCount, setNotificationsCount] = useState(0);
-    const [emergencyProfile, setEmergencyProfile] = useState('sender');
-    const [recoveryProfile, setRecoveryProfile] = useState('sender');
+    const [emergencyProfile, setEmergencyProfile] = useState(() => {
+        const initialValue = localStorage.getItem("emergencyProfile") ? JSON.parse(localStorage.getItem("emergencyProfile") || "") : null;
+        return initialValue || 'sender';
+    }); 
+    const [recoveryProfile, setRecoveryProfile] = useState(() => {
+        const initialValue = localStorage.getItem("recoveryProfile") ? JSON.parse(localStorage.getItem("recoveryProfile") || "") : null;
+        return initialValue || 'sender';
+    }); 
 
     const renderWalletNotConnected = useCallback(
         () => (
@@ -51,6 +57,14 @@ function Dashboard() {
         document.title = `${notificationsCount > 0 ? `(${notificationsCount})` : ''} Notariz`;
     });
 
+    useEffect(() => {
+        localStorage.setItem('emergencyProfile', JSON.stringify(emergencyProfile));
+    }, [emergencyProfile]);
+
+    useEffect(() => {
+        localStorage.setItem('recoveryProfile', JSON.stringify(recoveryProfile));
+    }, [recoveryProfile]);
+
     const renderWalletConnected = useCallback(
         () => (
             <Tabs defaultActiveKey="emergency" id="tabs" className="mb-3">
@@ -70,7 +84,7 @@ function Dashboard() {
                 </Tab>
                 <Tab eventKey="recovery" title="Recovery addresses" className="tab-content">
                     <ProfileButton profile={recoveryProfile} setToggle={setRecoveryToggle} />
-                    <Recovery />
+                    {recoveryProfile === 'sender' && <Recovery />}
                 </Tab>
                 <Tab eventKey="wallet" title="Wallet" className="tab-content">
                     <Wallet />

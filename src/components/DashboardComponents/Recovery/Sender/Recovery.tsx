@@ -1,11 +1,17 @@
+import { useCallback } from 'react';
 import './Recovery.css'
 
 function Recovery() {
+    const renderDescription = useCallback(
+        () => (
+            <h3>Your recovery addresses will lie here once added.</h3>
+        ),
+        []
+    );
+
     return(
         <div className='recovery-container'>
-            <p>Your <span>recovery address</span> will lie here once added.
-            <br></br>
-            Once claimed, <span>100%</span> of your funds will be sent to this address.</p>
+            {renderDescription()}
         </div>
     )
 }
