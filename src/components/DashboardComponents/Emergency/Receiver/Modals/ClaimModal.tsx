@@ -36,7 +36,7 @@ function ClaimModal(props: { show: boolean; onClose: () => void; claimRequest: (
                             <h3 className="notariz-modal-title">Claim request</h3>
                         </span>
                     </div>
-                    <span className="hint">{props.selectedSender[0].claim_request_timestamp > 0 ? 'You are about to cancel this claim request.' : 'Only use in case of emergency.'}</span>
+                    <span className="hint">{props.selectedSender.length > 0 && props.selectedSender[0].claim_request_timestamp > 0 ? 'You are about to cancel this claim request.' : 'Only use in case of emergency.'}</span>
                     <div className="notariz-modal-body">
                         <button
                             type="submit"
@@ -46,7 +46,7 @@ function ClaimModal(props: { show: boolean; onClose: () => void; claimRequest: (
                             }}
                             className="cta-button edit-button"
                         >
-                            {props.selectedSender[0].claim_request_timestamp > 0 ? 'Cancel' : 'Claim'}
+                            {props.selectedSender.length > 0 && props.selectedSender[0].claim_request_timestamp > 0 ? 'Cancel' : 'Claim'}
                         </button>
                     </div>
                 </div>

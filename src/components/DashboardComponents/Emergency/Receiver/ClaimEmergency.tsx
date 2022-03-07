@@ -110,7 +110,7 @@ function Claim() {
         const id = selectedEmergency[0].sender;
         const newSenders = [...senderList];
         newSenders.map((value) =>
-            value.sender === id ? (value.claim_request_timestamp > 0 ? value.claim_request_timestamp = 0 : (value.claim_request_timestamp = 10)) : value.claim_request_timestamp
+            value.sender === id ? (value.claim_request_timestamp > 0 ? value.claim_request_timestamp = 0 : value.claim_request_timestamp = 10) : value.claim_request_timestamp
         );
         setSenderList(newSenders);
     };
