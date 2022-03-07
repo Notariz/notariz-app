@@ -6,6 +6,10 @@ span {
     color: rgb(253, 29, 104);
 }
 
+.cta-button span {
+    color: white !important;
+}
+
 .hint {
     opacity: 0.5;
     font-size: smaller;

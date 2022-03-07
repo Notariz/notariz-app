@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import Countdown from 'react-countdown';
 import AddModal from './Modals/AddModal';
 import DeleteModal from './Modals/DeleteModal';
 import EditModal from './Modals/EditModal';
@@ -10,9 +11,8 @@ import { PublicKey } from '@solana/web3.js';
 interface EmergencyDetails {
     receiver: string;
     percentage: number;
-    delay: number;
-    status: string;
-    timestamp: number;
+    claim_request_timestamp: number;
+    redeem_request_timestamp: number;
 }
 
 interface EmergencyAlias {
@@ -20,41 +20,39 @@ interface EmergencyAlias {
     alias: string;
 }
 
+const WITHDRAWAL_PERIOD = 4;
+
 const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
     {
         receiver: 'JBu1AL4obBcCMqKBBxhpWCNUt136ijcuMZLFvTP7iWdB',
         percentage: 30,
-        delay: 4,
-        status: 'claimed',
-        timestamp: 300,
+        claim_request_timestamp: 30,
+        redeem_request_timestamp: 0   
     },
     {
         receiver: '3VQwtcntVQN1mj1MybQw8qK7Li3KNrrgNskSQwZAPGNr',
         percentage: 20,
-        delay: 2,
-        status: 'claimed',
-        timestamp: 300,
+        claim_request_timestamp: 40,
+        redeem_request_timestamp: 50  
     },
     {
         receiver: '2V7t5NaKY7aGkwytCWQgvUYZfEr9XMwNChhJEakTExk6',
         percentage: 17,
-        delay: 3,
-        status: 'redeemed',
-        timestamp: 0,
+        claim_request_timestamp: 0,
+        redeem_request_timestamp: 0  
     },
     {
         receiver: '7KVswB9vkCgeM3SHP7aGDijvdRAHK8P5wi9JXViCrtYh',
         percentage: 5,
-        delay: 7,
-        status: 'unclaimed',
-        timestamp: 0,
+        claim_request_timestamp: 0,
+        redeem_request_timestamp: 0  
     },
 ];
 
 const TEST_ALIAS_LIST: EmergencyAlias[] = [
     {
         receiver: '7KVswB9vkCgeM3SHP7aGDijvdRAHK8P5wi9JXViCrtYh',
-        alias: 'Carol'
+        alias: 'Carol',
     },
 ];
 
@@ -66,7 +64,7 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
     const [showEditModal, setEditModalShow] = useState(false);
     const [emergencyList, setEmergencyList] = useState<EmergencyDetails[]>([]);
     const [aliasList, setAliasList] = useState<EmergencyAlias[]>(() => {
-        const initialValue = JSON.parse(localStorage.getItem("aliasList") || "");
+        const initialValue = JSON.parse(localStorage.getItem('aliasList') || '');
         return initialValue;
     });
     const [formIsCorrect, setFormIsCorrect] = useState(false);
@@ -75,7 +73,7 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
     const [emergencyIsMentioned, setEmergencyIsMentioned] = useState(false);
 
     var claimingEmergencies = emergencyList.filter(function (emergency) {
-        return emergency.status === 'claimed';
+        return emergency.claim_request_timestamp > 0 && emergency.redeem_request_timestamp === 0;
     });
 
     var selectedEmergency = emergencyList.filter(function (emergency) {
@@ -91,19 +89,12 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
         [emergencyList]
     );
 
-    const renderItemField = useCallback(
-        (claimed: boolean) => <span>{claimed === true ? 'in' : 'after'}</span>,
-        [emergencyList]
-    );
-
     const addEmergency = async (inputValues: EmergencyDetails) => {
         if (
             inputValues.receiver.length >= 32 &&
             inputValues.receiver.length <= 44 &&
             inputValues.percentage > 0 &&
             inputValues.percentage <= 100 &&
-            inputValues.delay >= 1 &&
-            inputValues.delay == Math.round(inputValues.delay) &&
             inputValues.percentage == Math.round(inputValues.percentage)
         ) {
             var emergency = emergencyList.filter(function (value) {
@@ -130,9 +121,7 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                 if (inputValue.length <= 15) {
                     setFormIsCorrect(true);
                     newEmergencies.map((value) =>
-                        value.receiver === id
-                            ? setAliasList([...aliasList, { receiver: id, alias: inputValue }])
-                            : null
+                        value.receiver === id ? setAliasList([...aliasList, { receiver: id, alias: inputValue }]) : null
                     );
                 } else {
                     setFormIsCorrect(false);
@@ -149,19 +138,10 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                     setFormIsCorrect(false);
                 }
                 break;
-            case 'delay':
-                if (inputValue >= 1 && Math.round(inputValue) == inputValue) {
-                    setFormIsCorrect(true);
-                    newEmergencies.map((value) => (value.receiver === id ? (value.delay = inputValue) : value.delay));
-                    setEmergencyList(newEmergencies);
-                } else {
-                    setFormIsCorrect(false);
-                }
-                break;
             case 'cancel':
                 setFormIsCorrect(true);
                 newEmergencies.map((value) =>
-                    value.status === 'claimed' ? (value.status = 'unclaimed') : value.status
+                    value.claim_request_timestamp > 0 && value.redeem_request_timestamp === 0 ? (value.claim_request_timestamp = 0) : value.claim_request_timestamp
                 );
                 setEmergencyList(newEmergencies);
                 break;
@@ -182,8 +162,8 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
     }, [PublicKey]);
 
     useEffect(() => {
-        localStorage.setItem("aliasList", JSON.stringify(aliasList));
-    }, [aliasList])
+        localStorage.setItem('aliasList', JSON.stringify(aliasList));
+    }, [aliasList]);
 
     const renderEmergencyList = useCallback(
         () => (
@@ -203,10 +183,10 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                                 >
                                     {aliasList.map((alias, index) => (
                                         <span key={index.toString()} className="receiver-name">
-                                            {alias.receiver === value.receiver && alias.alias + ' '}                   
+                                            {alias.receiver === value.receiver && alias.alias + ' '}
                                         </span>
                                     ))}
-                                    
+
                                     {value.receiver.substring(0, 5) +
                                         '...' +
                                         value.receiver.substring(value.receiver.length - 5) +
@@ -224,17 +204,6 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                                     {' ' + (WALLET_BALANCE * value.percentage) / 100}
                                 </span>
                                 {' SOL '}
-                                {renderItemField(value.status === 'claimed' ? true : false)}
-                                <span
-                                    onClick={() => {
-                                        setEditModalShow(true);
-                                        setSelectedField('delay');
-                                        setSelectedReceiver(value.receiver);
-                                    }}
-                                    className="receiver-text"
-                                >
-                                    {' ' + value.delay + ' days'}
-                                </span>
                             </p>
 
                             <button
@@ -244,17 +213,19 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                                     setSelectedReceiver(value.receiver);
                                 }}
                                 className="cta-button status-button"
-                                disabled={value.status !== 'claimed'}
+                                disabled={value.claim_request_timestamp === 0 || value.redeem_request_timestamp > 0}
                             >
-                                {value.status === 'claimed' ? (
-                                    <div>
-                                        <Emojis symbol="⏳" label="hourglass" /> {value.status.toUpperCase()}
-                                    </div>
-                                ) : (
-                                    value.status.toUpperCase()
-                                )}
+                                {value.claim_request_timestamp > 0 ? (value.redeem_request_timestamp > 0 ? 'Redeemed' : 'Claimed') : 'Unclaimed'}
                             </button>
-                            {value.status === 'unclaimed' ? (
+                            {value.claim_request_timestamp > 0 && value.redeem_request_timestamp === 0 ? (
+                                <button className="cta-button status-button">
+                                    <div>
+                                        <Emojis symbol="⏳" label="hourglass" />
+                                        <Countdown date={Date.now() + WITHDRAWAL_PERIOD * 3600 * 24 * 1000} />
+                                    </div>
+                                </button>
+                            ) : null}
+                            {value.claim_request_timestamp === 0 ? (
                                 <button
                                     onClick={() => {
                                         setDeleteModalShow(true);
@@ -272,8 +243,6 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
         ),
         [emergencyList, aliasList]
     );
-
-    console.log(aliasList);
 
     useEffect(() => {
         props.setNotificationCounter(claimingEmergencies.length);

@@ -4,11 +4,9 @@ import '../../../Common.css';
 
 interface EmergencyDetails {
     receiver: string;
-    alias: string;
     percentage: number;
-    delay: number;
-    status: string;
-    timestamp: number;
+    claim_request_timestamp: number;
+    redeem_request_timestamp: number;
 }
 
 function AddModal(props: {
@@ -21,11 +19,9 @@ function AddModal(props: {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [inputValues, setInputValues] = useState<EmergencyDetails>({
         receiver: '',
-        alias: '',
         percentage: 0,
-        delay: 0,
-        status: 'unclaimed',
-        timestamp: 0,
+        claim_request_timestamp: 0,
+        redeem_request_timestamp: 0
     });
 
     const closeOnEscapeKeyDown = (e: any) => {
@@ -63,11 +59,9 @@ function AddModal(props: {
                                     props.formIsCorrect && !props.emergencyIsMentioned
                                         ? (setInputValues({
                                               receiver: '',
-                                              alias: '',
                                               percentage: 0,
-                                              delay: 0,
-                                              status: 'unclaimed',
-                                              timestamp: 0,
+                                              claim_request_timestamp: 0,
+                                              redeem_request_timestamp: 0
                                           }),
                                           props.onClose(),
                                           setIsSubmitted(false))
@@ -104,19 +98,6 @@ function AddModal(props: {
                                 type="number"
                                 placeholder="Your emergency's claimable percentage"
                                 value={inputValues.percentage === 0 ? NaN : inputValues.percentage}
-                                onChange={handleInputChange}
-                                required
-                            />
-                            {isSubmitted && !props.formIsCorrect ? (
-                                <span className="hint">
-                                    Your withdrawal period value should be an integer greater than 0.
-                                </span>
-                            ) : null}
-                            <input
-                                name="delay"
-                                type="number"
-                                placeholder="Your withdrawal period (in days)"
-                                value={inputValues.delay === 0 ? NaN : inputValues.delay}
                                 onChange={handleInputChange}
                                 required
                             />
