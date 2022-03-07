@@ -68,7 +68,7 @@ function Dashboard() {
 
     const renderWalletConnected = useCallback(
         () => (
-            <Tabs defaultActiveKey="emergency" id="tabs" className="mb-3">
+            <Tabs defaultActiveKey="wallet" id="tabs" className="mb-3">
                 <Tab eventKey="wallet" title="Dashboard" className="tab-content">
                     <Wallet />
                 </Tab>

@@ -30,3 +30,12 @@
     margin-left: 10%;
     margin-right: 10%;
 }
+
+.pie-chart-container h3 {
+    margin-bottom: 50px;
+}
+
+.pie-chart-item {
+    width: 50%;
+    margin-left: 25%;
+}

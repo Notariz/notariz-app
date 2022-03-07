@@ -1,6 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 import { useState, useCallback, useEffect } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
+import { PieChart } from 'react-minimal-pie-chart';
 import './Wallet.css';
 import '../Common.css';
 
@@ -24,11 +25,16 @@ const TEST_DEED: Deed[] = [
 
 const PROGRAM_BALANCE = 500;
 const WITHDRAWAL_PERIOD = 4;
-const SOLANA_PRICE = 100;
-const LAST_ON_CHAIN_ACTIVITY = "03/07/22"
+const LAST_ON_CHAIN_ACTIVITY = '03/07/22';
+const TOTAL_SHARED = 62;
 
 function Wallet() {
     const [openDeed, setOpenDeed] = useState<Deed[]>([]);
+    const myData = [
+        { title: 'Dogs', value: 100, color: '#fd1d68' },
+        { title: 'Cats', value: 50, color: '#ed729b' },
+        { title: 'Dragons', value: 15, color: 'purple' },
+    ];
 
     const renderCreateAccount = useCallback(
         () => (
@@ -66,11 +72,18 @@ function Wallet() {
         [openDeed]
     );
 
-    const renderSolanaPrice = useCallback(
+    const renderPieChart = useCallback(
         () => (
-            <div className="wallet-item">
-                <h3>Solana price</h3>
-                <h1>{'$'+ SOLANA_PRICE}</h1>
+            <div className="wallet-item pie-chart-container">
+                <h3>Assets distribution</h3>
+                <div className="pie-chart-item">
+                    <PieChart
+                        // your data
+                        data={myData}
+                        // width and height of the view box
+                        viewBoxSize={[100, 100]}
+                    />
+                </div>
             </div>
         ),
         [openDeed]
@@ -86,34 +99,43 @@ function Wallet() {
         [openDeed]
     );
 
+    const renderShares = useCallback(
+        () => (
+            <div className="wallet-item">
+                <h3>Shared deposit total</h3>
+                <h1>{TOTAL_SHARED + '%'}</h1>
+            </div>
+        ),
+        [openDeed]
+    );
+
     useEffect(() => setOpenDeed(TEST_DEED), [PublicKey]);
 
     return (
         <div className="wallet-container">
-            <Container>
-                <Row>
-                    <Col xs={8}>
-                        <div className="wallet-item-background">
-                            <div className="wallet-item">
-                                {openDeed.length > 0 ? renderBalance() : renderCreateAccount()}
-                            </div>
-                        </div>
-                    </Col>
-                    <Col xs={4}>
-                        <div className="wallet-item-background">
-                            <div className="wallet-item">{openDeed.length > 0 ? renderWithdrawalPeriod() : null}</div>
-                        </div>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs={12}>
-                        <div className="wallet-item-background">
-                            <div className="wallet-item">{openDeed.length > 0 ? renderSolanaPrice() : null}</div>
-                        </div>
-                    </Col>
-                    
-                </Row>
-            </Container>
+            {openDeed.length > 0 ? (
+                <Container>
+                    <Row>
+                        <Col xs={7}>
+                            <div className="wallet-item-background">{renderBalance()}</div>
+                        </Col>
+                        <Col xs={5}>
+                            <div className="wallet-item-background">{renderWithdrawalPeriod()}</div>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={4}>
+                            <div className="wallet-item-background">{renderShares()}</div>
+                            <div className="wallet-item-background">{renderOnChainActivity()}</div>
+                        </Col>
+                        <Col xs={8}>
+                            <div className="wallet-item-background">{renderPieChart()}</div>
+                        </Col>
+                    </Row>
+                </Container>
+            ) : (
+                renderCreateAccount()
+            )}
         </div>
     );
 }
