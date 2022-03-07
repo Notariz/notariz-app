@@ -50,10 +50,7 @@ const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
 ];
 
 const TEST_ALIAS_LIST: EmergencyAlias[] = [
-    {
-        receiver: '7KVswB9vkCgeM3SHP7aGDijvdRAHK8P5wi9JXViCrtYh',
-        alias: 'Carol',
-    },
+    
 ];
 
 const WALLET_BALANCE = 1500;
@@ -64,7 +61,7 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
     const [showEditModal, setEditModalShow] = useState(false);
     const [emergencyList, setEmergencyList] = useState<EmergencyDetails[]>([]);
     const [aliasList, setAliasList] = useState<EmergencyAlias[]>(() => {
-        const initialValue = JSON.parse(localStorage.getItem('aliasList') || '');
+        const initialValue = JSON.parse(localStorage.getItem('aliasList') || '[{"receiver": "", "alias": ""}]');
         return initialValue;
     });
     const [formIsCorrect, setFormIsCorrect] = useState(false);
