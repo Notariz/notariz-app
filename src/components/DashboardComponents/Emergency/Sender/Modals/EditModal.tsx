@@ -5,7 +5,7 @@ import '../../../Common.css';
 interface EmergencyDetails {
     receiver: string;
     alias: string;
-    percentage: number;
+    share: number;
     delay: number;
     status: string;
 }
@@ -48,9 +48,9 @@ function EditModal(props: {
                                 </div>
                             </div>
                         )}
-                        {props.selectedField === 'percentage' && (
+                        {props.selectedField === 'share' && (
                             <div>
-                                <h3 className="notariz-modal-title">Edit percentage</h3>
+                                <h3 className="notariz-modal-title">Edit share</h3>
                             </div>
                         )}
                         {props.selectedField === 'delay' && (
@@ -98,19 +98,19 @@ function EditModal(props: {
                                     />
                                 </div>
                             )}
-                            {props.selectedField === 'percentage' && (
+                            {props.selectedField === 'share' && (
                                 <div>
                                     {!props.formIsCorrect && isSubmitted ? (
                                         <div>
                                             <span className="hint">
-                                                A percentage should be an integer comprised between 1 to 100.
+                                                A share should be an integer comprised between 1 to 100.
                                             </span>
                                         </div>
                                     ) : null}
                                     <input
-                                        name="percentage"
+                                        name="share"
                                         type="number"
-                                        placeholder={"Your emergency's claimable percentage"}
+                                        placeholder={"Your emergency's claimable share"}
                                         value={inputValue}
                                         onChange={(e) => setInputValue(e.target.value)}
                                         required

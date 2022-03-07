@@ -6,7 +6,7 @@ interface EmergencyDetails {
     sender: string;
     receiver: string;
     alias: string;
-    percentage: number;
+    share: number;
     delay: number;
     status: string;
     timestamp: number;

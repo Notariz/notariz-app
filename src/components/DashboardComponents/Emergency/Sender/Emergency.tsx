@@ -10,7 +10,7 @@ import { PublicKey } from '@solana/web3.js';
 
 interface EmergencyDetails {
     receiver: string;
-    percentage: number;
+    share: number;
     claim_request_timestamp: number;
     redeem_request_timestamp: number;
 }
@@ -25,33 +25,31 @@ const WITHDRAWAL_PERIOD = 4;
 const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
     {
         receiver: 'JBu1AL4obBcCMqKBBxhpWCNUt136ijcuMZLFvTP7iWdB',
-        percentage: 30,
+        share: 30,
         claim_request_timestamp: 30,
         redeem_request_timestamp: 0   
     },
     {
         receiver: '3VQwtcntVQN1mj1MybQw8qK7Li3KNrrgNskSQwZAPGNr',
-        percentage: 20,
+        share: 20,
         claim_request_timestamp: 40,
         redeem_request_timestamp: 50  
     },
     {
         receiver: '2V7t5NaKY7aGkwytCWQgvUYZfEr9XMwNChhJEakTExk6',
-        percentage: 17,
+        share: 17,
         claim_request_timestamp: 0,
         redeem_request_timestamp: 0  
     },
     {
         receiver: '7KVswB9vkCgeM3SHP7aGDijvdRAHK8P5wi9JXViCrtYh',
-        percentage: 5,
+        share: 5,
         claim_request_timestamp: 0,
         redeem_request_timestamp: 0  
     },
 ];
 
-const TEST_ALIAS_LIST: EmergencyAlias[] = [
-    
-];
+const TEST_ALIAS_LIST: EmergencyAlias[] = [];
 
 const WALLET_BALANCE = 1500;
 
@@ -90,9 +88,9 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
         if (
             inputValues.receiver.length >= 32 &&
             inputValues.receiver.length <= 44 &&
-            inputValues.percentage > 0 &&
-            inputValues.percentage <= 100 &&
-            inputValues.percentage == Math.round(inputValues.percentage)
+            inputValues.share > 0 &&
+            inputValues.share <= 100 &&
+            inputValues.share == Math.round(inputValues.share)
         ) {
             var emergency = emergencyList.filter(function (value) {
                 return value.receiver === inputValues.receiver;
@@ -124,11 +122,11 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                     setFormIsCorrect(false);
                 }
                 break;
-            case 'percentage':
+            case 'share':
                 if (inputValue > 0 && inputValue <= 100 && Math.round(inputValue) == inputValue) {
                     setFormIsCorrect(true);
                     newEmergencies.map((value) =>
-                        value.receiver === id ? (value.percentage = inputValue) : value.percentage
+                        value.receiver === id ? (value.share = inputValue) : value.share
                     );
                     setEmergencyList(newEmergencies);
                 } else {
@@ -193,14 +191,13 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                                 <span
                                     onClick={() => {
                                         setEditModalShow(true);
-                                        setSelectedField('percentage');
+                                        setSelectedField('share');
                                         setSelectedReceiver(value.receiver);
                                     }}
                                     className="receiver-text"
                                 >
-                                    {' ' + (WALLET_BALANCE * value.percentage) / 100}
+                                    {' ' + (WALLET_BALANCE * value.share) / 100 + ' SOL'}
                                 </span>
-                                {' SOL '}
                             </p>
 
                             <button

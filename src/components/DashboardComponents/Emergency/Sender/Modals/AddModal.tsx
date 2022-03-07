@@ -4,7 +4,7 @@ import '../../../Common.css';
 
 interface EmergencyDetails {
     receiver: string;
-    percentage: number;
+    share: number;
     claim_request_timestamp: number;
     redeem_request_timestamp: number;
 }
@@ -19,7 +19,7 @@ function AddModal(props: {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [inputValues, setInputValues] = useState<EmergencyDetails>({
         receiver: '',
-        percentage: 0,
+        share: 0,
         claim_request_timestamp: 0,
         redeem_request_timestamp: 0
     });
@@ -59,7 +59,7 @@ function AddModal(props: {
                                     props.formIsCorrect && !props.emergencyIsMentioned
                                         ? (setInputValues({
                                               receiver: '',
-                                              percentage: 0,
+                                              share: 0,
                                               claim_request_timestamp: 0,
                                               redeem_request_timestamp: 0
                                           }),
@@ -90,14 +90,14 @@ function AddModal(props: {
                             />
                             {isSubmitted && !props.formIsCorrect ? (
                                 <span className="hint">
-                                    A percentage should be an integer comprised between 1 to 100.
+                                    A share should be an integer comprised between 1 to 100.
                                 </span>
                             ) : null}
                             <input
-                                name="percentage"
+                                name="share"
                                 type="number"
-                                placeholder="Your emergency's claimable percentage"
-                                value={inputValues.percentage === 0 ? NaN : inputValues.percentage}
+                                placeholder="Your emergency's claimable share"
+                                value={inputValues.share === 0 ? NaN : inputValues.share}
                                 onChange={handleInputChange}
                                 required
                             />
