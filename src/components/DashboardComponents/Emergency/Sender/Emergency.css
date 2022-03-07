@@ -4,6 +4,8 @@
     text-align: center;
     display: block;
     margin-top: 30px;
+    width: 60%;
+    margin-left: 20%;
 }
 
 .emergency-list {

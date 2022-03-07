@@ -9,7 +9,7 @@ import ClaimEmergency from './DashboardComponents/Emergency/Receiver/ClaimEmerge
 import Recovery from './DashboardComponents/Recovery/Sender/Recovery';
 import ClaimRecovery from './DashboardComponents/Recovery/Receiver/ClaimRecovery';
 import ProfileButton from './utils/ProfileButton';
-import Wallet from './DashboardComponents/Wallet';
+import Wallet from './DashboardComponents/Wallet/Wallet';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Dashboard.css';
 import './DashboardComponents/Common.css';
@@ -69,6 +69,9 @@ function Dashboard() {
     const renderWalletConnected = useCallback(
         () => (
             <Tabs defaultActiveKey="emergency" id="tabs" className="mb-3">
+                <Tab eventKey="wallet" title="Dashboard" className="tab-content">
+                    <Wallet />
+                </Tab>
                 <Tab
                     eventKey="emergency"
                     title={
@@ -83,12 +86,9 @@ function Dashboard() {
                         <Emergency setNotificationCounter={(number) => setNotificationsCount(number)} />
                     ) || <ClaimEmergency />}
                 </Tab>
-                <Tab eventKey="recovery" title="Recovery addresses" className="tab-content">
+                <Tab eventKey="recovery" title="Recoveries" className="tab-content">
                     <ProfileButton profile={recoveryProfile} setToggle={setRecoveryToggle} />
                     {recoveryProfile === 'sender' && <Recovery /> || <ClaimRecovery />}
-                </Tab>
-                <Tab eventKey="wallet" title="Wallet" className="tab-content">
-                    <Wallet />
                 </Tab>
             </Tabs>
         ),
