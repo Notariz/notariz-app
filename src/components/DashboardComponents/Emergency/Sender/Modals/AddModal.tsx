@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { CSSTransition } from 'react-transition-group';
+import Emojis from '../../../../utils/Emojis';
 import '../../../Common.css';
 
 interface EmergencyDetails {
@@ -48,7 +49,7 @@ function AddModal(props: {
             <div className={`notariz-modal ${props.show ? 'show' : ''}`} onClick={props.onClose}>
                 <div className="notariz-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="notariz-modal-header">
-                        <h3 className="notariz-modal-title">New emergency address</h3>
+                        <h3 className="notariz-modal-title">New receiving emergency address</h3>
                     </div>
                     <div className="notariz-modal-body">
                         <form
@@ -106,7 +107,7 @@ function AddModal(props: {
                                 onClick={() => props.addEmergency(inputValues)}
                                 className="cta-button edit-button"
                             >
-                                Submit
+                                <div><Emojis symbol="✔️" label="check" /> {' Submit'}</div>
                             </button>
                         </form>
                     </div>

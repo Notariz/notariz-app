@@ -2,22 +2,31 @@
     margin-top: 30px;
 }
 
-.recovery-container p {
-    color: white;
-    box-sizing: border-box;
-    border: solid rgb(255, 0, 85) 1px;
-    font-weight: bold;
-    border-radius: 15px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    width: 100%;
-    word-spacing: 0.25rem;
+.recovery-list {
+    margin-top: 30px;
 }
 
+
 .recovery-container span {
-    color: aqua;
+    color: rgb(255, 0, 85);
 }
 
 .recovery-container h3 {
     font-size: 18px;
+    margin-bottom: 30px;
+}
+
+.recovery-item-background {
+    background-color: #1e2430;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    margin-top: 30px;
+    border-radius: 20px;
+}
+
+.recovery-item {
+    margin-left: 10%;
+    margin-right: 10%;
 }

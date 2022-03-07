@@ -1,28 +1,27 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { CSSTransition } from 'react-transition-group';
 import Emojis from '../../../../utils/Emojis';
 import '../../../Common.css';
 
-interface EmergencyDetails {
+interface RecoveryAddress {
     sender: string;
     receiver: string;
-    alias: string;
-    share: number;
-    delay: number;
-    status: string;
-    timestamp: number;
 }
 
-function AddSenderModal(props: {
+function AddRecoveryModal(props: {
     show: boolean;
     onClose: () => void;
     formIsCorrect: boolean;
-    senderExists: boolean;
-    senderIsMentioned: boolean;
-    addSender: (inputValue: string) => void;
+    isMentioned: boolean;
+    addRecovery: (inputValue: RecoveryAddress) => void;
 }) {
+    const { publicKey } = useWallet();
     const [isSubmitted, setIsSubmitted] = useState(false);
-    const [inputValue, setInputValue] = useState('');
+    const [inputValue, setInputValue] = useState<RecoveryAddress>({
+        sender: '',
+        receiver: publicKey?.toString() ? publicKey.toString() : ''
+    });
 
     const closeOnEscapeKeyDown = (e: any) => {
         if ((e.charCode || e.keyCode) === 27) {
@@ -38,29 +37,17 @@ function AddSenderModal(props: {
         //eslint-disable-next-line
     }, []);
 
-    const renderFormErrorMessage = useCallback(
-        () => <span className="hint">Your sender's public address should be 32-to-44-character long.</span>,
-        [inputValue]
-    );
-
-    const renderSenderDoesNotExistErrorMessage = useCallback(
-        () => <span className="hint">You are not mentioned on this sender's emergency list.</span>,
-        [inputValue]
-    );
-
-    const renderSenderIsAlreadyMentionedErrorMessage = useCallback(
-        () => <span className="hint">This sender is already mentioned in your senders list.</span>,
-        [inputValue]
-    );
+    const handleInputChange = (e: React.FormEvent<HTMLInputElement>) => {
+        const { name, value } = e.currentTarget;
+        setInputValue((prevState) => ({ ...prevState, [name]: value }));
+    };
 
     return (
         <CSSTransition in={props.show} unmountOnExit timeout={{ enter: 0, exit: 300 }}>
             <div className={`notariz-modal ${props.show ? 'show' : ''}`} onClick={props.onClose}>
                 <div className="notariz-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="notariz-modal-header">
-                        <span>
-                            <h3 className="notariz-modal-title">New sending emergency address</h3>
-                        </span>
+                        <h3 className="notariz-modal-title">New sending recovery address</h3>
                     </div>
                     <div className="notariz-modal-body">
                         <form
@@ -68,37 +55,42 @@ function AddSenderModal(props: {
                                 event.preventDefault();
                                 {
                                     setIsSubmitted(true);
-                                    props.formIsCorrect && props.senderExists && !props.senderIsMentioned
-                                        ? (setInputValue(''), props.onClose(), setIsSubmitted(false))
+                                    props.formIsCorrect && !props.isMentioned
+                                        ? (setInputValue({
+                                              sender: '',
+                                              receiver: publicKey?.toString() ? publicKey.toString() : ''
+                                          }),
+                                          props.onClose(),
+                                          setIsSubmitted(false))
                                         : null;
                                 }
                                 /* Call program entry point here */
                             }}
                         >
-                            {!props.formIsCorrect && isSubmitted && renderFormErrorMessage()}
-                            {!props.senderExists &&
-                                props.formIsCorrect &&
-                                isSubmitted &&
-                                renderSenderDoesNotExistErrorMessage()}
-                            {props.senderIsMentioned && isSubmitted && renderSenderIsAlreadyMentionedErrorMessage()}
+                            {isSubmitted && !props.formIsCorrect ? (
+                                <span className="hint">
+                                    Your sending recovery address should be 32-to-44-character long.
+                                </span>
+                            ) : null}
+                            {isSubmitted && props.isMentioned ? (
+                                <span className="hint">This recovery address already exists.</span>
+                            ) : null}
                             <input
-                                name="pk"
+                                name="receiver"
                                 type="text"
-                                placeholder="Your sender's public address"
-                                value={inputValue}
-                                onChange={(e) => setInputValue(e.target.value)}
+                                placeholder="Your sending recovery address"
+                                value={inputValue.sender}
+                                onChange={handleInputChange}
                                 required
                             />
                             <button
                                 type="submit"
-                                onClick={() => {
-                                    props.addSender(inputValue);
-                                }}
+                                onClick={() => props.addRecovery(inputValue)}
                                 className="cta-button edit-button"
                             >
                                 <div>
                                     <Emojis symbol="✔️" label="check" /> {' Submit'}
-                                </div>
+                                </div>{' '}
                             </button>
                         </form>
                     </div>
@@ -108,4 +100,4 @@ function AddSenderModal(props: {
     );
 }
 
-export default AddSenderModal;
+export default AddRecoveryModal;

@@ -1,8 +1,8 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { CSSTransition } from 'react-transition-group';
+import Emojis from '../../../../utils/Emojis';
 import '../../../Common.css';
-
 
 interface RecoveryAddress {
     sender: string;
@@ -19,8 +19,8 @@ function AddRecoveryModal(props: {
     const { publicKey } = useWallet();
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [inputValue, setInputValue] = useState<RecoveryAddress>({
-        sender: '',
-        receiver: publicKey?.toString() ? publicKey.toString() : '',
+        sender: publicKey?.toString() ? publicKey.toString() : '',
+        receiver: ''
     });
 
     const closeOnEscapeKeyDown = (e: any) => {
@@ -47,7 +47,7 @@ function AddRecoveryModal(props: {
             <div className={`notariz-modal ${props.show ? 'show' : ''}`} onClick={props.onClose}>
                 <div className="notariz-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="notariz-modal-header">
-                        <h3 className="notariz-modal-title">New recovery address</h3>
+                        <h3 className="notariz-modal-title">New receiving recovery address</h3>
                     </div>
                     <div className="notariz-modal-body">
                         <form
@@ -57,9 +57,9 @@ function AddRecoveryModal(props: {
                                     setIsSubmitted(true);
                                     props.formIsCorrect && !props.isMentioned
                                         ? (setInputValue({
-                                              sender: '',
-                                              receiver: publicKey?.toString() ? publicKey.toString() : '',
-                                            }),
+                                              sender: publicKey?.toString() ? publicKey.toString() : '',
+                                              receiver: '',
+                                          }),
                                           props.onClose(),
                                           setIsSubmitted(false))
                                         : null;
@@ -69,28 +69,28 @@ function AddRecoveryModal(props: {
                         >
                             {isSubmitted && !props.formIsCorrect ? (
                                 <span className="hint">
-                                    Your recovery address address should be 32-to-44-character long.
+                                    Your receiving recovery address should be 32-to-44-character long.
                                 </span>
                             ) : null}
                             {isSubmitted && props.isMentioned ? (
-                                <span className="hint">
-                                    This recovery address already exists.
-                                </span>
+                                <span className="hint">This recovery address already exists.</span>
                             ) : null}
                             <input
-                                name="sender"
+                                name="receiver"
                                 type="text"
-                                placeholder="Your recovery address"
-                                value={inputValue.sender}
+                                placeholder="Your receiving recovery address"
+                                value={inputValue.receiver}
                                 onChange={handleInputChange}
                                 required
                             />
                             <button
                                 type="submit"
-                                onClick={() => (props.addRecovery(inputValue))}
+                                onClick={() => props.addRecovery(inputValue)}
                                 className="cta-button edit-button"
                             >
-                                Submit
+                                <div>
+                                    <Emojis symbol="✔️" label="check" /> {' Submit'}
+                                </div>{' '}
                             </button>
                         </form>
                     </div>

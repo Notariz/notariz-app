@@ -122,22 +122,16 @@ function Claim() {
                     <div className="claim-emergency-background">
                         <div key={index.toString()} className="claim-emergency-item">
                             <h3>
-                                {'Sender ' +
-                                    (index + 1) +
-                                    ' (' +
-                                    value.sender.substring(0, 5) +
-                                    '...' +
-                                    value.sender.substring(value.sender.length - 5) +
-                                    ')'}
+                                {'Sender ' + (index + 1) }
                             </h3>
                             <p>
-                                {'Me (' +
-                                    value.receiver.substring(0, 5) +
+                                {value.sender.substring(0, 5) +
                                     '...' +
-                                    value.receiver.substring(value.receiver.length - 5) +
-                                    ') '}
-                                <i className="fa fa-arrow-left"></i>
+                                    value.sender.substring(value.sender.length - 5) + ' '}
+                                <i className="fa fa-arrow-right"></i>
                                 {' ' + (WALLET_BALANCE * value.share) / 100 + ' SOL '}
+                                <i className="fa fa-arrow-right"></i>
+                                {' Me'}
                             </p>
                             {value.claim_request_timestamp > 0 || value.redeem_request_timestamp > 0 ? (
                                 <div>

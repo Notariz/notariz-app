@@ -3,11 +3,11 @@ import { CSSTransition } from 'react-transition-group';
 import Emojis from '../../../../utils/Emojis';
 import '../../../Common.css';
 
-function DeleteModal(props: {
+function DeleteRecoveryModal(props: {
     show: boolean;
     onClose: () => void;
-    selectedField: string;
-    deleteEmergency: () => void;
+    selectedReceiver: string;
+    deleteRecovery: () => void;
 }) {
     const closeOnEscapeKeyDown = (e: any) => {
         if ((e.charCode || e.keyCode) === 27) {
@@ -34,7 +34,7 @@ function DeleteModal(props: {
                         </div>
                     </div>
                     <div className="notariz-modal-body">
-                        <button onClick={() => { props.deleteEmergency(); props.onClose() }} className="cta-button edit-button">
+                        <button onClick={() => { props.deleteRecovery(); props.onClose() }} className="cta-button edit-button">
                             <Emojis symbol="🗑️" label="wastebasket" /> Delete
                         </button>
                     </div>
@@ -44,4 +44,4 @@ function DeleteModal(props: {
     );
 }
 
-export default DeleteModal;
+export default DeleteRecoveryModal;

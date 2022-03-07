@@ -7,6 +7,7 @@ import Parser from 'html-react-parser';
 import Emergency from './DashboardComponents/Emergency/Sender/Emergency';
 import ClaimEmergency from './DashboardComponents/Emergency/Receiver/ClaimEmergency';
 import Recovery from './DashboardComponents/Recovery/Sender/Recovery';
+import ClaimRecovery from './DashboardComponents/Recovery/Receiver/ClaimRecovery';
 import ProfileButton from './utils/ProfileButton';
 import Wallet from './DashboardComponents/Wallet';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -84,7 +85,7 @@ function Dashboard() {
                 </Tab>
                 <Tab eventKey="recovery" title="Recovery addresses" className="tab-content">
                     <ProfileButton profile={recoveryProfile} setToggle={setRecoveryToggle} />
-                    {recoveryProfile === 'sender' && <Recovery />}
+                    {recoveryProfile === 'sender' && <Recovery /> || <ClaimRecovery />}
                 </Tab>
                 <Tab eventKey="wallet" title="Wallet" className="tab-content">
                     <Wallet />

@@ -27,25 +27,25 @@ const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
         receiver: 'JBu1AL4obBcCMqKBBxhpWCNUt136ijcuMZLFvTP7iWdB',
         share: 30,
         claim_request_timestamp: 30,
-        redeem_request_timestamp: 0   
+        redeem_request_timestamp: 0,
     },
     {
         receiver: '3VQwtcntVQN1mj1MybQw8qK7Li3KNrrgNskSQwZAPGNr',
         share: 20,
         claim_request_timestamp: 40,
-        redeem_request_timestamp: 50  
+        redeem_request_timestamp: 50,
     },
     {
         receiver: '2V7t5NaKY7aGkwytCWQgvUYZfEr9XMwNChhJEakTExk6',
         share: 17,
         claim_request_timestamp: 0,
-        redeem_request_timestamp: 0  
+        redeem_request_timestamp: 0,
     },
     {
         receiver: '7KVswB9vkCgeM3SHP7aGDijvdRAHK8P5wi9JXViCrtYh',
         share: 5,
         claim_request_timestamp: 0,
-        redeem_request_timestamp: 0  
+        redeem_request_timestamp: 0,
     },
 ];
 
@@ -125,9 +125,7 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
             case 'share':
                 if (inputValue > 0 && inputValue <= 100 && Math.round(inputValue) == inputValue) {
                     setFormIsCorrect(true);
-                    newEmergencies.map((value) =>
-                        value.receiver === id ? (value.share = inputValue) : value.share
-                    );
+                    newEmergencies.map((value) => (value.receiver === id ? (value.share = inputValue) : value.share));
                     setEmergencyList(newEmergencies);
                 } else {
                     setFormIsCorrect(false);
@@ -136,7 +134,9 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
             case 'cancel':
                 setFormIsCorrect(true);
                 newEmergencies.map((value) =>
-                    value.claim_request_timestamp > 0 && value.redeem_request_timestamp === 0 ? (value.claim_request_timestamp = 0) : value.claim_request_timestamp
+                    value.claim_request_timestamp > 0 && value.redeem_request_timestamp === 0
+                        ? (value.claim_request_timestamp = 0)
+                        : value.claim_request_timestamp
                 );
                 setEmergencyList(newEmergencies);
                 break;
@@ -162,12 +162,26 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
 
     const renderEmergencyList = useCallback(
         () => (
-            <div className="emergency-list">
+            <div>
                 {emergencyList.map((value, index) => (
                     <div className="emergency-item-background">
                         <div key={index.toString()} className="emergency-item">
                             <h3>{'Emergency ' + (index + 1)}</h3>
                             <p>
+                                {'Me '}
+                                <i className="fa fa-arrow-right"></i>
+                                <span
+                                    onClick={() => {
+                                        setEditModalShow(true);
+                                        setSelectedField('share');
+                                        setSelectedReceiver(value.receiver);
+                                    }}
+                                    className="receiver-text"
+                                >
+                                    {' ' + (WALLET_BALANCE * value.share) / 100 + ' SOL '}
+                                </span>
+                                <i className="fa fa-arrow-right"></i>
+
                                 <span
                                     onClick={() => {
                                         setEditModalShow(true);
@@ -178,25 +192,14 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                                 >
                                     {aliasList.map((alias, index) => (
                                         <span key={index.toString()} className="receiver-name">
-                                            {alias.receiver === value.receiver && alias.alias + ' '}
+                                            {alias.receiver === value.receiver && ' ' + alias.alias + ' '}
                                         </span>
                                     ))}
 
-                                    {value.receiver.substring(0, 5) +
+                                    {' ' + value.receiver.substring(0, 5) +
                                         '...' +
                                         value.receiver.substring(value.receiver.length - 5) +
                                         ' '}
-                                </span>
-                                <i className="fa fa-arrow-left"></i>
-                                <span
-                                    onClick={() => {
-                                        setEditModalShow(true);
-                                        setSelectedField('share');
-                                        setSelectedReceiver(value.receiver);
-                                    }}
-                                    className="receiver-text"
-                                >
-                                    {' ' + (WALLET_BALANCE * value.share) / 100 + ' SOL'}
                                 </span>
                             </p>
 
@@ -209,7 +212,11 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                                 className="cta-button status-button"
                                 disabled={value.claim_request_timestamp === 0 || value.redeem_request_timestamp > 0}
                             >
-                                {value.claim_request_timestamp > 0 ? (value.redeem_request_timestamp > 0 ? 'Redeemed' : 'Claimed') : 'Unclaimed'}
+                                {value.claim_request_timestamp > 0
+                                    ? value.redeem_request_timestamp > 0
+                                        ? (<div>{'Redeemed'}</div>)
+                                        : ('Claimed')
+                                    : 'Unclaimed'}
                             </button>
                             {value.claim_request_timestamp > 0 && value.redeem_request_timestamp === 0 ? (
                                 <button className="cta-button status-button">
@@ -270,7 +277,9 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                 selectedField={selectedField}
                 selectedReceiver={selectedReceiver}
             />
-            {(emergencyList.length > 0 && renderEmergencyList()) || renderDescription()}
+            <div className="emergency-list">
+                {(emergencyList.length > 0 && renderEmergencyList()) || renderDescription()}
+            </div>
         </div>
     );
 }

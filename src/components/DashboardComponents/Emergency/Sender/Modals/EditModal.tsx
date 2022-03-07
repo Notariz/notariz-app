@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { CSSTransition } from 'react-transition-group';
+import Emojis from '../../../../utils/Emojis';
 import '../../../Common.css';
 
 interface EmergencyDetails {
@@ -61,8 +62,8 @@ function EditModal(props: {
                         {props.selectedField === 'cancel' && (
                             <div>
                                 <h3 className="notariz-modal-title">Claim request</h3>
-                                <div className="notariz-modal-text">
-                                    Rejecting this claim request will also cancel the <span>others</span>.
+                                <div className="hint">
+                                    Rejecting this claim request will also cancel the others.
                                 </div>
                             </div>
                         )}
@@ -143,7 +144,7 @@ function EditModal(props: {
                                 }}
                                 className="cta-button edit-button"
                             >
-                                {props.selectedField === 'cancel' ? 'Reject' : 'Submit'}
+                                {props.selectedField === 'cancel' ? <div><Emojis symbol="❌" label="cross" />{' Reject'}</div> : 'Submit'}
                             </button>
                         </form>
                     </div>
