@@ -75,7 +75,7 @@
     padding: 0;
     border-radius: 30px;
     transition: all 0.2s ease;
-    background-color: var(--main-bg-color);
+    background-color: var(--modal-bg-color);
 }
 
 .display-button .wrg-toggle-circle {

@@ -10,6 +10,7 @@ import Recovery from './DashboardComponents/Recovery/Sender/Recovery';
 import ClaimRecovery from './DashboardComponents/Recovery/Receiver/ClaimRecovery';
 import ProfileButton from './utils/ProfileButton';
 import Wallet from './DashboardComponents/Wallet/Wallet';
+import About from './DashboardComponents/About';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Dashboard.css';
 import './DashboardComponents/Common.css';
@@ -89,6 +90,9 @@ function Dashboard() {
                 <Tab eventKey="recovery" title="Recoveries" className="tab-content">
                     <ProfileButton profile={recoveryProfile} setToggle={setRecoveryToggle} />
                     {recoveryProfile === 'sender' && <Recovery /> || <ClaimRecovery />}
+                </Tab>
+                <Tab eventKey="about" title="About" className="tab-content">
+                    <About />
                 </Tab>
             </Tabs>
         ),

@@ -181,3 +181,22 @@ input[type='text']:disabled {
 .status-button:hover {
     opacity: 0.8;
 }
+
+.item-background {
+    background-color: var(--main-item-color);
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    margin-top: 30px;
+    border-radius: 20px;
+}
+
+.item {
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+button:disabled, button:disabled:hover {
+    opacity: .2;
+}

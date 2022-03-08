@@ -1,0 +1,9 @@
+.about-container {
+    margin-top: 30px;
+    width: 60%;
+    margin-left: 20%;
+}
+
+.about-container h3 {
+    font-size: 22px;
+}
