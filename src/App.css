@@ -1,13 +1,23 @@
 .App {
     height: 100vh;
-    background-color: #1a202c;
+    background-color: var(--main-bg-color);
     text-align: center;
     overflow: hidden;
     overflow: scroll;
-  }
-  
-  .main-container {
+}
+
+.main-container {
     width: 80%;
-  }
-  
-  
+}
+
+:root {
+  --main-bg-color: #1a202c;
+  --modal-bg-color: #2e3646;
+  --main-item-color: #1e2430;
+  --notariz-pink: #fd1d68;
+  --notariz-light-pink: #f36d8e;
+  --notariz-purple: purple;
+  --notariz-orange: #fa8f03;
+  --text-color: white;
+  --text-color-transparent: #617496;
+}

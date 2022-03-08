@@ -75,7 +75,7 @@
     padding: 0;
     border-radius: 30px;
     transition: all 0.2s ease;
-    background-color: purple;
+    background-color: var(--notariz-purple);
 }
 
 .profile-button .wrg-toggle-circle {
@@ -102,7 +102,7 @@
 }
 
 .profile-button .wrg-toggle:hover .wrg-toggle-container {
-    background-color: rgb(253, 29, 104);
+    background-color: var(--notariz-pink);
     width: 150px;
 }
 

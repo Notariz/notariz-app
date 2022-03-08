@@ -57,7 +57,7 @@
     height: 10px;
     justify-content: center;
     position: relative;
-    color: white !important;
+    color: var(--text-color) !important;
     font-weight: bold;
 }
 
@@ -75,7 +75,7 @@
     padding: 0;
     border-radius: 30px;
     transition: all 0.2s ease;
-    background-color: #2b2f38;
+    background-color: var(--main-bg-color);
 }
 
 .display-button .wrg-toggle-circle {
@@ -86,7 +86,7 @@
     width: 45px;
     height: 45px;
     border-radius: 50%;
-    background-color: #fafafa;
+    background-color: var(--text-color);
     box-sizing: border-box;
     transition: all 0.25s ease;
 }
@@ -102,7 +102,7 @@
 }
 
 .display-button .wrg-toggle:hover .wrg-toggle-container {
-    background-color: rgb(253, 29, 104);
+    background-color: var(--notariz-pink);
     width: 100px;
 }
 

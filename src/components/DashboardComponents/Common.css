@@ -1,19 +1,19 @@
 .wallet-adapter-button {
-    background: -webkit-linear-gradient(left, rgb(253, 29, 104), rgb(243, 109, 142));
+    background: -webkit-linear-gradient(left, var(--notariz-pink), var(--notariz-light-pink));
 }
 
 span {
-    color: rgb(253, 29, 104);
+    color: var(--notariz-pink);
 }
 
 .cta-button span {
-    color: white !important;
+    color: var(--text-color) !important;
 }
 
 .hint {
     opacity: 0.5;
     font-size: smaller;
-    color: white !important;
+    color: var(--text-color) !important;
     font-weight: 400;
 }
 
@@ -28,7 +28,7 @@ span {
     cursor: pointer;
     font-size: 16px;
     font-weight: bold;
-    color: white;
+    color: var(--text-color);
 }
 
 .cta-button:hover,
@@ -41,23 +41,15 @@ span {
 
 .delete-button {
     box-sizing: border-box;
-    border: solid purple 1px;
-    background-color: #1e2430;
+    border: solid var(--notariz-purple) 1px;
+    background-color: var(--main-item-color);
     padding-top: 10px;
     padding-bottom: 10px;
-    height: 55px;
+    height: 64px;
 }
 
 .confirm-button {
-    background: -webkit-linear-gradient(left, rgb(253, 29, 104), rgb(243, 110, 143));
-    animation: gradient-animation 4s ease infinite;
-    padding-top: 20px;
-    padding-bottom: 20px;
-}
-
-.cancel-button {
-    background: -webkit-linear-gradient(purple, rgb(0, 5, 5));
-    background-size: 200% 200%;
+    background: -webkit-linear-gradient(left, var(--notariz-pink), var(--notariz-light-pink));
     animation: gradient-animation 4s ease infinite;
     padding-top: 20px;
     padding-bottom: 20px;
@@ -68,7 +60,7 @@ input[type='number'],
 input[type='date'] {
     display: flex;
     justify-content: space-between;
-    color: white;
+    color: var(--text-color);
     padding: 10px;
     padding-left: 30px;
     width: 100%;
@@ -121,7 +113,7 @@ input[type='text']:disabled {
 
 .notariz-modal-content {
     width: 500px;
-    background-color: rgb(46, 54, 70);
+    background-color: var(--modal-bg-color);
     border-radius: 10px;
     transform: translateY(-200px);
     transition: all 0.3s ease-in-out;
@@ -131,7 +123,7 @@ input[type='text']:disabled {
 
 .notariz-modal-header {
     padding-top: 20px;
-    color: white;
+    color: var(--text-color);
     font-weight: bold;
     z-index: auto;
 }
@@ -150,13 +142,14 @@ input[type='text']:disabled {
     padding-left: 20px;
     padding-right: 20px;
     width: 100%;
-    color: white;
+    color: var(--text-color);
     margin-bottom: 10px;
 }
 
 .notariz-modal-body button {
     margin-top: 20px;
     height: 50px;
+    border: var(--notariz-pink);
 }
 
 .notariz-modal-body .modal-text {
@@ -165,22 +158,21 @@ input[type='text']:disabled {
 }
 
 .notariz-modal-body .delete-button {
-    background-color: rgb(46, 54, 70);
+    background-color: var(--modal-bg-color);
 }
 
 .notariz-modal-body .edit-button {
-    background-color: rgb(46, 54, 70);
-}
-
-.edit-button {
     box-sizing: border-box;
-    border: solid rgb(255, 0, 85) 1px;
-    background-color: #1a202c;
+    border: solid var(--notariz-pink) 1px;
+    background-color: var(--modal-background-color);
+    padding-top: 10px;
+    padding-bottom: 10px;
+    height: 55px;
 }
 
 .status-button {
     margin-bottom: 20px;
-    background: -webkit-linear-gradient(left, rgb(255, 0, 85), rgb(248, 85, 125));
+    background: -webkit-linear-gradient(left, var(--notariz-pink), var(--notariz-light-pink));
     animation: gradient-animation 4s ease infinite;
     margin-left: 10px;
     height: 55px;

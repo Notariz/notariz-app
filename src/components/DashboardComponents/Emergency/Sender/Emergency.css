@@ -1,6 +1,6 @@
 .emergency-container {
     position: relative;
-    color: white;
+    color: var(--text-color);
     text-align: center;
     display: block;
     margin-top: 30px;
@@ -13,7 +13,7 @@
 }
 
 .emergency-item-background {
-    background-color: #1e2430;
+    background-color: var(--main-item-color);
     padding-top: 20px;
     padding: 10px;
     margin-top: 30px;
@@ -27,11 +27,11 @@
 }
 
 .emergency-item i {
-    color: rgb(255, 0, 85);
+    color: var(--notariz-pink);
 }
 
 .emergency-item button {
-    color: white;
+    color: var(--text-color);
     font-weight: bold;
     border-radius: 15px;
     height: 50px;
@@ -46,7 +46,7 @@
 }
 
 .receiver-text {
-    color: white !important;
+    color: var(--text-color) !important;
 }
 
 .receiver-text:hover {
@@ -61,5 +61,5 @@
 }
 
 .emergency-container .receiver-name {
-    color: white !important;
+    color: var(--text-color) !important;
 }

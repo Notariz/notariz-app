@@ -9,7 +9,7 @@
 }
 
 .recovery-container span {
-    color: rgb(255, 0, 85);
+    color: var(--notariz-pink);
 }
 
 .recovery-container h3 {
@@ -18,7 +18,7 @@
 }
 
 .recovery-item-background {
-    background-color: #1e2430;
+    background-color: var(--main-item-color);
     padding-left: 10px;
     padding-right: 10px;
     padding-top: 30px;

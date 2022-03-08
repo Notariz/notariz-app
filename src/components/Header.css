@@ -1,15 +1,15 @@
 .navbar {
-    background-color: #1a202c;
+    background-color: var(--main-bg-color);
     z-index: 0;
 }
 
 .fs-3 p {
-    color: rgb(253, 29, 104);
+    color: var(--notariz-pink);
 }
 
 .airdrop-button {
     margin-right: 10px;
-    background: -webkit-linear-gradient(left, rgb(250, 143, 3), rgb(253, 29, 104));
+    background: -webkit-linear-gradient(left, var(--notariz-orange), var(--notariz-pink));
     color: white;
     padding-top: 13px;
     padding-bottom: 13px;
@@ -18,7 +18,7 @@
 
 .airdrop-button:disabled {
     margin-right: 10px;
-    background: -webkit-linear-gradient(left, rgb(250, 143, 3), rgb(253, 29, 104));
+    background: -webkit-linear-gradient(left, var(--notariz-orange), var(--notariz-pink));
     color: white;
     opacity: 0.2;
 }

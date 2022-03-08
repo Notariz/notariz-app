@@ -8,13 +8,13 @@
 
 .dashboard-container p {
     box-sizing: border-box;
-    background-color: #1a202c;  
+    background-color: var(--main-bg-color);  
     font-weight: bold;
     border-radius: 15px;
     padding-top: 10px;
     padding-bottom: 10px;
     word-spacing: 0.25rem;
-    color: white;
+    color: var(--text-color);
     padding-left: 10px;
     padding-right: 10px;
     margin-bottom: 20px;
@@ -29,10 +29,10 @@
 }
 
 .not-connected-container p {
-    color: white;
+    color: var(--text-color);
     font-weight: bold;
     font-size: 32px;
-    background-color: #1a202c;
+    background-color: var(--main-bg-color);
     box-sizing: border-box;
     border-radius: 15px;
     padding-left: 40px;
@@ -52,7 +52,7 @@ h3 {
 }
 
 .not-connected-container, .dashboard-container span {
-    color: rgb(253, 29, 104);
+    color: var(--notariz-pink);
 }
 
 .not-connected-container .wallet-adapter-button {
@@ -80,7 +80,7 @@ h3 {
 }
 
 .dashboard-container .nav-link {
-    color: #617496;
+    color: var(--text-color-transparent);
     font-weight: bold;
     padding-top: 5px;
     text-align: center;
@@ -88,20 +88,20 @@ h3 {
     position: relative;
     padding-left: 20px;
     padding-right: 20px;
-    border-color:#1a202c;
+    border-color: var(--main-bg-color);
     border-radius: 20px;
     margin-bottom: 5px;
     margin-left: 10px;
 }
 
 .dashboard-container .nav-tabs {
-    border-bottom: 1px solid #1a202c;
+    border-bottom: 1px solid var(--main-bg-color);
 }
 
 .dashboard-container .nav-link.active {
-    color: white;
-    background-color: #1a202c;
-    border-color:#1a202c;
+    color: var(--text-color);
+    background-color: var(--main-bg-color);
+    border-color: var(--main-bg-color);
 }
 
 .dashboard-container .nav-link:hover {
@@ -111,8 +111,8 @@ h3 {
 }
 
 .dashboard-container .notification-badge {
-    background-color: purple;
-    color: white;
+    background-color: var(--notariz-purple);
+    color: var(--text-color);
     margin-left: 5px;
     padding-left: 7px;
     padding-right: 7px;

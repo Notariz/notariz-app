@@ -1,4 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { useState, useCallback, useEffect } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { PieChart } from 'react-minimal-pie-chart';
@@ -29,6 +30,7 @@ const LAST_ON_CHAIN_ACTIVITY = '03/07/22';
 const TOTAL_SHARED = 62;
 
 function Wallet() {
+    const { publicKey } = useWallet();
     const [openDeed, setOpenDeed] = useState<Deed[]>([]);
     const myData = [
         { title: 'Dogs', value: 100, color: '#fd1d68' },
