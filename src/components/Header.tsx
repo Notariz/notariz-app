@@ -4,7 +4,6 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { clusterApiUrl, Connection, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { useCallback, useState } from 'react';
 import { Container, Nav, Navbar, ToggleButton } from 'react-bootstrap';
-import { NavLink } from 'react-router-dom';
 import AirdropModal from './AirdropModal';
 import DisplayButton from './utils/DisplayButton';
 import NotarizLogo from '../img/logo.png'

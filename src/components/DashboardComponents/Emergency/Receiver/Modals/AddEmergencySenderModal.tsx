@@ -59,7 +59,7 @@ function AddEmergencySenderModal(props: {
                 <div className="notariz-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="notariz-modal-header">
                         <span>
-                            <h3 className="notariz-modal-title">New sending emergency address</h3>
+                            <h3 className="notariz-modal-title">New sending address</h3>
                         </span>
                     </div>
                     <div className="notariz-modal-body">

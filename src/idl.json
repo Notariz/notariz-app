@@ -1,0 +1,317 @@
+{
+  "version": "0.1.0",
+  "name": "notariz",
+  "instructions": [
+    {
+      "name": "createDeed",
+      "accounts": [
+        {
+          "name": "deed",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "withdrawDeedLamports",
+      "accounts": [
+        {
+          "name": "deed",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "lamportsToSend",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "editWithdrawalPeriod",
+      "accounts": [
+        {
+          "name": "deed",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "withdrawalPeriod",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "editOwner",
+      "accounts": [
+        {
+          "name": "deed",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "newOwner",
+          "type": "publicKey"
+        }
+      ]
+    },
+    {
+      "name": "deleteDeed",
+      "accounts": [
+        {
+          "name": "deed",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "addEmergency",
+      "accounts": [
+        {
+          "name": "emergency",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "deed",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "receiver",
+          "type": "publicKey"
+        },
+        {
+          "name": "percentage",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "deleteEmergency",
+      "accounts": [
+        {
+          "name": "emergency",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "deed",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "claimEmergency",
+      "accounts": [
+        {
+          "name": "emergency",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "receiver",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "redeemEmergency",
+      "accounts": [
+        {
+          "name": "emergency",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "deed",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "receiver",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Deed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "publicKey"
+          },
+          {
+            "name": "lastSeen",
+            "type": "i64"
+          },
+          {
+            "name": "leftToBeShared",
+            "type": "u8"
+          },
+          {
+            "name": "withdrawalPeriod",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Emergency",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "upstreamDeed",
+            "type": "publicKey"
+          },
+          {
+            "name": "owner",
+            "type": "publicKey"
+          },
+          {
+            "name": "receiver",
+            "type": "publicKey"
+          },
+          {
+            "name": "percentage",
+            "type": "u8"
+          },
+          {
+            "name": "claimedTimestamp",
+            "type": "i64"
+          },
+          {
+            "name": "redeemedTimestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Recovery",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "upstreamDeed",
+            "type": "publicKey"
+          },
+          {
+            "name": "owner",
+            "type": "publicKey"
+          },
+          {
+            "name": "receiver",
+            "type": "publicKey"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "LamportTransferError",
+      "msg": "The account does not have the lamports it is willing to transfer"
+    },
+    {
+      "code": 6001,
+      "name": "ClaimTimestampGreaterThanZeroError",
+      "msg": "This emergency has already been claimed."
+    },
+    {
+      "code": 6002,
+      "name": "ClaimTimestampEqualsToZeroError",
+      "msg": "This emergency has yet to be claimed."
+    },
+    {
+      "code": 6003,
+      "name": "RedeemTimestampError",
+      "msg": "This emergency cannot be redeemed yet."
+    }
+  ],
+  "metadata": {
+    "address": "DFtRYEj6CB8xF6MkukkqnCxgiku7K2cJbSxsaHQWogdE"
+  }
+}

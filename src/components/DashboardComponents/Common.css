@@ -128,13 +128,11 @@ input[type='text']:disabled {
     z-index: auto;
 }
 
-.notariz-modal-header h3 {
-    font-size: 22px;
-}
 
 .notariz-modal-title {
     margin: 0;
     margin-bottom: 20px;
+    font-size: 24px !important;
 }
 
 .notariz-modal-body {
@@ -148,7 +146,7 @@ input[type='text']:disabled {
 
 .notariz-modal-body button {
     margin-top: 20px;
-    height: 50px;
+    height: 64px;
     border: var(--notariz-pink);
 }
 
@@ -167,7 +165,6 @@ input[type='text']:disabled {
     background-color: var(--modal-background-color);
     padding-top: 10px;
     padding-bottom: 10px;
-    height: 55px;
 }
 
 .status-button {
@@ -175,7 +172,7 @@ input[type='text']:disabled {
     background: -webkit-linear-gradient(left, var(--notariz-pink), var(--notariz-light-pink));
     animation: gradient-animation 4s ease infinite;
     margin-left: 10px;
-    height: 55px;
+    height: 64px;
 }
 
 .status-button:hover {

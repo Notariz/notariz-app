@@ -10,6 +10,7 @@
         "strict": true,
         "esModuleInterop": true,
         "resolveJsonModule": true,
+        "noImplicitAny": false,
         "isolatedModules": true,
         "typeRoots": ["node_modules/@types"]
     }

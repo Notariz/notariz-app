@@ -49,7 +49,7 @@ function AddRecoverySendingModal(props: {
             <div className={`notariz-modal ${props.show ? 'show' : ''}`} onClick={props.onClose}>
                 <div className="notariz-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="notariz-modal-header">
-                        <h3 className="notariz-modal-title">New sending recovery address</h3>
+                        <h3 className="notariz-modal-title">New sending address</h3>
                     </div>
                     <div className="notariz-modal-body">
                         <form

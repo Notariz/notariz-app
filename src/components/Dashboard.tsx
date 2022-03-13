@@ -9,7 +9,7 @@ import ClaimEmergency from './DashboardComponents/Emergency/Receiver/ClaimEmerge
 import Recovery from './DashboardComponents/Recovery/Sender/Recovery';
 import ClaimRecovery from './DashboardComponents/Recovery/Receiver/ClaimRecovery';
 import ProfileButton from './utils/ProfileButton';
-import Wallet from './DashboardComponents/Wallet/Wallet';
+import WalletDashboard from './DashboardComponents/Wallet/WalletDashboard';
 import About from './DashboardComponents/About';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Dashboard.css';
@@ -71,7 +71,7 @@ function Dashboard() {
         () => (
             <Tabs defaultActiveKey="wallet" id="tabs" className="mb-3">
                 <Tab eventKey="wallet" title="Dashboard" className="tab-content">
-                    <Wallet />
+                    <WalletDashboard />
                 </Tab>
                 <Tab
                     eventKey="emergency"
