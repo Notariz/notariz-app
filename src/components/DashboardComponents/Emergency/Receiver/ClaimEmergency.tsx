@@ -119,8 +119,8 @@ function ClaimEmergency() {
         () => (
             <div className="claim-emergency-list">
                 {senderList.map((value, index) => (
-                    <div className="claim-emergency-background">
-                        <div key={value.sender} className="claim-emergency-item">
+                    <div key={index} className="claim-emergency-background">
+                        <div className="claim-emergency-item">
                             <h3>
                                 {'Sender ' + (index + 1) }
                             </h3>

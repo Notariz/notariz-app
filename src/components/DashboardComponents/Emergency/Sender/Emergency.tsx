@@ -164,8 +164,8 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
         () => (
             <div>
                 {emergencyList.map((value, index) => (
-                    <div className="emergency-item-background">
-                        <div key={value.receiver} className="emergency-item">
+                    <div key={value.receiver} className="emergency-item-background">
+                        <div className="emergency-item">
                             <h3>{'Emergency ' + (index + 1)}</h3>
                             <p>
                                 {'Me '}

@@ -43,8 +43,8 @@ function ClaimRecovery() {
         () => (
             <div>
                 {recoveryList.map((value, index) => (
-                    <div className="recovery-item-background">
-                        <div key={value.sender} className="recovery-item">
+                    <div key={index} className="recovery-item-background">
+                        <div className="recovery-item">
                             <h3>{'Recovery address ' + (index + 1)}</h3>
                             <p>
                                 {value.sender.substring(0, 5) + '...' + value.sender.substring(value.sender.length - 5) + ' '}

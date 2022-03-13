@@ -38,8 +38,8 @@ function Recovery() {
         () => (
             <div>
                 {recoveryList.map((value, index) => (
-                    <div className="recovery-item-background">
-                        <div key={value.receiver} className="recovery-item">
+                    <div key={index} className="recovery-item-background">
+                        <div className="recovery-item">
                             <h3>{'Recovery address ' + (index + 1)}</h3>
                             <p>
                                 {'Me '}

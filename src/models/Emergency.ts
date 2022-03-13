@@ -1,5 +1,14 @@
+import { PublicKey } from "@solana/web3.js"
+
 export class Emergency {
-    constructor (publicKey, accountData) {
+    public publicKey: PublicKey;
+    public upstreamDeed: PublicKey;
+    public owner: PublicKey;
+    public receiver: PublicKey; 
+    public percentage: number;
+    public claimedTimestamp: string;
+
+    constructor (publicKey: PublicKey, accountData: any) {
         this.publicKey = publicKey
         this.upstreamDeed = accountData.upstreamDeed
         this.owner = accountData.owner
