@@ -1,3 +1,5 @@
+import { clusterApiUrl, Connection, Transaction, PublicKey, LAMPORTS_PER_SOL, ConfirmOptions } from '@solana/web3.js';
+
 import { useState, useEffect, useCallback } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import Emojis from '../../../../utils/Emojis';
@@ -6,7 +8,7 @@ import '../../../Common.css';
 interface EmergencyDetails {
     receiver: string;
     alias: string;
-    share: number;
+    percentage: number;
     delay: number;
     status: string;
 }
@@ -15,7 +17,7 @@ function EditEmergencyReceiverModal(props: {
     show: boolean;
     onClose: () => void;
     selectedField: string;
-    selectedReceiver: string;
+    selectedReceiver: PublicKey;
     formIsCorrect: boolean;
     editEmergency: (inputValue: string) => void;
 }) {
@@ -49,9 +51,9 @@ function EditEmergencyReceiverModal(props: {
                                 </div>
                             </div>
                         )}
-                        {props.selectedField === 'share' && (
+                        {props.selectedField === 'percentage' && (
                             <div>
-                                <h3 className="notariz-modal-title">Edit share</h3>
+                                <h3 className="notariz-modal-title">Edit percentage</h3>
                             </div>
                         )}
                         {props.selectedField === 'delay' && (
@@ -99,19 +101,19 @@ function EditEmergencyReceiverModal(props: {
                                     />
                                 </div>
                             )}
-                            {props.selectedField === 'share' && (
+                            {props.selectedField === 'percentage' && (
                                 <div>
                                     {!props.formIsCorrect && isSubmitted ? (
                                         <div>
                                             <span className="hint">
-                                                A share should be an integer comprised between 1 to 100.
+                                                A percentage should be an integer comprised between 1 to 100.
                                             </span>
                                         </div>
                                     ) : null}
                                     <input
-                                        name="share"
+                                        name="percentage"
                                         type="number"
-                                        placeholder={"Your emergency's claimable share"}
+                                        placeholder={"Your emergency's claimable percentage"}
                                         value={inputValue}
                                         onChange={(e) => setInputValue(e.target.value)}
                                         required

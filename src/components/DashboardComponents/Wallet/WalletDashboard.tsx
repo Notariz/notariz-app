@@ -31,16 +31,19 @@ const opts: ConfirmOptions = {
 
 const programID = new PublicKey(idl.metadata.address);
 
-function WalletDashboard() {
+function WalletDashboard(props: {
+    userBalance: string;
+    deedBalance: number | undefined;
+    openDeed: Deed | undefined;
+    getUserBalance: () => string;
+    refreshDeedData: () => any;
+    setOpenDeed: (deed: Deed | undefined) => void;
+}) {
     const wallet = useWallet();
     const { publicKey, sendTransaction } = wallet;
     const { connection } = useConnection();
-    const [userBalance, setUserBalance] = useState('0');
-    const [openDeed, setOpenDeed] = useState<Deed | undefined>();
-    const [deedBalance, setDeedBalance] = useState<number | null>(0.0);
 
     const provider = new Provider(connection, wallet as any, opts);
-
     const program = new Program(idl as any, programID, provider);
 
     const [topUpModalShow, setTopUpModalShow] = useState(false);
@@ -49,11 +52,14 @@ function WalletDashboard() {
     const [editWithdrawalPeriodModalShow, setEditWithdrawalPeriodModalShow] = useState(false);
     const [editWithdrawalPeriodFormIsCorrect, setEditWithdrawalPeriodFormIsCorrect] = useState(false);
 
-    const myData = useMemo(() => ([
-        { title: 'Dogs', value: 100, color: '#fd1d68' },
-        { title: 'Cats', value: 50, color: '#ed729b' },
-        { title: 'Dragons', value: 15, color: 'purple' },
-    ]), []);
+    const myData = useMemo(
+        () => [
+            { title: 'Dogs', value: 100, color: '#fd1d68' },
+            { title: 'Cats', value: 50, color: '#ed729b' },
+            { title: 'Dragons', value: 15, color: 'purple' },
+        ],
+        []
+    );
 
     function toDate(timestamp: number) {
         const date = new Date(timestamp * 1000);
@@ -68,60 +74,10 @@ function WalletDashboard() {
         return duration / 24 / 3600;
     }
 
-    const fetchDeeds = useCallback(() => {
-        if (!publicKey) throw new WalletNotConnectedError();
-
-        return program.account.deed
-            .all([
-                {
-                    memcmp: {
-                        offset: 8, // Discriminator.
-                        bytes: publicKey.toBase58(),
-                    },
-                },
-            ])
-            .then((deeds) => {
-                return deeds.length > 0 ? new Deed(deeds[0].publicKey, deeds[0].account) : undefined;
-            });
-    }, [publicKey, program.account.deed]);
-
-    const refreshDeedData = useCallback(async () => {
-        const deed = await fetchDeeds();
-
-        setOpenDeed(deed);
-
-        if (!deed) return;
-
-        const deedAccountBalance = await program.provider.connection
-            .getAccountInfo(deed.publicKey)
-            .then((res) => res?.lamports)
-            .catch(console.log);
-
-        if (deedAccountBalance) {
-            setDeedBalance(deedAccountBalance / LAMPORTS_PER_SOL);
-        }
-
-    }, [fetchDeeds, program.provider.connection.getAccountInfo]);
-
-    useEffect(() => {
-        refreshDeedData();
-    }, [publicKey]);
-
-    const getUserBalance = useCallback(() => {
-        if (!publicKey) throw new WalletNotConnectedError();
-
-        connection
-            .getBalance(publicKey)
-            .then((res) => setUserBalance((res / LAMPORTS_PER_SOL).toFixed(2)))
-            .catch(() => alert('Cannot fetch wallet balance!'));
-
-        return userBalance;
-    }, [publicKey, connection, userBalance]);
-
     const createDeed = useCallback(async () => {
         if (!publicKey || typeof wallet.signTransaction === 'undefined') throw new WalletNotConnectedError();
 
-        if (typeof openDeed !== "undefined") return;
+        if (typeof props.openDeed !== 'undefined') return;
 
         const deedKeypair = web3.Keypair.generate();
 
@@ -139,16 +95,24 @@ function WalletDashboard() {
             .catch(console.log);
 
         const deedAccount = await program.account.deed.fetch(deedKeypair.publicKey);
-        setOpenDeed(new Deed(deedKeypair.publicKey, deedAccount));
-    }, [openDeed, program.account.deed, program.provider.connection, program.rpc, provider.wallet.publicKey, publicKey, wallet.signTransaction]);
+        props.setOpenDeed(new Deed(deedKeypair.publicKey, deedAccount));
+    }, [
+        props.openDeed,
+        program.account.deed,
+        program.provider.connection,
+        program.rpc,
+        provider.wallet.publicKey,
+        publicKey,
+        wallet.signTransaction,
+    ]);
 
     const renderCreateAccount = useMemo(
         () => (
             <div className="wallet-item">
                 <h3>Create a Notariz account</h3>
-                <div className="hint">
+                <p className="hint">
                     It looks like you do not have any open deed. Deeds keep track of your interactions with Notariz.
-                </div>
+                </p>
                 <button onClick={() => createDeed()} className="cta-button confirm-button">
                     Open a deed
                 </button>
@@ -157,15 +121,67 @@ function WalletDashboard() {
         [createDeed]
     );
 
-    const renderProgramBalance = useCallback(
+    const deleteDeed = useCallback(
+        async (deed: Deed | undefined) => {
+            if (!publicKey) throw new WalletNotConnectedError();
+
+            if (!deed) return;
+
+            /* interact with the program via rpc */
+            return program.rpc
+                .deleteDeed({
+                    accounts: {
+                        deed: deed.publicKey,
+                        owner: deed.owner,
+                    },
+                })
+                .then((res) => program.provider.connection.confirmTransaction(res))
+                .catch(console.log);
+        },
+        [program.provider.connection, program.rpc, provider.wallet.publicKey, wallet.signTransaction, publicKey]
+    );
+
+    const renderAccountName = useMemo(
+        () => (
+            <div>
+                <h3>Deed account</h3>
+                <p className="hint">
+                    <a
+                        href={
+                            'https://explorer.solana.com/address/' +
+                            props.openDeed?.publicKey.toString() +
+                            '?cluster=devnet'
+                        }
+                    >
+                        {props.openDeed?.publicKey.toString().substring(0, 5) +
+                            '..' +
+                            props.openDeed?.publicKey
+                                .toString()
+                                .substring(props.openDeed?.publicKey.toString().length - 5)}
+                    </a>
+                </p>
+                <button
+                    onClick={() => {
+                        deleteDeed(props.openDeed).then(() => props.setOpenDeed(undefined));
+                    }}
+                    className="cta-button delete-button"
+                >
+                    Delete
+                </button>
+            </div>
+        ),
+        [props, deleteDeed]
+    );
+
+    const renderProgramBalance = useMemo(
         () => (
             <div className="wallet-item">
                 <h3>Total deposit</h3>
-                <h1>{deedBalance + ' SOL'}</h1>
+                <h1>{props.deedBalance + ' SOL'}</h1>
                 <button
                     onClick={() => {
                         setTopUpModalShow(true);
-                        getUserBalance();
+                        props.getUserBalance();
                     }}
                     className="cta-button confirm-button"
                 >
@@ -174,23 +190,23 @@ function WalletDashboard() {
                 <button className="cta-button delete-button">Withdraw</button>
             </div>
         ),
-        [deedBalance, getUserBalance]
+        [props.deedBalance, props.getUserBalance]
     );
 
-    const renderWithdrawalPeriod = useCallback(
+    const renderWithdrawalPeriod = useMemo(
         () => (
             <div className="wallet-item">
                 <h3>Withdrawal period</h3>
-                <h1>{openDeed ? fromSecondsToDays(openDeed.withdrawalPeriod) + ' days' : 'Unknown'}</h1>
+                <h1>{props.openDeed ? fromSecondsToDays(props.openDeed.withdrawalPeriod) + ' days' : 'Unknown'}</h1>
                 <button onClick={() => setEditWithdrawalPeriodModalShow(true)} className="cta-button confirm-button">
                     Edit
                 </button>
             </div>
         ),
-        [openDeed]
+        [props.openDeed]
     );
 
-    const renderPieChart = useCallback(
+    const renderPieChart = useMemo(
         () => (
             <div className="wallet-item pie-chart-container">
                 <h3>Assets distribution</h3>
@@ -211,35 +227,35 @@ function WalletDashboard() {
         () => (
             <div className="wallet-item">
                 <h3>Last recorded on-chain activity</h3>
-                <h1>{openDeed ? toDate(openDeed.lastSeen) : 'NA'}</h1>
+                <h1>{props.openDeed ? toDate(props.openDeed.lastSeen) : 'NA'}</h1>
             </div>
         ),
-        [openDeed]
+        [props.openDeed]
     );
 
     const renderShares = useMemo(
         () => (
             <div className="wallet-item">
                 <h3>Shared deposit total</h3>
-                <h1>{openDeed ? openDeed.leftToBeShared + '%' : 'NA'}</h1>
+                <h1>{props.openDeed ? props.openDeed.leftToBeShared + '%' : 'NA'}</h1>
             </div>
         ),
-        [openDeed]
+        [props.openDeed]
     );
 
     const topUp = async (inputValue: number) => {
         if (!publicKey) throw new WalletNotConnectedError();
 
-        if (!openDeed) return;
+        if (!props.openDeed) return;
 
-        if (inputValue > 0 && inputValue <= parseFloat(userBalance)) {
+        if (inputValue > 0 && inputValue <= parseFloat(props.userBalance)) {
             setTopUpFormIsCorrect(true);
 
             if (publicKey) {
                 const transaction = new Transaction().add(
                     SystemProgram.transfer({
                         fromPubkey: publicKey,
-                        toPubkey: openDeed.publicKey, // To be replaced with the deed's account public key
+                        toPubkey: props.openDeed.publicKey, // To be replaced with the deed's account public key
                         lamports: inputValue * LAMPORTS_PER_SOL,
                     })
                 );
@@ -248,7 +264,7 @@ function WalletDashboard() {
 
                 await connection.confirmTransaction(signature, 'processed');
 
-                refreshDeedData();
+                props.refreshDeedData();
             }
         } else {
             setTopUpFormIsCorrect(false);
@@ -258,109 +274,46 @@ function WalletDashboard() {
     const editWithdrawalPeriod = async (inputValue: number) => {
         if (!publicKey) throw new WalletNotConnectedError();
 
-        if (!openDeed) return;
+        if (!props.openDeed) return;
 
         if (inputValue >= 2) {
             setEditWithdrawalPeriodFormIsCorrect(true);
+            /* interact with the program via rpc */
+            await program.rpc
+                .editWithdrawalPeriod(new BN(inputValue * 24 * 3600), {
+                    accounts: {
+                        deed: props.openDeed.publicKey,
+                        owner: props.openDeed.owner,
+                    },
+                })
+                .then((res) => program.provider.connection.confirmTransaction(res))
+                .catch(console.log);
 
-            try {
-                /* interact with the program via rpc */
-                await program.rpc
-                    .editWithdrawalPeriod(new BN(inputValue * 24 * 3600), {
-                        accounts: {
-                            deed: openDeed.publicKey,
-                            owner: openDeed.owner,
-                        },
-                    })
-                    .then((res) => program.provider.connection.confirmTransaction(res))
-                    .catch(console.log);
+            const deedAccount = await program.account.deed.fetch(props.openDeed.publicKey);
 
-                const deedAccount = await program.account.deed.fetch(openDeed.publicKey);
-
-                setOpenDeed(new Deed(openDeed.publicKey, deedAccount));
-            } catch (err) {
-                console.log('Transaction error: ', err);
-            }
+            props.setOpenDeed(new Deed(props.openDeed.publicKey, deedAccount));
         } else {
             setEditWithdrawalPeriodFormIsCorrect(false);
         }
     };
 
-    const deleteDeed = useCallback(
-        async (deed: Deed) => {
-            if (!publicKey || typeof wallet.signTransaction === 'undefined') throw new WalletNotConnectedError();
-
-            if (!deed) return;
-
-            /* interact with the program via rpc */
-            return program.rpc
-                .deleteDeed({
-                    accounts: {
-                        deed: deed.publicKey,
-                        owner: provider.wallet.publicKey,
-                    }
-                })
-                .then((res) => program.provider.connection.confirmTransaction(res))
-                .catch(console.log);
-        },
-        [program.provider.connection, program.rpc, provider.wallet.publicKey, wallet.signTransaction, publicKey]
-    );
-
-    const renderDeleteDeed = useCallback(() => {
-        if (!openDeed) return <></>;
-
-        return (
-            <div className="wallet-item">
-                <button
-                    onClick={() => {
-                        deleteDeed(openDeed).then(() => setOpenDeed(undefined));
-                    }}
-                    className="cta-button confirm-button"
-                >
-                    Delete deed
-                </button>
-            </div>
-        );
-    }, [deleteDeed, openDeed]);
-
     return (
         <div className="wallet-container">
-            {openDeed ? (
+            {props.openDeed ? (
                 <Container>
                     <Row>
-                        <div className="wallet-item-background">
-                            <h3>
-                                {'Deed account ('}
-                                <a
-                                    className=""
-                                    href={
-                                        'https://explorer.solana.com/address/' +
-                                        openDeed.publicKey.toString() +
-                                        '?cluster=devnet'
-                                    }
-                                >
-                                    {openDeed.publicKey.toString().substring(0, 5) +
-                                        '..' +
-                                        openDeed.publicKey
-                                            .toString()
-                                            .substring(openDeed.publicKey.toString().length - 5)}
-                                </a>
-                                {') '}
-                                <i className='fa fa-arrow-rotate'></i>
-                            </h3>
-                        </div>
                         <Col xs={6}>
-                            <div className="wallet-item-background">{renderProgramBalance()}</div>
+                            <div className="wallet-item-background">{renderProgramBalance}</div>
                             <TopUpModal
                                 show={topUpModalShow}
                                 onClose={() => setTopUpModalShow(false)}
                                 formIsCorrect={topUpFormIsCorrect}
                                 topUp={topUp}
-                                userBalance={userBalance}
+                                userBalance={props.userBalance}
                             />
                         </Col>
                         <Col xs={6}>
-                            <div className="wallet-item-background">{renderWithdrawalPeriod()}</div>
+                            <div className="wallet-item-background">{renderWithdrawalPeriod}</div>
                             <EditWithdrawalPeriodModal
                                 show={editWithdrawalPeriodModalShow}
                                 onClose={() => setEditWithdrawalPeriodModalShow(false)}
@@ -375,10 +328,10 @@ function WalletDashboard() {
                             <div className="wallet-item-background">{renderOnChainActivity}</div>
                         </Col>
                         <Col xs={8}>
-                            <div className="wallet-item-background">{renderPieChart()}</div>
+                            <div className="wallet-item-background">{renderPieChart}</div>
                         </Col>
                     </Row>
-                    <div className="wallet-item-background">{renderDeleteDeed()}</div>
+                    <div className="wallet-item-background">{renderAccountName}</div>
                 </Container>
             ) : (
                 <div className="wallet-item-background">{renderCreateAccount}</div>

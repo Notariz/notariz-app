@@ -1,5 +1,4 @@
-import { Account, AccountInfo, PublicKey } from "@solana/web3.js"
-import dayjs from "dayjs"
+import { PublicKey } from "@solana/web3.js"
 
 export class Deed {
     public publicKey: PublicKey;

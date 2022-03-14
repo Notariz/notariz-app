@@ -6,7 +6,7 @@ export class Emergency {
     public owner: PublicKey;
     public receiver: PublicKey; 
     public percentage: number;
-    public claimedTimestamp: string;
+    public claimedTimestamp: number;
 
     constructor (publicKey: PublicKey, accountData: any) {
         this.publicKey = publicKey
@@ -14,8 +14,10 @@ export class Emergency {
         this.owner = accountData.owner
         this.receiver = accountData.receiver
         this.percentage = accountData.percentage
-        this.claimedTimestamp = accountData.claimedTimestamp.toString()
+        this.claimedTimestamp = accountData.claimedTimestamp
     }
+
+    /*
 
     get key() {
         return this.publicKey.toBase58()
@@ -30,4 +32,6 @@ export class Emergency {
         const receiver = this.receiver.toBase58()
         return receiver.slice(0,4) + '..' + receiver.slice(-4)
     }
+
+    */
 }

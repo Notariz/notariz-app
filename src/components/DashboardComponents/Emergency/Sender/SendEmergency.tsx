@@ -1,4 +1,5 @@
 import { Emergency } from '../../../../models';
+import { Deed } from '../../../../models';
 
 import { WalletNotConnectedError } from '@solana/wallet-adapter-base';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
@@ -23,110 +24,129 @@ const opts: ConfirmOptions = {
 };
 
 const programID = new PublicKey(idl.metadata.address);
-
-interface EmergencyDetails {
-    receiver: string;
-    share: number;
-    claim_request_timestamp: number;
-    redeem_request_timestamp: number;
-}
-
 interface EmergencyAlias {
-    receiver: string;
+    receiver: PublicKey;
     alias: string;
 }
 
 const WITHDRAWAL_PERIOD = 4;
 
-const TEST_EMERGENCY_LIST: EmergencyDetails[] = [];
-
-const TEST_ALIAS_LIST: EmergencyAlias[] = [];
-
 const WALLET_BALANCE = 1500;
 
-function SendEmergency(props: { setNotificationCounter: (number: number) => void }) {
+function SendEmergency(props: {
+    emergencyList: Emergency[] | undefined;
+    setEmergencyList: (emergencies: Emergency[] | undefined) => void;
+    openDeed: Deed | undefined;
+    setOpenDeed: (deed: Deed | undefined) => void;
+    deedBalance: number | undefined;
+    refreshDeedData: () => any;
+    refreshEmergenciesData: () => any;
+    setNotificationCounter: (number: number) => void;
+}) {
     const wallet = useWallet();
     const { publicKey, sendTransaction } = wallet;
     const { connection } = useConnection();
 
-    const [showAddModal, setAddModalShow] = useState(false);
-    const [showDeleteModal, setDeleteModalShow] = useState(false);
-    const [showEditModal, setEditModalShow] = useState(false);
-    const [emergencyList, setEmergencyList] = useState<EmergencyDetails[]>([]);
     const [aliasList, setAliasList] = useState<EmergencyAlias[]>(() => {
         const initialValue = JSON.parse(localStorage.getItem('aliasList') || '[{"receiver": "", "alias": ""}]');
         return initialValue;
     });
+
+    const [showAddModal, setAddModalShow] = useState(false);
+    const [showDeleteModal, setDeleteModalShow] = useState(false);
+    const [showEditModal, setEditModalShow] = useState(false);
     const [formIsCorrect, setFormIsCorrect] = useState(false);
-    const [selectedReceiver, setSelectedReceiver] = useState('');
+    const [selectedReceiver, setSelectedReceiver] = useState<PublicKey | undefined>(undefined);
     const [selectedField, setSelectedField] = useState('');
-    const [emergencyIsMentioned, setEmergencyIsMentioned] = useState(false);
+    const [emergencyIsAlreadyMentioned, setEmergencyIsAlreadyMentioned] = useState(false);
 
     const provider = new Provider(connection, wallet as any, opts);
-
     const program = new Program(idl as any, programID, provider);
-
-    const fetchEmergencies = useCallback(() => {
-        if (!publicKey) throw new WalletNotConnectedError();
-
-        return program.account.emergency
-            .all([
-                {
-                    memcmp: {
-                        offset: 40, // Discriminator.
-                        bytes: publicKey.toBase58(),
-                    },
-                },
-            ])
-            .then((emergencies) => {
-                return emergencies.length > 0 ? new Emergency(emergencies[0].publicKey, emergencies[0].account) : undefined;
-            });
-    }, [publicKey, program.account.deed]);
-
-    var claimingEmergencies = emergencyList.filter(function (emergency) {
-        return emergency.claim_request_timestamp > 0 && emergency.redeem_request_timestamp === 0;
-    });
-
-    var selectedEmergency = emergencyList.filter(function (emergency) {
-        return emergency.receiver === selectedReceiver;
-    });
-
     
+    const claimingEmergencies = props.emergencyList?.filter(function (emergency) {
+        return emergency.claimedTimestamp > 0;
+    });
+
+        const selectedEmergency = props.emergencyList ? props.emergencyList.filter(function (emergency) {
+            return emergency.receiver === selectedReceiver;
+        }) : null;
+
     const renderDescription = useMemo(
         () => (
-            <div className="emergency-item">
+            <div className="emergency-item-background">
                 <h3>Your emergencies will lie here.</h3>
             </div>
         ),
-        [emergencyList]
+        []
     );
 
-    const addEmergency = async (inputValues: EmergencyDetails) => {
-        if (
-            inputValues.receiver.length >= 32 &&
-            inputValues.receiver.length <= 44 &&
-            inputValues.share > 0 &&
-            inputValues.share <= 100 &&
-            inputValues.share == Math.round(inputValues.share)
-        ) {
-            var emergency = emergencyList.filter(function (value) {
+    const renderNoOpenDeedDescription = useMemo(
+        () => (
+            <div className="emergency-item-background">
+                <h3>No open deed.</h3>
+                <p>
+                    <div className="hint">Please open a deed to add emergency addresses.</div>
+                </p>
+            </div>
+        ),
+        []
+    );
+
+    const addEmergency = async (inputValues: Emergency) => {
+        if (!publicKey) throw new WalletNotConnectedError();
+
+        if (!props.openDeed) return;
+
+        const emergencyKeypair = web3.Keypair.generate();
+
+        if (inputValues.percentage > 0 && inputValues.percentage <= props.openDeed.leftToBeShared) {
+            const emergency = props.emergencyList?.filter(function (value) {
                 return value.receiver === inputValues.receiver;
             });
 
             setFormIsCorrect(true);
-            emergency.length > 0
-                ? setEmergencyIsMentioned(true)
-                : (setEmergencyList([...emergencyList, inputValues]),
-                  setAliasList([...aliasList, { receiver: inputValues.receiver, alias: '' }]),
-                  setEmergencyIsMentioned(false));
+            if (!emergency) return setEmergencyIsAlreadyMentioned(true);
+
+            await program.rpc
+                .addEmergency(inputValues.receiver, inputValues.percentage, {
+                    accounts: {
+                        emergency: emergencyKeypair.publicKey,
+                        deed: props.openDeed.publicKey,
+                        owner: provider.wallet.publicKey,
+                        systemProgram: SystemProgram.programId,
+                    },
+                    signers: [emergencyKeypair],
+                })
+                .then((res) => program.provider.connection.confirmTransaction(res))
+                .catch(console.log);
+
+            const emergencyAccount = await program.account.emergency.fetch(emergencyKeypair.publicKey);
+
+            props.emergencyList
+                ? props.setEmergencyList([
+                      ...props.emergencyList,
+                      new Emergency(emergencyKeypair.publicKey, emergencyAccount),
+                  ])
+                : props.setEmergencyList([new Emergency(emergencyKeypair.publicKey, emergencyAccount)]);
+
+            setAliasList([...aliasList, { receiver: inputValues.receiver, alias: '' }]);
+            setEmergencyIsAlreadyMentioned(false);
+            
+            props.refreshDeedData();
+            props.refreshEmergenciesData();
         } else {
             setFormIsCorrect(false);
         }
     };
 
     const editEmergency = async (inputValue: any) => {
+
+        if (!selectedEmergency) return;
+
         const id = selectedEmergency[0].receiver;
-        const newEmergencies = [...emergencyList];
+        const newEmergencies = props.emergencyList ? [...props.emergencyList] : props.emergencyList;
+
+        if (!newEmergencies) return;
 
         switch (selectedField) {
             case 'alias':
@@ -142,8 +162,10 @@ function SendEmergency(props: { setNotificationCounter: (number: number) => void
             case 'share':
                 if (inputValue > 0 && inputValue <= 100 && Math.round(inputValue) == inputValue) {
                     setFormIsCorrect(true);
-                    newEmergencies.map((value) => (value.receiver === id ? (value.share = inputValue) : value.share));
-                    setEmergencyList(newEmergencies);
+                    newEmergencies.map((value) =>
+                        value.receiver === id ? (value.percentage = inputValue) : value.percentage
+                    );
+                    props.setEmergencyList(newEmergencies);
                 } else {
                     setFormIsCorrect(false);
                 }
@@ -151,27 +173,38 @@ function SendEmergency(props: { setNotificationCounter: (number: number) => void
             case 'cancel':
                 setFormIsCorrect(true);
                 newEmergencies.map((value) =>
-                    value.claim_request_timestamp > 0 && value.redeem_request_timestamp === 0
-                        ? (value.claim_request_timestamp = 0)
-                        : value.claim_request_timestamp
+                    value.claimedTimestamp > 0 ? (value.claimedTimestamp = 0) : value.claimedTimestamp
                 );
-                setEmergencyList(newEmergencies);
+                props.setEmergencyList(newEmergencies);
                 break;
         }
     };
 
     const deleteEmergency = async () => {
-        const id = selectedEmergency[0].receiver;
-        const newEmergencies = emergencyList.filter(function (emergency) {
-            return emergency.receiver != id;
+
+        if (!props.openDeed) return;
+
+        if (!selectedEmergency) return;
+
+        const emergency = selectedEmergency[0];
+
+        if (!props.emergencyList) return;
+
+        await program.rpc.deleteEmergency({
+            accounts: {
+              emergency: emergency.publicKey,
+              deed: props.openDeed.publicKey,
+              owner: provider.wallet.publicKey,
+              systemProgram: SystemProgram.programId,
+            }
+          });
+
+        const newEmergencies = props.emergencyList.filter(function (e) {
+            return e.receiver != emergency.receiver;
         });
 
-        setEmergencyList(newEmergencies);
+        props.setEmergencyList(newEmergencies);
     };
-
-    useEffect(() => {
-        setEmergencyList(TEST_EMERGENCY_LIST);
-    }, [PublicKey]);
 
     useEffect(() => {
         localStorage.setItem('aliasList', JSON.stringify(aliasList));
@@ -180,8 +213,8 @@ function SendEmergency(props: { setNotificationCounter: (number: number) => void
     const renderEmergencyList = useMemo(
         () => (
             <div>
-                {emergencyList.map((value, index) => (
-                    <div key={value.receiver} className="emergency-item-background">
+                {props.emergencyList?.map((value, index) => (
+                    <div key={value.receiver.toString()} className="emergency-item-background">
                         <div className="emergency-item">
                             <h3>{'Emergency ' + (index + 1)}</h3>
                             <p>
@@ -190,12 +223,13 @@ function SendEmergency(props: { setNotificationCounter: (number: number) => void
                                 <span
                                     onClick={() => {
                                         setEditModalShow(true);
-                                        setSelectedField('share');
+                                        setSelectedField('percentage');
                                         setSelectedReceiver(value.receiver);
+                                        console.log(selectedReceiver);
                                     }}
                                     className="receiver-text"
                                 >
-                                    {' ' + (WALLET_BALANCE * value.share) / 100 + ' SOL '}
+                                    {props.deedBalance ? ' ' + parseFloat((props.deedBalance * value.percentage / 100).toString()).toFixed(5) + ' SOL ' : null}
                                 </span>
                                 <i className="fa fa-arrow-right"></i>
 
@@ -212,10 +246,10 @@ function SendEmergency(props: { setNotificationCounter: (number: number) => void
                                             {alias.receiver === value.receiver && ' ' + alias.alias + ' '}
                                         </span>
                                     ))}
-
-                                    {' ' + value.receiver.substring(0, 5) +
-                                        '...' +
-                                        value.receiver.substring(value.receiver.length - 5) +
+                                    {' ' +
+                                        value.receiver.toString().substring(0, 5) +
+                                        '..' +
+                                        value.receiver.toString().substring(value.receiver.toString().length - 5) +
                                         ' '}
                                 </span>
                             </p>
@@ -227,23 +261,18 @@ function SendEmergency(props: { setNotificationCounter: (number: number) => void
                                     setSelectedReceiver(value.receiver);
                                 }}
                                 className="cta-button status-button"
-                                disabled={value.claim_request_timestamp === 0 || value.redeem_request_timestamp > 0}
+                                disabled={value.claimedTimestamp === 0}
                             >
-                                {value.claim_request_timestamp > 0
-                                    ? value.redeem_request_timestamp > 0
-                                        ? (<div>{'Sent'}</div>)
-                                        : ('Claimed')
-                                    : 'Unclaimed'}
+                                {value.claimedTimestamp > 0 ? 'Claimed' : 'Unclaimed'}
                             </button>
-                            {value.claim_request_timestamp > 0 && value.redeem_request_timestamp === 0 ? (
+                            {value.claimedTimestamp > 0 ? (
                                 <button className="cta-button status-button">
                                     <div>
                                         <Emojis symbol="⏳" label="hourglass" />
                                         <Countdown date={Date.now() + WITHDRAWAL_PERIOD * 3600 * 24 * 1000} />
                                     </div>
                                 </button>
-                            ) : null}
-                            {value.claim_request_timestamp === 0 ? (
+                            ) : (
                                 <button
                                     onClick={() => {
                                         setDeleteModalShow(true);
@@ -253,50 +282,65 @@ function SendEmergency(props: { setNotificationCounter: (number: number) => void
                                 >
                                     DELETE
                                 </button>
-                            ) : null}
+                            )}
                         </div>
                     </div>
                 ))}
             </div>
         ),
-        [emergencyList, aliasList]
+        [props.emergencyList, selectedReceiver, aliasList]
     );
 
     useEffect(() => {
-        props.setNotificationCounter(claimingEmergencies.length);
-    }, [claimingEmergencies.length]);
+        if (claimingEmergencies) props.setNotificationCounter(claimingEmergencies.length);
+    }, [claimingEmergencies, props]);
 
     return (
         <div className="emergency-container">
-            <button onClick={() => setAddModalShow(true)} className="cta-button confirm-button">
-                ADD A RECEIVING ADDRESS
-            </button>
-            <AddEmergencyReceiverModal
-                onClose={() => setAddModalShow(false)}
-                show={showAddModal}
-                addEmergency={addEmergency}
-                formIsCorrect={formIsCorrect}
-                emergencyIsMentioned={emergencyIsMentioned}
-            />
-            <DeleteEmergencyReceiverModal
-                onClose={() => setDeleteModalShow(false)}
-                show={showDeleteModal}
-                deleteEmergency={deleteEmergency}
-                selectedField={selectedField}
-            />
-            <EditEmergencyReceiverModal
-                onClose={() => {
-                    setEditModalShow(false);
-                }}
-                show={showEditModal}
-                editEmergency={editEmergency}
-                formIsCorrect={formIsCorrect}
-                selectedField={selectedField}
-                selectedReceiver={selectedReceiver}
-            />
-            <div className="emergency-list">
-                {(emergencyList.length > 0 && renderEmergencyList) || renderDescription}
-            </div>
+            {props.openDeed ? (
+                <div>
+                    <button onClick={() => setAddModalShow(true)} className="cta-button confirm-button">
+                        ADD A RECEIVING ADDRESS
+                    </button>
+                    {props.emergencyList && props.deedBalance ? (
+                        <div>
+                            <AddEmergencyReceiverModal
+                                onClose={() => setAddModalShow(false)}
+                                show={showAddModal}
+                                addEmergency={addEmergency}
+                                formIsCorrect={formIsCorrect}
+                                emergencyIsAlreadyMentioned={emergencyIsAlreadyMentioned}
+                                openDeed={props.openDeed}
+                            />
+                            <DeleteEmergencyReceiverModal
+                                onClose={() => setDeleteModalShow(false)}
+                                show={showDeleteModal}
+                                deleteEmergency={deleteEmergency}
+                                selectedField={selectedField}
+                            />
+                            {selectedReceiver ? (
+                                <EditEmergencyReceiverModal
+                                    onClose={() => {
+                                        setEditModalShow(false);
+                                    }}
+                                    show={showEditModal}
+                                    editEmergency={editEmergency}
+                                    formIsCorrect={formIsCorrect}
+                                    selectedField={selectedField}
+                                    selectedReceiver={selectedReceiver}
+                                />
+                            ) : null}
+                        </div>
+                    ) : (
+                        'null'
+                    )}
+                    <div className="emergency-list">
+                        {(props.emergencyList && renderEmergencyList) || renderDescription}
+                    </div>
+                </div>
+            ) : (
+                <div>{renderNoOpenDeedDescription}</div>
+            )}
         </div>
     );
 }

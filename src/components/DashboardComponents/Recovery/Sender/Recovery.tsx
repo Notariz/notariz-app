@@ -1,3 +1,5 @@
+import { Deed } from '../../../../models';
+
 import { PublicKey } from '@solana/web3.js';
 import { useCallback, useEffect, useState } from 'react';
 import AddRecoveryReceivingModal from './Modals/AddRecoveryReceivingModal';
@@ -20,7 +22,7 @@ const TEST_RECOVERY_ADDRESS: RecoveryAddress[] = [
 
 const WALLET_BALANCE = 1500;
 
-function Recovery() {
+function Recovery(props: { openDeed: Deed | undefined; setOpenDeed: (deed: Deed | undefined) => void;}) {
     const [recoveryList, setRecoveryList] = useState<RecoveryAddress[]>([]);
     const [showAddModal, setAddModalShow] = useState(false);
     const [showDeleteModal, setDeleteModalShow] = useState(false);

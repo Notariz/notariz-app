@@ -1,28 +1,29 @@
+import { Emergency } from '../../../../../models';
+import { Deed } from '../../../../../models';
+
 import { useEffect, useState, useCallback } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import Emojis from '../../../../utils/Emojis';
-import '../../../Common.css';
 
-interface EmergencyDetails {
-    receiver: string;
-    share: number;
-    claim_request_timestamp: number;
-    redeem_request_timestamp: number;
-}
+import '../../../Common.css';
+import { web3 } from '@project-serum/anchor';
 
 function AddEmergencyReceiverModal(props: {
     show: boolean;
     onClose: () => void;
-    addEmergency: (inputValues: EmergencyDetails) => void;
+    addEmergency: (inputValues: Emergency) => void;
     formIsCorrect: boolean;
-    emergencyIsMentioned: boolean;
+    emergencyIsAlreadyMentioned: boolean;
+    openDeed: Deed;
 }) {
     const [isSubmitted, setIsSubmitted] = useState(false);
-    const [inputValues, setInputValues] = useState<EmergencyDetails>({
-        receiver: '',
-        share: 0,
-        claim_request_timestamp: 0,
-        redeem_request_timestamp: 0
+    const [inputValues, setInputValues] = useState<Emergency>({
+        publicKey: web3.Keypair.generate().publicKey,
+        upstreamDeed: props.openDeed.publicKey,
+        owner: props.openDeed.owner,
+        receiver: web3.Keypair.generate().publicKey,
+        percentage: 0,
+        claimedTimestamp: 0,
     });
 
     const closeOnEscapeKeyDown = (e: any) => {
@@ -50,6 +51,7 @@ function AddEmergencyReceiverModal(props: {
                 <div className="notariz-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="notariz-modal-header">
                         <h3 className="notariz-modal-title">New receiving address</h3>
+                        <div className='hint'>{props.openDeed.leftToBeShared + '% left to be shared'}</div>
                     </div>
                     <div className="notariz-modal-body">
                         <form
@@ -57,12 +59,14 @@ function AddEmergencyReceiverModal(props: {
                                 event.preventDefault();
                                 {
                                     setIsSubmitted(true);
-                                    props.formIsCorrect && !props.emergencyIsMentioned
+                                    props.formIsCorrect && !props.emergencyIsAlreadyMentioned
                                         ? (setInputValues({
-                                              receiver: '',
-                                              share: 0,
-                                              claim_request_timestamp: 0,
-                                              redeem_request_timestamp: 0
+                                              publicKey: web3.Keypair.generate().publicKey,
+                                              upstreamDeed: props.openDeed.publicKey,
+                                              owner: props.openDeed.owner,
+                                              receiver: web3.Keypair.generate().publicKey,
+                                              percentage: 0,
+                                              claimedTimestamp: 0,
                                           }),
                                           props.onClose(),
                                           setIsSubmitted(false))
@@ -71,10 +75,8 @@ function AddEmergencyReceiverModal(props: {
                                 /* Call program entry point here */
                             }}
                         >
-                            {isSubmitted && props.emergencyIsMentioned ? (
-                                <span className="hint">
-                                    This emergency is already mentioned in your list.
-                                </span>
+                            {isSubmitted && props.emergencyIsAlreadyMentioned ? (
+                                <span className="hint">This emergency is already mentioned in your list.</span>
                             ) : null}
                             {isSubmitted && !props.formIsCorrect ? (
                                 <span className="hint">
@@ -85,20 +87,18 @@ function AddEmergencyReceiverModal(props: {
                                 name="receiver"
                                 type="text"
                                 placeholder="Your emergency's public address"
-                                value={inputValues.receiver}
+                                value={inputValues.receiver.toString()}
                                 onChange={handleInputChange}
                                 required
                             />
                             {isSubmitted && !props.formIsCorrect ? (
-                                <span className="hint">
-                                    A share should be an integer comprised between 1 to 100.
-                                </span>
+                                <span className="hint">A share should be an integer comprised between 1 and 100.</span>
                             ) : null}
                             <input
-                                name="share"
+                                name="percentage"
                                 type="number"
                                 placeholder="Your emergency's claimable share"
-                                value={inputValues.share === 0 ? NaN : inputValues.share}
+                                value={inputValues.percentage === 0 ? undefined : inputValues.percentage}
                                 onChange={handleInputChange}
                                 required
                             />
@@ -107,7 +107,9 @@ function AddEmergencyReceiverModal(props: {
                                 onClick={() => props.addEmergency(inputValues)}
                                 className="cta-button edit-button"
                             >
-                                <div><Emojis symbol="✔️" label="check" /> {' Submit'}</div>
+                                <div>
+                                    <Emojis symbol="✔️" label="check" /> {' Submit'}
+                                </div>
                             </button>
                         </form>
                     </div>
