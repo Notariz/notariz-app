@@ -1,12 +1,28 @@
-import { useCallback, useEffect, useState } from 'react';
+import { Emergency } from '../../../../models';
+
+import { WalletNotConnectedError } from '@solana/wallet-adapter-base';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+
+import { clusterApiUrl, Connection, Transaction, PublicKey, LAMPORTS_PER_SOL, ConfirmOptions } from '@solana/web3.js';
+import { Program, Provider, Wallet, web3, BN } from '@project-serum/anchor';
+import idl from '../../../../idl.json';
+
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Countdown from 'react-countdown';
 import AddEmergencyReceiverModal from './Modals/AddEmergencyReceiverModal';
 import DeleteEmergencyReceiverModal from './Modals/DeleteEmergencyReceiverModal';
 import EditEmergencyReceiverModal from './Modals/EditEmergencyReceiverModal';
 import Emojis from '../../../utils/Emojis';
-import './Emergency.css';
+import './SendEmergency.css';
 import '../../Common.css';
-import { PublicKey } from '@solana/web3.js';
+
+const { SystemProgram, Keypair } = web3;
+
+const opts: ConfirmOptions = {
+    commitment: 'processed',
+};
+
+const programID = new PublicKey(idl.metadata.address);
 
 interface EmergencyDetails {
     receiver: string;
@@ -22,38 +38,17 @@ interface EmergencyAlias {
 
 const WITHDRAWAL_PERIOD = 4;
 
-const TEST_EMERGENCY_LIST: EmergencyDetails[] = [
-    {
-        receiver: 'JBu1AL4obBcCMqKBBxhpWCNUt136ijcuMZLFvTP7iWdB',
-        share: 30,
-        claim_request_timestamp: 30,
-        redeem_request_timestamp: 0,
-    },
-    {
-        receiver: '3VQwtcntVQN1mj1MybQw8qK7Li3KNrrgNskSQwZAPGNr',
-        share: 20,
-        claim_request_timestamp: 40,
-        redeem_request_timestamp: 50,
-    },
-    {
-        receiver: '2V7t5NaKY7aGkwytCWQgvUYZfEr9XMwNChhJEakTExk6',
-        share: 17,
-        claim_request_timestamp: 0,
-        redeem_request_timestamp: 0,
-    },
-    {
-        receiver: '7KVswB9vkCgeM3SHP7aGDijvdRAHK8P5wi9JXViCrtYh',
-        share: 5,
-        claim_request_timestamp: 0,
-        redeem_request_timestamp: 0,
-    },
-];
+const TEST_EMERGENCY_LIST: EmergencyDetails[] = [];
 
 const TEST_ALIAS_LIST: EmergencyAlias[] = [];
 
 const WALLET_BALANCE = 1500;
 
-function Emergency(props: { setNotificationCounter: (number: number) => void }) {
+function SendEmergency(props: { setNotificationCounter: (number: number) => void }) {
+    const wallet = useWallet();
+    const { publicKey, sendTransaction } = wallet;
+    const { connection } = useConnection();
+
     const [showAddModal, setAddModalShow] = useState(false);
     const [showDeleteModal, setDeleteModalShow] = useState(false);
     const [showEditModal, setEditModalShow] = useState(false);
@@ -67,6 +62,27 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
     const [selectedField, setSelectedField] = useState('');
     const [emergencyIsMentioned, setEmergencyIsMentioned] = useState(false);
 
+    const provider = new Provider(connection, wallet as any, opts);
+
+    const program = new Program(idl as any, programID, provider);
+
+    const fetchEmergencies = useCallback(() => {
+        if (!publicKey) throw new WalletNotConnectedError();
+
+        return program.account.emergency
+            .all([
+                {
+                    memcmp: {
+                        offset: 40, // Discriminator.
+                        bytes: publicKey.toBase58(),
+                    },
+                },
+            ])
+            .then((emergencies) => {
+                return emergencies.length > 0 ? new Emergency(emergencies[0].publicKey, emergencies[0].account) : undefined;
+            });
+    }, [publicKey, program.account.deed]);
+
     var claimingEmergencies = emergencyList.filter(function (emergency) {
         return emergency.claim_request_timestamp > 0 && emergency.redeem_request_timestamp === 0;
     });
@@ -75,7 +91,8 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
         return emergency.receiver === selectedReceiver;
     });
 
-    const renderDescription = useCallback(
+    
+    const renderDescription = useMemo(
         () => (
             <div className="emergency-item">
                 <h3>Your emergencies will lie here.</h3>
@@ -160,7 +177,7 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
         localStorage.setItem('aliasList', JSON.stringify(aliasList));
     }, [aliasList]);
 
-    const renderEmergencyList = useCallback(
+    const renderEmergencyList = useMemo(
         () => (
             <div>
                 {emergencyList.map((value, index) => (
@@ -278,10 +295,10 @@ function Emergency(props: { setNotificationCounter: (number: number) => void }) 
                 selectedReceiver={selectedReceiver}
             />
             <div className="emergency-list">
-                {(emergencyList.length > 0 && renderEmergencyList()) || renderDescription()}
+                {(emergencyList.length > 0 && renderEmergencyList) || renderDescription}
             </div>
         </div>
     );
 }
 
-export default Emergency;
+export default SendEmergency;

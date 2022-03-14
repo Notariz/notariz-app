@@ -4,7 +4,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { Col, Container, Row } from 'react-bootstrap';
 import Parser from 'html-react-parser';
-import Emergency from './DashboardComponents/Emergency/Sender/Emergency';
+import SendEmergency from './DashboardComponents/Emergency/Sender/SendEmergency';
 import ClaimEmergency from './DashboardComponents/Emergency/Receiver/ClaimEmergency';
 import Recovery from './DashboardComponents/Recovery/Sender/Recovery';
 import ClaimRecovery from './DashboardComponents/Recovery/Receiver/ClaimRecovery';
@@ -84,7 +84,7 @@ function Dashboard() {
                 >
                     <ProfileButton profile={emergencyProfile} setToggle={setEmergencyToggle} />
                     {emergencyProfile === 'sender' && (
-                        <Emergency setNotificationCounter={(number) => setNotificationsCount(number)} />
+                        <SendEmergency setNotificationCounter={(number) => setNotificationsCount(number)} />
                     ) || <ClaimEmergency />}
                 </Tab>
                 <Tab eventKey="recovery" title="Recoveries" className="tab-content">
