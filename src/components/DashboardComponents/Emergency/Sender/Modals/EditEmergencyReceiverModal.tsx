@@ -17,7 +17,7 @@ function EditEmergencyReceiverModal(props: {
     show: boolean;
     onClose: () => void;
     selectedField: string;
-    selectedReceiver: PublicKey;
+    selectedReceiver: PublicKey | undefined;
     formIsCorrect: boolean;
     editEmergency: (inputValue: string) => void;
 }) {

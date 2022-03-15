@@ -53,11 +53,11 @@ function ClaimEmergency(props: {
         return emergency.owner === selectedSender?.owner;
     });
 
-    const upstreamDeed = props.upstreamDeedsBalance?.filter(function(upstreamDeed) {
+    const upstreamDeed = props.upstreamDeedsBalance?.filter(function (upstreamDeed) {
         if (!props.upstreamDeedsBalance) return;
 
         return props.upstreamDeedsBalance[0].deed === upstreamDeed.deed;
-    })
+    });
 
     const claimRequest = async () => {
         if (!selectedEmergency || !props.emergencySenderList) return;
@@ -66,9 +66,9 @@ function ClaimEmergency(props: {
 
         await program.rpc.claimEmergency({
             accounts: {
-              emergency: emergency.publicKey,
-              receiver: emergency.receiver
-            }
+                emergency: emergency.publicKey,
+                receiver: emergency.receiver,
+            },
         });
 
         props.refreshEmergencySendersData();
@@ -90,7 +90,16 @@ function ClaimEmergency(props: {
                                       <i className="fa fa-arrow-right"></i>
                                       {' ' + value.percentage + '% '}
                                       <i className="fa fa-arrow-right"></i>
-                                      {' Me'}
+                                      {' Me '}
+                                      <a
+                                          href={
+                                              'https://explorer.solana.com/address/' +
+                                              value.publicKey.toString() +
+                                              '?cluster=devnet'
+                                          }
+                                      >
+                                          <Emojis symbol="📜" label="scroll" />
+                                      </a>
                                   </p>
                                   {value.owner && value.claimedTimestamp > 0 ? (
                                       <div>
@@ -147,11 +156,13 @@ function ClaimEmergency(props: {
 
     return (
         <div className="claim-emergency-container">
-            <button onClick={() => {
-                props.refreshEmergencySendersData()
-                props.getUpstreamDeedsBalance()
-                }
-                } className="cta-button confirm-button">
+            <button
+                onClick={() => {
+                    props.refreshEmergencySendersData();
+                    props.getUpstreamDeedsBalance();
+                }}
+                className="cta-button confirm-button"
+            >
                 REFRESH
             </button>
             {props.emergencySenderList ? (
@@ -166,7 +177,9 @@ function ClaimEmergency(props: {
                         })}
                     />
                 </div>
-            ) : renderDescription}
+            ) : (
+                renderDescription
+            )}
         </div>
     );
 }

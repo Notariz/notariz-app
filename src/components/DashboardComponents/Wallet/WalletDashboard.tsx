@@ -18,6 +18,7 @@ import { useState, useCallback, useEffect, useMemo } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { PieChart } from 'react-minimal-pie-chart';
 import TopUpModal from './Modals/TopUpModal';
+import DeleteDeedModal from './Modals/DeleteDeedModal';
 import EditWithdrawalPeriodModal from './Modals/EditWithdrawalPeriod';
 import Emojis from '../../utils/Emojis';
 import './WalletDashboard.css';
@@ -48,7 +49,8 @@ function WalletDashboard(props: {
 
     const [topUpModalShow, setTopUpModalShow] = useState(false);
     const [topUpFormIsCorrect, setTopUpFormIsCorrect] = useState(false);
-
+    
+    const [showDeleteModal, setDeleteModalShow] = useState(false);
     const [editWithdrawalPeriodModalShow, setEditWithdrawalPeriodModalShow] = useState(false);
     const [editWithdrawalPeriodFormIsCorrect, setEditWithdrawalPeriodFormIsCorrect] = useState(false);
 
@@ -145,7 +147,7 @@ function WalletDashboard(props: {
         () => (
             <div>
                 <h3>Deed account</h3>
-                <p className="hint">
+                <p>
                     <a
                         href={
                             'https://explorer.solana.com/address/' +
@@ -158,11 +160,12 @@ function WalletDashboard(props: {
                             props.openDeed?.publicKey
                                 .toString()
                                 .substring(props.openDeed?.publicKey.toString().length - 5)}
-                    </a>
+                    </a>{' '}
+                    <Emojis symbol="📜" label="scroll" />
                 </p>
                 <button
                     onClick={() => {
-                        deleteDeed(props.openDeed).then(() => props.setOpenDeed(undefined));
+                        setDeleteModalShow(true);
                     }}
                     className="cta-button delete-button"
                 >
@@ -332,6 +335,12 @@ function WalletDashboard(props: {
                         </Col>
                     </Row>
                     <div className="wallet-item-background">{renderAccountName}</div>
+                    <DeleteDeedModal
+                        onClose={() => setDeleteModalShow(false)}
+                        show={showDeleteModal}
+                        deleteDeed={() => 
+                            deleteDeed(props.openDeed).then((res) => program.provider.connection.confirmTransaction(res)).then(() => props.setOpenDeed(undefined))}
+                    />
                 </Container>
             ) : (
                 <div className="wallet-item-background">{renderCreateAccount}</div>

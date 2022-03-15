@@ -100,12 +100,8 @@ function SendEmergency(props: {
                 return value.receiver === inputValues.receiver;
             });
 
-            console.log(
-                'Emergency pk before form:',
-                emergencyKeypair.publicKey);
-            console.log('Emergency pk after form: ',
-                inputValues.publicKey
-            );
+            console.log('Emergency pk before form:', emergencyKeypair.publicKey);
+            console.log('Emergency pk after form: ', inputValues.publicKey);
             console.log('Receiver pk after form:', inputValues.receiver);
 
             setFormIsCorrect(true);
@@ -231,7 +227,7 @@ function SendEmergency(props: {
                                         setEditModalShow(true);
                                         setSelectedField('percentage');
                                         setSelectedReceiver(value.receiver);
-                                        console.log(selectedReceiver);
+                                        console.log(showEditModal);
                                     }}
                                     className="receiver-text"
                                 >
@@ -264,6 +260,15 @@ function SendEmergency(props: {
                                         value.receiver.toString().substring(value.receiver.toString().length - 5) +
                                         ' '}
                                 </span>
+                                <a
+                                    href={
+                                        'https://explorer.solana.com/address/' +
+                                        value.publicKey.toString() +
+                                        '?cluster=devnet'
+                                    }
+                                >
+                                    <Emojis symbol="📜" label="scroll" />
+                                </a>
                             </p>
 
                             <button
@@ -333,18 +338,16 @@ function SendEmergency(props: {
                                 deleteEmergency={deleteEmergency}
                                 selectedField={selectedField}
                             />
-                            {selectedReceiver ? (
-                                <EditEmergencyReceiverModal
-                                    onClose={() => {
-                                        setEditModalShow(false);
-                                    }}
-                                    show={showEditModal}
-                                    editEmergency={editEmergency}
-                                    formIsCorrect={formIsCorrect}
-                                    selectedField={selectedField}
-                                    selectedReceiver={selectedReceiver}
-                                />
-                            ) : null}
+                            <EditEmergencyReceiverModal
+                                onClose={() => {
+                                    setEditModalShow(false);
+                                }}
+                                show={showEditModal}
+                                editEmergency={editEmergency}
+                                formIsCorrect={formIsCorrect}
+                                selectedField={selectedField}
+                                selectedReceiver={selectedReceiver}
+                            />
                         </div>
                     ) : (
                         'null'
