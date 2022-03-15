@@ -59,17 +59,20 @@ function SendEmergency(props: {
     const [selectedReceiver, setSelectedReceiver] = useState<PublicKey | undefined>(undefined);
     const [selectedField, setSelectedField] = useState('');
     const [emergencyIsAlreadyMentioned, setEmergencyIsAlreadyMentioned] = useState(false);
+    const [emergencyKeypair, setEmergencyKeypair] = useState(web3.Keypair.generate());
 
     const provider = new Provider(connection, wallet as any, opts);
     const program = new Program(idl as any, programID, provider);
-    
+
     const claimingEmergencies = props.emergencyList?.filter(function (emergency) {
         return emergency.claimedTimestamp > 0;
     });
 
-        const selectedEmergency = props.emergencyList ? props.emergencyList.filter(function (emergency) {
-            return emergency.receiver === selectedReceiver;
-        }) : null;
+    const selectedEmergency = props.emergencyList
+        ? props.emergencyList.filter(function (emergency) {
+              return emergency.receiver === selectedReceiver;
+          })
+        : null;
 
     const renderDescription = useMemo(
         () => (
@@ -97,14 +100,21 @@ function SendEmergency(props: {
 
         if (!props.openDeed) return;
 
-        const emergencyKeypair = web3.Keypair.generate();
-
         if (inputValues.percentage > 0 && inputValues.percentage <= props.openDeed.leftToBeShared) {
             const emergency = props.emergencyList?.filter(function (value) {
                 return value.receiver === inputValues.receiver;
             });
 
+            console.log(
+                'Emergency pk before form:',
+                emergencyKeypair.publicKey);
+            console.log('Emergency pk after form: ',
+                inputValues.publicKey
+            );
+            console.log('Receiver pk after form:', inputValues.receiver);
+
             setFormIsCorrect(true);
+
             if (!emergency) return setEmergencyIsAlreadyMentioned(true);
 
             await program.rpc
@@ -120,18 +130,21 @@ function SendEmergency(props: {
                 .then((res) => program.provider.connection.confirmTransaction(res))
                 .catch(console.log);
 
-            const emergencyAccount = await program.account.emergency.fetch(emergencyKeypair.publicKey);
-
-            props.emergencyList
-                ? props.setEmergencyList([
-                      ...props.emergencyList,
-                      new Emergency(emergencyKeypair.publicKey, emergencyAccount),
-                  ])
-                : props.setEmergencyList([new Emergency(emergencyKeypair.publicKey, emergencyAccount)]);
+            await program.account.emergency
+                .fetch(emergencyKeypair.publicKey)
+                .then((account) => {
+                    props.emergencyList
+                        ? props.setEmergencyList([
+                              ...props.emergencyList,
+                              new Emergency(emergencyKeypair.publicKey, account),
+                          ])
+                        : props.setEmergencyList([new Emergency(emergencyKeypair.publicKey, account)]);
+                })
+                .catch(console.log);
 
             setAliasList([...aliasList, { receiver: inputValues.receiver, alias: '' }]);
             setEmergencyIsAlreadyMentioned(false);
-            
+
             props.refreshDeedData();
             props.refreshEmergenciesData();
         } else {
@@ -140,7 +153,6 @@ function SendEmergency(props: {
     };
 
     const editEmergency = async (inputValue: any) => {
-
         if (!selectedEmergency) return;
 
         const id = selectedEmergency[0].receiver;
@@ -181,7 +193,6 @@ function SendEmergency(props: {
     };
 
     const deleteEmergency = async () => {
-
         if (!props.openDeed) return;
 
         if (!selectedEmergency) return;
@@ -192,12 +203,12 @@ function SendEmergency(props: {
 
         await program.rpc.deleteEmergency({
             accounts: {
-              emergency: emergency.publicKey,
-              deed: props.openDeed.publicKey,
-              owner: provider.wallet.publicKey,
-              systemProgram: SystemProgram.programId,
-            }
-          });
+                emergency: emergency.publicKey,
+                deed: props.openDeed.publicKey,
+                owner: provider.wallet.publicKey,
+                systemProgram: SystemProgram.programId,
+            },
+        });
 
         const newEmergencies = props.emergencyList.filter(function (e) {
             return e.receiver != emergency.receiver;
@@ -229,7 +240,13 @@ function SendEmergency(props: {
                                     }}
                                     className="receiver-text"
                                 >
-                                    {props.deedBalance ? ' ' + parseFloat((props.deedBalance * value.percentage / 100).toString()).toFixed(5) + ' SOL ' : null}
+                                    {props.deedBalance
+                                        ? ' ' +
+                                          parseFloat(((props.deedBalance * value.percentage) / 100).toString()).toFixed(
+                                              5
+                                          ) +
+                                          ' SOL '
+                                        : null}
                                 </span>
                                 <i className="fa fa-arrow-right"></i>
 
@@ -278,7 +295,7 @@ function SendEmergency(props: {
                                         setDeleteModalShow(true);
                                         setSelectedReceiver(value.receiver);
                                     }}
-                                    className="delete-button"
+                                    className="cta-button delete-button"
                                 >
                                     DELETE
                                 </button>
@@ -288,7 +305,7 @@ function SendEmergency(props: {
                 ))}
             </div>
         ),
-        [props.emergencyList, selectedReceiver, aliasList]
+        [props, selectedReceiver, aliasList]
     );
 
     useEffect(() => {
@@ -299,7 +316,13 @@ function SendEmergency(props: {
         <div className="emergency-container">
             {props.openDeed ? (
                 <div>
-                    <button onClick={() => setAddModalShow(true)} className="cta-button confirm-button">
+                    <button
+                        onClick={() => {
+                            setAddModalShow(true);
+                            setEmergencyKeypair(web3.Keypair.generate());
+                        }}
+                        className="cta-button confirm-button"
+                    >
                         ADD A RECEIVING ADDRESS
                     </button>
                     {props.emergencyList && props.deedBalance ? (
@@ -308,6 +331,7 @@ function SendEmergency(props: {
                                 onClose={() => setAddModalShow(false)}
                                 show={showAddModal}
                                 addEmergency={addEmergency}
+                                emergencyPk={emergencyKeypair.publicKey}
                                 formIsCorrect={formIsCorrect}
                                 emergencyIsAlreadyMentioned={emergencyIsAlreadyMentioned}
                                 openDeed={props.openDeed}

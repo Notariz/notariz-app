@@ -6,14 +6,6 @@ span {
     color: var(--notariz-pink);
 }
 
-a,
-a:hover,
-a:visited,
-a:active {
-    color: inherit;
-    text-decoration: none;
-}
-
 .cta-button span {
     color: var(--text-color) !important;
 }
@@ -37,6 +29,7 @@ a:active {
     font-size: 16px;
     font-weight: bold;
     color: var(--text-color);
+    height: 64px;
 }
 
 .cta-button:hover,
@@ -136,6 +129,7 @@ input[type='text']:disabled {
     z-index: auto;
 }
 
+
 .notariz-modal-title {
     margin: 0;
     margin-bottom: 20px;
@@ -201,7 +195,6 @@ input[type='text']:disabled {
     margin-right: 10%;
 }
 
-button:disabled,
-button:disabled:hover {
-    opacity: 0.2;
+button:disabled, button:disabled:hover {
+    opacity: .2;
 }

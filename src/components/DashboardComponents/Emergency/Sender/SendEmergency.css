@@ -23,7 +23,7 @@
 .emergency-item {
     margin-left: 10%;
     margin-right: 10%;
-    padding-bottom: 15px;
+    padding-bottom: 20px;
 }
 
 .emergency-item i {
@@ -34,11 +34,6 @@
     color: var(--text-color);
     font-weight: bold;
     border-radius: 15px;
-    height: 50px;
-    padding-left: 20px;
-    padding-right: 20px;
-    margin-left: 5px;
-    margin-right: 5px;
 }
 
 .emergency-item button:disabled {

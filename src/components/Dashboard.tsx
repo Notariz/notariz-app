@@ -41,7 +41,10 @@ function Dashboard() {
     const [notificationsCount, setNotificationsCount] = useState(0);
 
     const [openDeed, setOpenDeed] = useState<Deed | undefined>();
+    const [upstreamDeed, setUpstreamDeed] = useState<Deed | undefined>();
     const [emergencyList, setEmergencyList] = useState<Emergency[] | undefined>([]);
+    const [emergencySenderList, setEmergencySenderList] = useState<Emergency[] | undefined>([]);
+
     const [userBalance, setUserBalance] = useState('0');
     const [deedBalance, setDeedBalance] = useState<number | undefined>(0.0);
 
@@ -159,7 +162,7 @@ function Dashboard() {
             .all([
                 {
                     memcmp: {
-                        offset: 8, // Discriminator + upstream deed public key.
+                        offset: 8, // Discriminator.
                         bytes: openDeed.publicKey.toBase58(),
                     },
                 },
@@ -174,7 +177,6 @@ function Dashboard() {
 
     const refreshEmergenciesData = useCallback(async () => {
         const emergencies = await fetchEmergencies();
-        console.log(emergencies);
 
         if (!emergencies) return;
 
@@ -184,6 +186,41 @@ function Dashboard() {
     useEffect(() => {
         refreshEmergenciesData();
     }, [publicKey, openDeed]);
+
+    
+
+    const fetchEmergencySenders = useCallback(() => {
+        if (!publicKey) throw new WalletNotConnectedError();
+
+        return program.account.emergency
+            .all([
+                {
+                    memcmp: {
+                        offset: 8 + 32 + 32, // Discriminator + upstream deed public key + deed owner.
+                        bytes: provider.wallet.publicKey.toBase58(),
+                    },
+                },
+            ])
+            .then((emergencies) => {
+                console.log(emergencies);
+                return emergencies.length > 0
+                    ? emergencies.map((emergency) => new Emergency(emergency.publicKey, emergency.account))
+                    : undefined;
+            });
+    }, [publicKey, program.account.emergency, provider.wallet.publicKey]);
+
+    const refreshEmergencySendersData = useCallback(async () => {
+        const emergencySenders = await fetchEmergencySenders();
+        console.log(emergencySenders);
+
+        if (!emergencySenders) return;
+
+        setEmergencySenderList(emergencySenders);
+    }, [fetchEmergencySenders]);
+
+    useEffect(() => {
+        refreshEmergencySendersData();
+    }, [publicKey, refreshEmergencySendersData]);
 
     const renderWalletConnected = useMemo(
         () => (
@@ -219,7 +256,13 @@ function Dashboard() {
                             setOpenDeed={setOpenDeed}
                             setNotificationCounter={(number) => setNotificationsCount(number)}
                         />
-                    )) || <ClaimEmergency />}
+                    )) || (
+                        <ClaimEmergency
+                            emergencySenderList={emergencySenderList}
+                            setEmergencySenderList={setEmergencySenderList}
+                            refreshEmergencySendersData={refreshEmergencySendersData}
+                        />
+                    )}
                 </Tab>
                 <Tab eventKey="recovery" title="Recoveries" className="tab-content">
                     <ProfileButton profile={recoveryProfile} setToggle={setRecoveryToggle} />
@@ -232,14 +275,24 @@ function Dashboard() {
                 </Tab>
             </Tabs>
         ),
-        [notificationsCount, emergencyProfile, recoveryProfile, deedBalance, emergencyList, getUserBalance, openDeed, refreshDeedData, refreshEmergenciesData, setEmergencyToggle, setRecoveryToggle, userBalance]
+        [
+            notificationsCount,
+            emergencyProfile,
+            recoveryProfile,
+            deedBalance,
+            emergencyList,
+            getUserBalance,
+            openDeed,
+            refreshDeedData,
+            refreshEmergenciesData,
+            setEmergencyToggle,
+            setRecoveryToggle,
+            userBalance,
+            emergencySenderList
+        ]
     );
 
-    return (
-        <div className="dashboard-container">
-            {publicKey ? renderWalletConnected : renderWalletNotConnected}
-        </div>
-    );
+    return <div className="dashboard-container">{publicKey ? renderWalletConnected : renderWalletNotConnected}</div>;
 }
 
 export default Dashboard;
