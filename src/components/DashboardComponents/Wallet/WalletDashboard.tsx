@@ -339,7 +339,7 @@ function WalletDashboard(props: {
                         onClose={() => setDeleteModalShow(false)}
                         show={showDeleteModal}
                         deleteDeed={() => 
-                            deleteDeed(props.openDeed).then((res) => program.provider.connection.confirmTransaction(res)).then(() => props.setOpenDeed(undefined))}
+                            deleteDeed(props.openDeed)}
                     />
                 </Container>
             ) : (
