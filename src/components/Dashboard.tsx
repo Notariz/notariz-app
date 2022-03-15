@@ -24,12 +24,18 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './Dashboard.css';
 import './DashboardComponents/Common.css';
 import { useMemo } from 'react';
+import { resourceUsage } from 'process';
 
 const { SystemProgram, Keypair } = web3;
 
 const opts: ConfirmOptions = {
     commitment: 'processed',
 };
+
+interface DeedBalance {
+    deed: PublicKey;
+    balance: number;
+}
 
 const programID = new PublicKey(idl.metadata.address);
 
@@ -41,11 +47,11 @@ function Dashboard() {
     const [notificationsCount, setNotificationsCount] = useState(0);
 
     const [openDeed, setOpenDeed] = useState<Deed | undefined>();
-    const [upstreamDeed, setUpstreamDeed] = useState<Deed | undefined>();
     const [emergencyList, setEmergencyList] = useState<Emergency[] | undefined>([]);
     const [emergencySenderList, setEmergencySenderList] = useState<Emergency[] | undefined>([]);
 
     const [userBalance, setUserBalance] = useState('0');
+    const [upstreamDeedsBalance, setUpstreamDeedsBalance] = useState<DeedBalance[] | undefined>();
     const [deedBalance, setDeedBalance] = useState<number | undefined>(0.0);
 
     const provider = new Provider(connection, wallet as any, opts);
@@ -94,7 +100,7 @@ function Dashboard() {
 
     useEffect(() => {
         document.title = `${notificationsCount > 0 ? `(${notificationsCount})` : ''} Notariz`;
-    });
+    }, [openDeed]);
 
     useEffect(() => {
         localStorage.setItem('emergencyProfile', JSON.stringify(emergencyProfile));
@@ -153,6 +159,26 @@ function Dashboard() {
         return userBalance;
     }, [publicKey, connection, userBalance]);
 
+    const getUpstreamDeedsBalance = useCallback(() => {
+        if (!publicKey) throw new WalletNotConnectedError();
+
+        if (!emergencySenderList) return;
+
+        emergencySenderList.map((emergency) =>
+            connection
+                .getBalance(emergency.upstreamDeed)
+                .then((res) =>
+                    setUpstreamDeedsBalance(
+                        upstreamDeedsBalance
+                            ? [...upstreamDeedsBalance, {deed: emergency.upstreamDeed, balance: res}]
+                            : [{deed: emergency.upstreamDeed, balance: res}]
+                    )
+                )
+                .catch(() => alert('Cannot fetch upstream deed balance!'))
+        );
+        console.log("Upstream deed balance: ", upstreamDeedsBalance);
+    }, [publicKey, connection, emergencySenderList, upstreamDeedsBalance]);
+
     const fetchEmergencies = useCallback(() => {
         if (!publicKey) throw new WalletNotConnectedError();
 
@@ -168,7 +194,6 @@ function Dashboard() {
                 },
             ])
             .then((emergencies) => {
-                console.log(emergencies);
                 return emergencies.length > 0
                     ? emergencies.map((emergency) => new Emergency(emergency.publicKey, emergency.account))
                     : undefined;
@@ -187,7 +212,15 @@ function Dashboard() {
         refreshEmergenciesData();
     }, [publicKey, openDeed]);
 
-    
+    const claimingEmergencies = emergencyList?.filter(function (emergency) {
+        if (!emergencyList) return;
+
+        return emergency.claimedTimestamp > 0;
+    });
+
+    useEffect(() => {
+        if (claimingEmergencies) setNotificationsCount(claimingEmergencies.length);
+    }, [emergencyList, claimingEmergencies]);
 
     const fetchEmergencySenders = useCallback(() => {
         if (!publicKey) throw new WalletNotConnectedError();
@@ -202,7 +235,6 @@ function Dashboard() {
                 },
             ])
             .then((emergencies) => {
-                console.log(emergencies);
                 return emergencies.length > 0
                     ? emergencies.map((emergency) => new Emergency(emergency.publicKey, emergency.account))
                     : undefined;
@@ -211,16 +243,16 @@ function Dashboard() {
 
     const refreshEmergencySendersData = useCallback(async () => {
         const emergencySenders = await fetchEmergencySenders();
-        console.log(emergencySenders);
 
         if (!emergencySenders) return;
 
         setEmergencySenderList(emergencySenders);
+
     }, [fetchEmergencySenders]);
 
     useEffect(() => {
         refreshEmergencySendersData();
-    }, [publicKey, refreshEmergencySendersData]);
+    }, [publicKey]);
 
     const renderWalletConnected = useMemo(
         () => (
@@ -254,10 +286,11 @@ function Dashboard() {
                             refreshEmergenciesData={refreshEmergenciesData}
                             openDeed={openDeed}
                             setOpenDeed={setOpenDeed}
-                            setNotificationCounter={(number) => setNotificationsCount(number)}
                         />
                     )) || (
                         <ClaimEmergency
+                            upstreamDeedsBalance={upstreamDeedsBalance}
+                            getUpstreamDeedsBalance={getUpstreamDeedsBalance}
                             emergencySenderList={emergencySenderList}
                             setEmergencySenderList={setEmergencySenderList}
                             refreshEmergencySendersData={refreshEmergencySendersData}
@@ -288,7 +321,8 @@ function Dashboard() {
             setEmergencyToggle,
             setRecoveryToggle,
             userBalance,
-            emergencySenderList
+            emergencySenderList,
+            claimingEmergencies
         ]
     );
 

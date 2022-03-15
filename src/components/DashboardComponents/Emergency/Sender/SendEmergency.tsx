@@ -41,7 +41,6 @@ function SendEmergency(props: {
     deedBalance: number | undefined;
     refreshDeedData: () => any;
     refreshEmergenciesData: () => any;
-    setNotificationCounter: (number: number) => void;
 }) {
     const wallet = useWallet();
     const { publicKey, sendTransaction } = wallet;
@@ -63,10 +62,6 @@ function SendEmergency(props: {
 
     const provider = new Provider(connection, wallet as any, opts);
     const program = new Program(idl as any, programID, provider);
-
-    const claimingEmergencies = props.emergencyList?.filter(function (emergency) {
-        return emergency.claimedTimestamp > 0;
-    });
 
     const selectedEmergency = props.emergencyList
         ? props.emergencyList.filter(function (emergency) {
@@ -297,7 +292,7 @@ function SendEmergency(props: {
                                     }}
                                     className="cta-button delete-button"
                                 >
-                                    DELETE
+                                    Delete
                                 </button>
                             )}
                         </div>
@@ -307,10 +302,6 @@ function SendEmergency(props: {
         ),
         [props, selectedReceiver, aliasList]
     );
-
-    useEffect(() => {
-        if (claimingEmergencies) props.setNotificationCounter(claimingEmergencies.length);
-    }, [claimingEmergencies, props]);
 
     return (
         <div className="emergency-container">

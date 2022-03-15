@@ -36,16 +36,7 @@
     color: var(--notariz-pink);
 }
 
-.claim-emergency-item button {
-    color: var(--text-color);
-    font-weight: bold;
-    border-radius: 15px;
-    height: 50px;
-    padding-left: 20px;
-    padding-right: 20px;
-    margin-left: 5px;
-    margin-right: 5px;
-}
+
 
 .claim-emergency-item button:disabled {
     opacity: .2;
