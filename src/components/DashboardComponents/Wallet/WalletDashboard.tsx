@@ -19,6 +19,7 @@ import { Col, Container, Row } from 'react-bootstrap';
 import { PieChart } from 'react-minimal-pie-chart';
 import TopUpModal from './Modals/TopUpModal';
 import DeleteDeedModal from './Modals/DeleteDeedModal';
+import WithdrawModal from './Modals/WithdrawModal';
 import EditWithdrawalPeriodModal from './Modals/EditWithdrawalPeriod';
 import Emojis from '../../utils/Emojis';
 import './WalletDashboard.css';
@@ -49,8 +50,9 @@ function WalletDashboard(props: {
 
     const [topUpModalShow, setTopUpModalShow] = useState(false);
     const [topUpFormIsCorrect, setTopUpFormIsCorrect] = useState(false);
-    
+
     const [showDeleteModal, setDeleteModalShow] = useState(false);
+    const [showWithdrawModal, setWithdrawModalShow] = useState(false);
     const [editWithdrawalPeriodModalShow, setEditWithdrawalPeriodModalShow] = useState(false);
     const [editWithdrawalPeriodFormIsCorrect, setEditWithdrawalPeriodFormIsCorrect] = useState(false);
 
@@ -190,7 +192,15 @@ function WalletDashboard(props: {
                 >
                     Top up
                 </button>
-                <button className="cta-button delete-button">Withdraw</button>
+                <button
+                    onClick={() => {
+                        setWithdrawModalShow(true);
+                        props.deedBalance;
+                    }}
+                    className="cta-button delete-button"
+                >
+                    Withdraw
+                </button>
             </div>
         ),
         [props.deedBalance, props.getUserBalance]
@@ -274,6 +284,33 @@ function WalletDashboard(props: {
         }
     };
 
+    const withdraw = async (inputValue: number) => {
+        if (!publicKey) throw new WalletNotConnectedError();
+
+        if (!props.openDeed) return;
+
+        if (!props.deedBalance) return;
+
+        if (inputValue > 0 && inputValue <= props.deedBalance) {
+            setTopUpFormIsCorrect(true);
+
+            if (publicKey) {
+
+                await program.rpc.withdrawDeedLamports(new BN(inputValue * LAMPORTS_PER_SOL), {
+                    accounts: {
+                      deed: props.openDeed.publicKey,
+                      owner: publicKey,
+                      systemProgram: SystemProgram.programId,
+                    },
+                  }).then((res) => program.provider.connection.confirmTransaction(res)).catch(console.log)
+
+                props.refreshDeedData();
+            }
+        } else {
+            setTopUpFormIsCorrect(false);
+        }
+    };
+
     const editWithdrawalPeriod = async (inputValue: number) => {
         if (!publicKey) throw new WalletNotConnectedError();
 
@@ -307,13 +344,24 @@ function WalletDashboard(props: {
                     <Row>
                         <Col xs={6}>
                             <div className="wallet-item-background">{renderProgramBalance}</div>
-                            <TopUpModal
-                                show={topUpModalShow}
-                                onClose={() => setTopUpModalShow(false)}
-                                formIsCorrect={topUpFormIsCorrect}
-                                topUp={topUp}
-                                userBalance={props.userBalance}
-                            />
+                            {props.deedBalance ? (
+                                <div>
+                                    <TopUpModal
+                                        show={topUpModalShow}
+                                        onClose={() => setTopUpModalShow(false)}
+                                        formIsCorrect={topUpFormIsCorrect}
+                                        topUp={topUp}
+                                        userBalance={props.userBalance}
+                                    />
+                                    <WithdrawModal
+                                        show={showWithdrawModal}
+                                        onClose={() => setWithdrawModalShow(false)}
+                                        formIsCorrect={topUpFormIsCorrect}
+                                        withdraw={withdraw}
+                                        deedBalance={props.deedBalance}
+                                    />
+                                </div>
+                            ) : null}
                         </Col>
                         <Col xs={6}>
                             <div className="wallet-item-background">{renderWithdrawalPeriod}</div>
@@ -338,8 +386,7 @@ function WalletDashboard(props: {
                     <DeleteDeedModal
                         onClose={() => setDeleteModalShow(false)}
                         show={showDeleteModal}
-                        deleteDeed={() => 
-                            deleteDeed(props.openDeed)}
+                        deleteDeed={() => deleteDeed(props.openDeed)}
                     />
                 </Container>
             ) : (

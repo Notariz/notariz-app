@@ -1,21 +1,16 @@
+import { Emergency } from '../../../../../models';
+import { Deed } from '../../../../../models';
+
 import { useState, useEffect, useCallback } from 'react';
 import Emojis from '../../../../utils/Emojis';
 import { CSSTransition } from 'react-transition-group';
 import '../../../Common.css';
 
-interface EmergencyDetails {
-    sender: string;
-    receiver: string;
-    share: number;
-    claim_request_timestamp: number;
-    redeem_request_timestamp: number;
-}
-
 function ClaimEmergencyModal(props: {
     show: boolean;
     onClose: () => void;
     claimRequest: () => void;
-    selectedSender: EmergencyDetails[];
+    selectedSender: Emergency[];
 }) {
     const closeOnEscapeKeyDown = (e: any) => {
         if ((e.charCode || e.keyCode) === 27) {
@@ -41,7 +36,7 @@ function ClaimEmergencyModal(props: {
                         </span>
                     </div>
                     <span className="hint">
-                        {props.selectedSender.length > 0 && props.selectedSender[0].claim_request_timestamp > 0
+                        {props.selectedSender.length > 0 && props.selectedSender[0].claimedTimestamp > 0
                             ? 'You are about to cancel this claim request.'
                             : 'Only use in case of emergency.'}
                     </span>
@@ -54,7 +49,7 @@ function ClaimEmergencyModal(props: {
                             }}
                             className="cta-button edit-button"
                         >
-                            {props.selectedSender.length > 0 && props.selectedSender[0].claim_request_timestamp > 0 ? (
+                            {props.selectedSender.length > 0 && props.selectedSender[0].claimedTimestamp > 0 ? (
                                 <div>
                                     <Emojis symbol="❌" label="cross" /> {' Cancel'}
                                 </div>

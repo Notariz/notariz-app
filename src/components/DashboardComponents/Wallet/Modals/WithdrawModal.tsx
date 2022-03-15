@@ -3,12 +3,12 @@ import { CSSTransition } from 'react-transition-group';
 import Emojis from '../../../utils/Emojis';
 import '../../Common.css';
 
-function TopUpModal(props: {
+function WithdrawModal(props: {
     show: boolean;
     onClose: () => void;
     formIsCorrect: boolean;
-    topUp: (inputValue: number) => void;
-    userBalance: string;
+    withdraw: (inputValue: number) => void;
+    deedBalance: number;
 }) {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [inputValue, setInputValue] = useState(0.0);
@@ -32,23 +32,15 @@ function TopUpModal(props: {
         setInputValue(parseFloat(value));
     };
 
-    const renderUserBalance = useMemo(
-        () => (
-            <div>
-                <h3 className="notariz-modal-title">{'User balance'}</h3>
-                <p className="hint">{props.userBalance + ' SOL'}</p>
-            </div>
-        ),
-        [props.userBalance]
-    );
+    const renderDeedBalance = useMemo(() => (<div><h3 className="notariz-modal-title">{'Deed balance'}</h3><p className='hint'>{props.deedBalance + ' SOL'}</p></div>), [props.deedBalance])
 
     return (
         <CSSTransition in={props.show} unmountOnExit timeout={{ enter: 0, exit: 300 }}>
             <div className={`notariz-modal ${props.show ? 'show' : ''}`} onClick={props.onClose}>
                 <div className="notariz-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="notariz-modal-header">
-                        {renderUserBalance}
-                        <div className="hint">Think of keeping some SOL left to pay for withdraw transactions.</div>
+                        {renderDeedBalance}
+                        <div className='hint'>Think of keeping some lamports on your deed account to keep it alive; the Solana blockchain will delete it otherwise.</div>
                     </div>
                     <div className="notariz-modal-body">
                         <form
@@ -63,7 +55,7 @@ function TopUpModal(props: {
                                 /* Call program entry point here */
                             }}
                         >
-                            {isSubmitted && !props.formIsCorrect ? <span className="hint">Invalid amount.</span> : null}
+                            {isSubmitted && !props.formIsCorrect ? <span className="hint">Invalid amount. It is likely that you asked for more lamports than what your deed account actually holds.</span> : null}
                             <input
                                 name="balance"
                                 type="number"
@@ -75,18 +67,12 @@ function TopUpModal(props: {
                             />
                             <button
                                 type="submit"
-                                onClick={() => props.topUp(inputValue)}
+                                onClick={() => props.withdraw(inputValue)}
                                 className="cta-button confirm-button"
                             >
                                 Submit
                             </button>
-                            <button
-                                type="button"
-                                onClick={() => setInputValue(parseFloat(props.userBalance))}
-                                className="cta-button edit-button"
-                            >
-                                Max
-                            </button>
+                            <button type="button" onClick={() => setInputValue(props.deedBalance)} className="cta-button edit-button">Max</button>
                         </form>
                     </div>
                 </div>
@@ -95,4 +81,4 @@ function TopUpModal(props: {
     );
 }
 
-export default TopUpModal;
+export default WithdrawModal;
