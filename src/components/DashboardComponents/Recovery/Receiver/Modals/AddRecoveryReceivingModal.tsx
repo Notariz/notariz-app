@@ -20,8 +20,8 @@ function AddRecoveryReceivingModal(props: {
     const { publicKey } = useWallet();
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [inputValue, setInputValue] = useState<RecoveryAddress>({
-        sender: publicKey?.toString() ? publicKey.toString() : '',
-        receiver: '',
+        sender: '',
+        receiver: publicKey?.toString() ? publicKey.toString() : '',
         redeemed: false
     });
 
@@ -49,7 +49,7 @@ function AddRecoveryReceivingModal(props: {
             <div className={`notariz-modal ${props.show ? 'show' : ''}`} onClick={props.onClose}>
                 <div className="notariz-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="notariz-modal-header">
-                        <h3 className="notariz-modal-title">New receiving address</h3>
+                        <h3 className="notariz-modal-title">New sending address</h3>
                     </div>
                     <div className="notariz-modal-body">
                         <form
@@ -59,8 +59,8 @@ function AddRecoveryReceivingModal(props: {
                                     setIsSubmitted(true);
                                     props.formIsCorrect && !props.isMentioned
                                         ? (setInputValue({
-                                              sender: publicKey?.toString() ? publicKey.toString() : '',
-                                              receiver: '',
+                                              sender: '',
+                                              receiver: publicKey?.toString() ? publicKey.toString() : '',
                                               redeemed: false
                                           }),
                                           props.onClose(),
@@ -72,23 +72,25 @@ function AddRecoveryReceivingModal(props: {
                         >
                             {isSubmitted && !props.formIsCorrect ? (
                                 <span className="hint">
-                                    Your receiving recovery address should be 32-to-44-character long.
+                                    Your sending recovery address should be 32-to-44-character long.
                                 </span>
                             ) : null}
                             {isSubmitted && props.isMentioned ? (
                                 <span className="hint">This recovery address already exists.</span>
                             ) : null}
                             <input
-                                name="receiver"
+                                name="sender"
                                 type="text"
-                                placeholder="Your receiving recovery address"
-                                value={inputValue.receiver}
+                                placeholder="Your sending recovery address"
+                                value={inputValue.sender}
                                 onChange={handleInputChange}
                                 required
                             />
                             <button
                                 type="submit"
-                                onClick={() => props.addRecovery(inputValue)}
+                                onClick={() => {
+                                    props.addRecovery(inputValue);
+                                }}
                                 className="cta-button edit-button"
                             >
                                 <div>

@@ -1,4 +1,4 @@
-import { Deed } from '../models';
+import { Deed, Recovery } from '../models';
 import { Emergency } from '../models';
 
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
@@ -15,7 +15,7 @@ import { Col, Container, Row } from 'react-bootstrap';
 import Parser from 'html-react-parser';
 import SendEmergency from './DashboardComponents/Emergency/Sender/SendEmergency';
 import ClaimEmergency from './DashboardComponents/Emergency/Receiver/ClaimEmergency';
-import Recovery from './DashboardComponents/Recovery/Sender/Recovery';
+import SendRecovery from './DashboardComponents/Recovery/Sender/SendRecovery';
 import ClaimRecovery from './DashboardComponents/Recovery/Receiver/ClaimRecovery';
 import ProfileButton from './utils/ProfileButton';
 import WalletDashboard from './DashboardComponents/Wallet/WalletDashboard';
@@ -41,7 +41,7 @@ const programID = new PublicKey(idl.metadata.address);
 
 function Dashboard() {
     const wallet = useWallet();
-    const { publicKey } = wallet ?? {publicKey: undefined};
+    const { publicKey } = wallet ?? { publicKey: undefined };
     const { connection } = useConnection();
 
     const [notificationsCount, setNotificationsCount] = useState(0);
@@ -51,6 +51,9 @@ function Dashboard() {
 
     const [emergencyList, setEmergencyList] = useState<Emergency[] | undefined>([]);
     const [emergencySenderList, setEmergencySenderList] = useState<Emergency[] | undefined>([]);
+
+    const [recoveryList, setRecoveryList] = useState<Recovery[] | undefined>([]);
+    const [recoverySenderList, setRecoverySenderList] = useState<Recovery[] | undefined>([]);
 
     const [userBalance, setUserBalance] = useState('0');
     const [upstreamDeedsBalance, setUpstreamDeedsBalance] = useState<DeedBalance[] | undefined>();
@@ -150,36 +153,40 @@ function Dashboard() {
         refreshDeedData();
     }, [publicKey]);
 
-    const fetchUpstreamDeed = useCallback((upstreamDeedOwner) => {
-        if (!publicKey) throw new WalletNotConnectedError();
+    const fetchUpstreamDeed = useCallback(
+        (upstreamDeedOwner) => {
+            if (!publicKey) throw new WalletNotConnectedError();
 
-        return program.account.deed
-            .all([
-                {
-                    memcmp: {
-                        offset: 8, // Discriminator.
-                        bytes: upstreamDeedOwner.toBase58(),
+            return program.account.deed
+                .all([
+                    {
+                        memcmp: {
+                            offset: 8, // Discriminator.
+                            bytes: upstreamDeedOwner.toBase58(),
+                        },
                     },
-                },
-            ])
-            .then((upstreamDeed) => {
-                return upstreamDeed.length > 0
-                ? new Deed(upstreamDeed[0].publicKey, upstreamDeed[0].account)
-                : undefined;            
-            });
-    }, [publicKey, program.account.deed]);
+                ])
+                .then((upstreamDeed) => {
+                    return upstreamDeed.length > 0
+                        ? new Deed(upstreamDeed[0].publicKey, upstreamDeed[0].account)
+                        : undefined;
+                });
+        },
+        [publicKey, program.account.deed]
+    );
 
     const refreshUpstreamDeedsData = useCallback(async () => {
         if (!emergencySenderList) return;
 
-        const upstreamDeeds = (await Promise.all(emergencySenderList.map((sending) => fetchUpstreamDeed(sending.owner)))).filter((val) => typeof val !== "undefined") as Deed[];
+        const upstreamDeeds = (
+            await Promise.all(emergencySenderList.map((sending) => fetchUpstreamDeed(sending.owner)))
+        ).filter((val) => typeof val !== 'undefined') as Deed[];
 
         if (!upstreamDeeds) return;
 
-        console.log("Upstream deeds: ", upstreamDeeds);
+        console.log('Upstream deeds: ', upstreamDeeds);
 
         setUpstreamDeeds(upstreamDeeds);
-
     }, [fetchDeeds, program.provider.connection, emergencySenderList, fetchUpstreamDeed]);
 
     useEffect(() => {
@@ -208,8 +215,8 @@ function Dashboard() {
                 .then((res) =>
                     setUpstreamDeedsBalance(
                         upstreamDeedsBalance
-                            ? [...upstreamDeedsBalance, {deed: emergency.upstreamDeed, balance: res}]
-                            : [{deed: emergency.upstreamDeed, balance: res}]
+                            ? [...upstreamDeedsBalance, { deed: emergency.upstreamDeed, balance: res }]
+                            : [{ deed: emergency.upstreamDeed, balance: res }]
                     )
                 )
                 .catch(() => alert('Cannot fetch upstream deed balance!'))
@@ -284,11 +291,74 @@ function Dashboard() {
         if (!emergencySenders) return;
 
         setEmergencySenderList(emergencySenders);
-
     }, [fetchEmergencySenders]);
 
     useEffect(() => {
         refreshEmergencySendersData();
+    }, [publicKey]);
+
+    const fetchRecoveries = useCallback(() => {
+        if (!publicKey) throw new WalletNotConnectedError();
+
+        if (!openDeed) return;
+
+        return program.account.recovery
+            .all([
+                {
+                    memcmp: {
+                        offset: 8, // Discriminator.
+                        bytes: openDeed.publicKey.toBase58(),
+                    },
+                },
+            ])
+            .then((recoveries) => {
+                return recoveries.length > 0
+                    ? recoveries.map((recovery) => new Recovery(recovery.publicKey, recovery.account))
+                    : undefined;
+            });
+    }, [publicKey, openDeed, program.account.recovery]);
+
+    const refreshRecoveriesData = useCallback(async () => {
+        const recoveries = await fetchRecoveries();
+
+        if (!recoveries) return;
+
+        setRecoveryList(recoveries);
+    }, [fetchRecoveries]);
+
+    useEffect(() => {
+        refreshRecoveriesData();
+    }, [publicKey, openDeed]);
+
+    const fetchRecoverySenders = useCallback(() => {
+        if (!publicKey) throw new WalletNotConnectedError();
+
+        return program.account.recovery
+            .all([
+                {
+                    memcmp: {
+                        offset: 8 + 32 + 32, // Discriminator + upstream deed public key + deed owner.
+                        bytes: provider.wallet.publicKey.toBase58(),
+                    },
+                },
+            ])
+            .then((recoveries) => {
+                return recoveries.length > 0
+                    ? recoveries.map((recovery) => new Recovery(recovery.publicKey, recovery.account))
+                    : undefined;
+            });
+    }, [publicKey, program.account.recovery, provider.wallet.publicKey]);
+
+    const refreshRecoverySendersData = useCallback(async () => {
+        const recoverySenders = await fetchRecoverySenders();
+
+        if (!recoverySenders) return;
+
+        setRecoverySenderList(recoverySenders);
+    }, [fetchRecoverySenders]);
+
+    useEffect(() => {
+        refreshRecoverySendersData();
     }, [publicKey]);
 
     const renderWalletConnected = useMemo(
@@ -337,8 +407,21 @@ function Dashboard() {
                 </Tab>
                 <Tab eventKey="recovery" title="Recoveries" className="tab-content">
                     <ProfileButton profile={recoveryProfile} setToggle={setRecoveryToggle} />
-                    {(recoveryProfile === 'sender' && <Recovery openDeed={openDeed} setOpenDeed={setOpenDeed} />) || (
-                        <ClaimRecovery />
+                    {(recoveryProfile === 'sender' && (
+                        <SendRecovery
+                            openDeed={openDeed}
+                            refreshDeedData={refreshDeedData}
+                            refreshRecoveriesData={refreshRecoveriesData}
+                            setOpenDeed={setOpenDeed}
+                            deedBalance={deedBalance}
+                            recoveryList={recoveryList}
+                            setRecoveryList={setRecoveryList}
+                        />
+                    )) || (
+                        <ClaimRecovery
+                            recoverySenderList={recoverySenderList}
+                            setRecoverySenderList={setRecoverySenderList}
+                        />
                     )}
                 </Tab>
                 <Tab eventKey="about" title="About" className="tab-content">
@@ -363,7 +446,7 @@ function Dashboard() {
             claimingEmergencies,
             getUpstreamDeedsBalance,
             refreshEmergencySendersData,
-            upstreamDeedsBalance
+            upstreamDeedsBalance,
         ]
     );
 

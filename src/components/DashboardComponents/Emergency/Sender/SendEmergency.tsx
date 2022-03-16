@@ -96,16 +96,12 @@ function SendEmergency(props: {
         if (!props.openDeed) return;
 
         if (inputValues.percentage > 0 && inputValues.percentage <= props.openDeed.leftToBeShared) {
-            
-            const emergency = props.emergencyList?.filter(function (value) {
-                return value.receiver === inputValues.receiver;
-            });
-
-            console.log('Emergency pk before form:', emergencyKeypair.publicKey);
-            console.log('Emergency pk after form: ', inputValues.publicKey);
-            console.log('Receiver pk after form:', inputValues.receiver);
 
             setFormIsCorrect(true);
+            
+            const emergency = props.emergencyList?.filter(function (value) {
+                return value.receiver !== inputValues.receiver;
+            });
 
             if (!emergency) return setEmergencyIsAlreadyMentioned(true);
 
@@ -258,12 +254,12 @@ function SendEmergency(props: {
                                     }}
                                     className="receiver-text"
                                 >
-                                    {props.deedBalance
-                                        ? ' ' +
+                                    {props.deedBalance && props.openDeed
+                                        ? ' ' + value.percentage + '% (' +
                                           parseFloat(((props.deedBalance * value.percentage) / 100).toString()).toFixed(
                                               5
                                           ) +
-                                          ' SOL '
+                                          ' SOL) '
                                         : null}
                                 </span>
                                 <i className="fa fa-arrow-right"></i>
@@ -347,7 +343,7 @@ function SendEmergency(props: {
                         }}
                         className="cta-button confirm-button"
                     >
-                        ADD A RECEIVING ADDRESS
+                        New emergency address
                     </button>
                     {props.emergencyList && selectedEmergency && props.deedBalance ? (
                         <div>
@@ -378,10 +374,10 @@ function SendEmergency(props: {
                             />
                         </div>
                     ) : (
-                        'null'
+                        null
                     )}
                     <div className="emergency-list">
-                        {(props.emergencyList && renderEmergencyList) || renderDescription}
+                        {props.emergencyList && props.emergencyList.length > 0 ? renderEmergencyList : renderDescription}
                     </div>
                 </div>
             ) : (

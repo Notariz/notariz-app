@@ -1,8 +1,8 @@
 import { PublicKey } from '@solana/web3.js';
 import { useCallback, useEffect, useState } from 'react';
-import AddRecoverySendingModal from './Modals/AddRecoverySendingModal';
+import AddRecoveryReceivingModal from './Modals/AddRecoveryReceivingModal';
 import ClaimRecoveryModal from './Modals/ClaimRecoveryModal'
-import '../Sender/Recovery.css';
+import '../Sender/SendRecovery.css';
 
 interface RecoveryAddress {
     sender: string;
@@ -94,7 +94,7 @@ function ClaimRecovery() {
             <button onClick={() => setAddModalShow(true)} className="cta-button confirm-button">
                 ADD A SENDING ADDRESS
             </button>
-            <AddRecoverySendingModal
+            <AddRecoveryReceivingModal
                 formIsCorrect={formIsCorrect}
                 isMentioned={isMentioned}
                 addRecovery={addRecovery}

@@ -1,28 +1,28 @@
+import { Deed, Recovery } from '../../../../../models';
+
 import { useEffect, useState, useCallback } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { CSSTransition } from 'react-transition-group';
 import Emojis from '../../../../utils/Emojis';
 import '../../../Common.css';
-
-interface RecoveryAddress {
-    sender: string;
-    receiver: string;
-    redeemed: boolean;
-}
+import { PublicKey } from '@solana/web3.js';
+import { web3 } from '@project-serum/anchor';
 
 function AddRecoverySendingModal(props: {
     show: boolean;
     onClose: () => void;
-    formIsCorrect: boolean;
     isMentioned: boolean;
-    addRecovery: (inputValue: RecoveryAddress) => void;
+    addRecovery: (inputValue: Recovery) => void;
+    openDeed: Deed;
+    recoveryPk: PublicKey;
 }) {
     const { publicKey } = useWallet();
     const [isSubmitted, setIsSubmitted] = useState(false);
-    const [inputValue, setInputValue] = useState<RecoveryAddress>({
-        sender: '',
-        receiver: publicKey?.toString() ? publicKey.toString() : '',
-        redeemed: false
+    const [inputValue, setInputValue] = useState<Recovery>({
+        publicKey: props.recoveryPk,
+        upstreamDeed: props.openDeed.publicKey,
+        owner: props.openDeed.owner,
+        receiver: web3.Keypair.generate().publicKey,
     });
 
     const closeOnEscapeKeyDown = (e: any) => {
@@ -49,7 +49,7 @@ function AddRecoverySendingModal(props: {
             <div className={`notariz-modal ${props.show ? 'show' : ''}`} onClick={props.onClose}>
                 <div className="notariz-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="notariz-modal-header">
-                        <h3 className="notariz-modal-title">New sending address</h3>
+                        <h3 className="notariz-modal-title">New receiving address</h3>
                     </div>
                     <div className="notariz-modal-body">
                         <form
@@ -57,11 +57,12 @@ function AddRecoverySendingModal(props: {
                                 event.preventDefault();
                                 {
                                     setIsSubmitted(true);
-                                    props.formIsCorrect && !props.isMentioned
+                                    !props.isMentioned
                                         ? (setInputValue({
-                                              sender: '',
-                                              receiver: publicKey?.toString() ? publicKey.toString() : '',
-                                              redeemed: false
+                                              publicKey: props.recoveryPk,
+                                              upstreamDeed: props.openDeed.publicKey,
+                                              owner: props.openDeed.owner,
+                                              receiver: inputValue.receiver,
                                           }),
                                           props.onClose(),
                                           setIsSubmitted(false))
@@ -70,25 +71,28 @@ function AddRecoverySendingModal(props: {
                                 /* Call program entry point here */
                             }}
                         >
-                            {isSubmitted && !props.formIsCorrect ? (
+                            {isSubmitted ? (
                                 <span className="hint">
-                                    Your sending recovery address should be 32-to-44-character long.
+                                    Your receiving recovery address should be 32-to-44-character long.
                                 </span>
                             ) : null}
                             {isSubmitted && props.isMentioned ? (
-                                <span className="hint">This recovery address already exists.</span>
+                                <span className="hint">This recovery address is already mentioned in your deed.</span>
                             ) : null}
                             <input
-                                name="sender"
+                                name="receiver"
                                 type="text"
-                                placeholder="Your sending recovery address"
-                                value={inputValue.sender}
+                                placeholder="Your receiving recovery address"
+                                value={inputValue.receiver.toString()}
                                 onChange={handleInputChange}
                                 required
                             />
                             <button
                                 type="submit"
-                                onClick={() => props.addRecovery(inputValue)}
+                                onClick={() => {
+                                    inputValue.receiver = new PublicKey(inputValue.receiver)
+                                    props.addRecovery(inputValue)
+                                }}
                                 className="cta-button edit-button"
                             >
                                 <div>

@@ -202,7 +202,7 @@ function ClaimEmergency(props: {
 
     return (
         <div className="claim-emergency-container">
-            {props.emergencySenderList ? (
+            {props.emergencySenderList && props.emergencySenderList.length > 0 ? (
                 <div>
                     {renderSenderList}
                     <ClaimEmergencyModal

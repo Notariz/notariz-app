@@ -6,7 +6,6 @@ import '../../../Common.css';
 function DeleteRecoveryModal(props: {
     show: boolean;
     onClose: () => void;
-    selectedReceiver: string;
     deleteRecovery: () => void;
 }) {
     const closeOnEscapeKeyDown = (e: any) => {
@@ -28,9 +27,9 @@ function DeleteRecoveryModal(props: {
             <div className={`notariz-modal ${props.show ? 'show' : ''}`} onClick={props.onClose}>
                 <div className="notariz-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="notariz-modal-header">
-                        <h3 className="notariz-modal-title">DELETE EMERGENCY</h3>
+                        <h3 className="notariz-modal-title">Delete recovery address</h3>
                         <div className="hint">
-                            You are about to delete this emergency.
+                            You are about to delete this recovery address.
                         </div>
                     </div>
                     <div className="notariz-modal-body">
