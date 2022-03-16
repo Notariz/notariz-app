@@ -22,7 +22,7 @@ function Header(props: {dark: boolean}) {
 
         setAirdropping(true);
         setShow(true);
-        if (!publicKey) throw new WalletNotConnectedError();
+        if (!publicKey) return;
 
         let connection = new Connection(clusterApiUrl('devnet'));
 

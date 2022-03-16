@@ -115,7 +115,7 @@ function Dashboard() {
     }, [recoveryProfile]);
 
     const fetchDeeds = useCallback(() => {
-        if (!publicKey) throw new WalletNotConnectedError();
+        if (!publicKey) return;
 
         return program.account.deed
             .all([
@@ -154,7 +154,7 @@ function Dashboard() {
 
     const fetchUpstreamDeed = useCallback(
         (upstreamDeedOwner) => {
-            if (!publicKey) throw new WalletNotConnectedError();
+            if (!publicKey) return;
 
             return program.account.deed
                 .all([
@@ -193,7 +193,7 @@ function Dashboard() {
     }, [publicKey, emergencySenderList]);
 
     const getUserBalance = useCallback(() => {
-        if (!publicKey) throw new WalletNotConnectedError();
+        if (!publicKey) return;
 
         connection
             .getBalance(publicKey)
@@ -204,7 +204,7 @@ function Dashboard() {
     }, [publicKey, connection, userBalance]);
 
     const getUpstreamDeedsBalance = useCallback(() => {
-        if (!publicKey) throw new WalletNotConnectedError();
+        if (!publicKey) return;
 
         if (!emergencySenderList) return;
 
@@ -223,7 +223,7 @@ function Dashboard() {
     }, [publicKey, connection, emergencySenderList, upstreamDeedsBalance]);
 
     const fetchEmergencies = useCallback(() => {
-        if (!publicKey) throw new WalletNotConnectedError();
+        if (!publicKey) return;
 
         if (!openDeed) return;
 
@@ -266,7 +266,7 @@ function Dashboard() {
     }, [emergencyList, claimingEmergencies]);
 
     const fetchEmergencySenders = useCallback(() => {
-        if (!publicKey) throw new WalletNotConnectedError();
+        if (!publicKey) return;
 
         return program.account.emergency
             .all([
@@ -297,7 +297,7 @@ function Dashboard() {
     }, [publicKey]);
 
     const fetchRecoveries = useCallback(() => {
-        if (!publicKey) throw new WalletNotConnectedError();
+        if (!publicKey) return;
 
         if (!openDeed) return;
 
@@ -330,7 +330,7 @@ function Dashboard() {
     }, [publicKey, openDeed]);
 
     const fetchRecoverySenders = useCallback(() => {
-        if (!publicKey) throw new WalletNotConnectedError();
+        if (!publicKey) return;
 
         return program.account.recovery
             .all([

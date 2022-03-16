@@ -86,7 +86,7 @@ function SendEmergency(props: {
     );
 
     const addEmergency = async (inputValues: Emergency) => {
-        if (!publicKey) throw new WalletNotConnectedError();
+        if (!publicKey) return;
 
         if (!props.openDeed) return;
 

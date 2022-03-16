@@ -122,7 +122,7 @@ function WalletDashboard(props: {
     }
 
     const createDeed = useCallback(async () => {
-        if (!publicKey || typeof wallet.signTransaction === 'undefined') throw new WalletNotConnectedError();
+        if (!publicKey || typeof wallet.signTransaction === 'undefined') return;
 
         if (typeof props.openDeed !== 'undefined') return;
 
@@ -171,7 +171,7 @@ function WalletDashboard(props: {
 
     const deleteDeed = useCallback(
         async (deed: Deed | undefined) => {
-            if (!publicKey) throw new WalletNotConnectedError();
+            if (!publicKey) return;
 
             if (!deed) return;
 
@@ -280,7 +280,7 @@ function WalletDashboard(props: {
     );
 
     const keepAlive = async () => {
-        if (!publicKey) throw new WalletNotConnectedError();
+        if (!publicKey) return;
 
         if (!props.openDeed) return;
 
@@ -323,7 +323,7 @@ function WalletDashboard(props: {
     );
 
     const topUp = async (inputValue: number) => {
-        if (!publicKey) throw new WalletNotConnectedError();
+        if (!publicKey) return;
 
         if (!props.openDeed) return;
 
@@ -351,7 +351,7 @@ function WalletDashboard(props: {
     };
 
     const withdraw = async (inputValue: number) => {
-        if (!publicKey) throw new WalletNotConnectedError();
+        if (!publicKey) return;
 
         if (!props.openDeed) return;
 
@@ -380,7 +380,7 @@ function WalletDashboard(props: {
     };
 
     const editWithdrawalPeriod = async (inputValue: number) => {
-        if (!publicKey) throw new WalletNotConnectedError();
+        if (!publicKey) return;
 
         if (!props.openDeed) return;
 

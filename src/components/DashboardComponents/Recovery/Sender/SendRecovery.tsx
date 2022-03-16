@@ -115,7 +115,7 @@ function SendRecovery(props: {
     );
 
     const addRecovery = async (inputValue: Recovery) => {
-        if (!publicKey) throw new WalletNotConnectedError();
+        if (!publicKey) return;
 
         if (!props.openDeed) return;
 
