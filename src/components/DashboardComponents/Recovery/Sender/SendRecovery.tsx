@@ -21,8 +21,6 @@ const opts: ConfirmOptions = {
 
 const programID = new PublicKey(idl.metadata.address);
 
-const WALLET_BALANCE = 1500;
-
 function SendRecovery(props: {
     openDeed: Deed | undefined;
     setOpenDeed: (deed: Deed | undefined) => void;
@@ -44,7 +42,7 @@ function SendRecovery(props: {
     const [selectedReceiver, setSelectedReceiver] = useState<PublicKey | undefined>();
     const [recoveryKeypair, setRecoveryKeypair] = useState(web3.Keypair.generate());
 
-    var selectedRecovery = props.recoveryList?.filter(function (recovery) {
+    const selectedRecovery = props.recoveryList?.filter(function (recovery) {
         if (!selectedReceiver) return;
 
         return recovery.receiver === selectedReceiver;
@@ -99,7 +97,7 @@ function SendRecovery(props: {
                     ))}
             </div>
         ),
-        [props.recoveryList]
+        [props.recoveryList, props.deedBalance]
     );
 
     const addRecovery = async (inputValue: Recovery) => {
@@ -109,7 +107,7 @@ function SendRecovery(props: {
 
         if (!props.recoveryList) return;
 
-        var recovery = props.recoveryList.filter(function (value) {
+        const recovery = props.recoveryList.filter(function (value) {
             return value.receiver !== inputValue.receiver;
         });
 

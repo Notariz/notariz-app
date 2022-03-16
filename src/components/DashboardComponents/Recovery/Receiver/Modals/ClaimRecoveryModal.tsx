@@ -2,17 +2,13 @@ import { useState, useEffect, useCallback } from 'react';
 import Emojis from '../../../../utils/Emojis';
 import { CSSTransition } from 'react-transition-group';
 import '../../../Common.css';
-
-interface RecoveryAddress {
-    sender: string;
-    receiver: string;
-}
+import { Recovery } from '../../../../../models';
 
 function ClaimRecoveryModal(props: {
     show: boolean;
     onClose: () => void;
-    claimRequest: () => void;
-    selectedSender: RecoveryAddress[];
+    redeem: () => void;
+    selectedSender: Recovery[];
 }) {
     const closeOnEscapeKeyDown = (e: any) => {
         if ((e.charCode || e.keyCode) === 27) {
@@ -34,16 +30,16 @@ function ClaimRecoveryModal(props: {
                 <div className="notariz-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="notariz-modal-header">
                         <span>
-                            <h3 className="notariz-modal-title">Claim request</h3>
+                            <h3 className="notariz-modal-title">Redeem</h3>
+                            <p className='hint'>You are about to receive 100% of this sending address assets.</p>
                         </span>
                     </div>
                     <div className="notariz-modal-body">
-                        <div className='hint'>You will receive 100% of this sending address assets</div>
                         <button
                             type="submit"
                             onClick={() => {
                                 props.onClose();
-                                props.claimRequest();
+                                props.redeem();
                             }}
                             className="cta-button edit-button"
                         >

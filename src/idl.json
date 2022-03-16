@@ -373,6 +373,10 @@
           {
             "name": "withdrawalPeriod",
             "type": "i64"
+          },
+          {
+            "name": "alreadyRedeemed",
+            "type": "u8"
           }
         ]
       }
@@ -459,6 +463,6 @@
     }
   ],
   "metadata": {
-    "address": "DFtRYEj6CB8xF6MkukkqnCxgiku7K2cJbSxsaHQWogdE"
+    "address": "8KrPQxUi8abTEs3Hf5m8TLzFmJyQiwyjAgWBQ2QxJ9ck"
   }
 }

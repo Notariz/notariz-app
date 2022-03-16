@@ -29,10 +29,6 @@ interface EmergencyAlias {
     alias: string;
 }
 
-const WITHDRAWAL_PERIOD = 4;
-
-const WALLET_BALANCE = 1500;
-
 function SendEmergency(props: {
     emergencyList: Emergency[] | undefined;
     setEmergencyList: (emergencies: Emergency[] | undefined) => void;
@@ -45,6 +41,8 @@ function SendEmergency(props: {
     const wallet = useWallet();
     const { publicKey, sendTransaction } = wallet;
     const { connection } = useConnection();
+    const provider = new Provider(connection, wallet as any, opts);
+    const program = new Program(idl as any, programID, provider);
 
     const [aliasList, setAliasList] = useState<EmergencyAlias[]>(() => {
         const initialValue = JSON.parse(localStorage.getItem('aliasList') || '[{"receiver": "", "alias": ""}]');
@@ -59,9 +57,6 @@ function SendEmergency(props: {
     const [selectedField, setSelectedField] = useState('');
     const [emergencyIsAlreadyMentioned, setEmergencyIsAlreadyMentioned] = useState(false);
     const [emergencyKeypair, setEmergencyKeypair] = useState(web3.Keypair.generate());
-
-    const provider = new Provider(connection, wallet as any, opts);
-    const program = new Program(idl as any, programID, provider);
 
     const selectedEmergency = props.emergencyList
         ? props.emergencyList.filter(function (emergency) {
@@ -329,7 +324,7 @@ function SendEmergency(props: {
                 ))}
             </div>
         ),
-        [props, selectedReceiver, aliasList]
+        [props, aliasList]
     );
 
     return (

@@ -43,6 +43,8 @@ function Dashboard() {
     const wallet = useWallet();
     const { publicKey } = wallet ?? { publicKey: undefined };
     const { connection } = useConnection();
+    const provider = new Provider(connection, wallet as any, opts);
+    const program = new Program(idl as any, programID, provider);
 
     const [notificationsCount, setNotificationsCount] = useState(0);
 
@@ -58,9 +60,6 @@ function Dashboard() {
     const [userBalance, setUserBalance] = useState('0');
     const [upstreamDeedsBalance, setUpstreamDeedsBalance] = useState<DeedBalance[] | undefined>();
     const [deedBalance, setDeedBalance] = useState<number | undefined>(0.0);
-
-    const provider = new Provider(connection, wallet as any, opts);
-    const program = new Program(idl as any, programID, provider);
 
     const [emergencyProfile, setEmergencyProfile] = useState(() => {
         const initialValue = localStorage.getItem('emergencyProfile')
@@ -187,7 +186,7 @@ function Dashboard() {
         console.log('Upstream deeds: ', upstreamDeeds);
 
         setUpstreamDeeds(upstreamDeeds);
-    }, [fetchDeeds, program.provider.connection, emergencySenderList, fetchUpstreamDeed]);
+    }, [emergencySenderList, fetchUpstreamDeed]);
 
     useEffect(() => {
         refreshUpstreamDeedsData();
@@ -419,8 +418,10 @@ function Dashboard() {
                         />
                     )) || (
                         <ClaimRecovery
-                            recoverySenderList={recoverySenderList}
-                            setRecoverySenderList={setRecoverySenderList}
+                            refreshRecoverySendersData={refreshRecoverySendersData}
+                            recoverySendersList={recoverySenderList}
+                            setRecoverySendersList={setRecoverySenderList}
+                            upstreamDeeds={upstreamDeeds}
                         />
                     )}
                 </Tab>
@@ -443,10 +444,14 @@ function Dashboard() {
             setRecoveryToggle,
             userBalance,
             emergencySenderList,
-            claimingEmergencies,
             getUpstreamDeedsBalance,
             refreshEmergencySendersData,
             upstreamDeedsBalance,
+            recoveryList,
+            recoverySenderList,
+            refreshRecoveriesData,
+            refreshRecoverySendersData,
+            upstreamDeeds
         ]
     );
 

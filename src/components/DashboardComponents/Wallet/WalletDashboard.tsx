@@ -101,13 +101,13 @@ function WalletDashboard(props: {
         const deedAccount = await program.account.deed.fetch(deedKeypair.publicKey);
         props.setOpenDeed(new Deed(deedKeypair.publicKey, deedAccount));
     }, [
-        props.openDeed,
         program.account.deed,
         program.provider.connection,
         program.rpc,
         provider.wallet.publicKey,
         publicKey,
         wallet.signTransaction,
+        props
     ]);
 
     const renderCreateAccount = useMemo(
@@ -142,7 +142,7 @@ function WalletDashboard(props: {
                 .then((res) => program.provider.connection.confirmTransaction(res))
                 .catch(console.log);
         },
-        [program.provider.connection, program.rpc, provider.wallet.publicKey, wallet.signTransaction, publicKey]
+        [program.provider.connection, publicKey]
     );
 
     const renderAccountName = useMemo(
@@ -175,7 +175,7 @@ function WalletDashboard(props: {
                 </button>
             </div>
         ),
-        [props, deleteDeed]
+        [props]
     );
 
     const renderProgramBalance = useMemo(
@@ -203,7 +203,7 @@ function WalletDashboard(props: {
                 </button>
             </div>
         ),
-        [props.deedBalance, props.getUserBalance]
+        [props]
     );
 
     const renderWithdrawalPeriod = useMemo(
@@ -236,17 +236,6 @@ function WalletDashboard(props: {
         [myData]
     );
 
-    const renderOnChainActivity = useMemo(
-        () => (
-            <div className="wallet-item">
-                <h3>Last recorded on-chain activity</h3>
-                <h1>{props.openDeed ? toDate(props.openDeed.lastSeen) : 'NA'}</h1>
-                <button onClick={() => keepAlive()} className='cta-button confirm-button'>Keep alive</button>
-            </div>
-        ),
-        [props.openDeed]
-    );
-
     const keepAlive = async () => {
         if (!publicKey) throw new WalletNotConnectedError();
 
@@ -264,6 +253,19 @@ function WalletDashboard(props: {
                 props.refreshDeedData();
             }
     };
+
+    const renderOnChainActivity = useMemo(
+        () => (
+            <div className="wallet-item">
+                <h3>Last recorded on-chain activity</h3>
+                <h1>{props.openDeed ? toDate(props.openDeed.lastSeen) : 'NA'}</h1>
+                <button onClick={() => keepAlive()} className='cta-button confirm-button'>Keep alive</button>
+            </div>
+        ),
+        [props.openDeed, keepAlive]
+    );
+
+    
 
     const renderShares = useMemo(
         () => (
