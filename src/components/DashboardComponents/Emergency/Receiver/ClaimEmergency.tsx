@@ -127,7 +127,7 @@ function ClaimEmergency(props: {
                                   </p>
                                   {value.owner && props.upstreamDeeds && value.claimedTimestamp > 0 ? (
                                       <div>
-                                          {Date.now() < value.claimedTimestamp * 1000 + props.upstreamDeeds[index].withdrawalPeriod * 1000 && value.claimedTimestamp > props.upstreamDeeds[index].lastSeen ? (
+                                          {props.upstreamDeeds.length > 0 && Date.now() < value.claimedTimestamp * 1000 + props.upstreamDeeds[index].withdrawalPeriod * 1000 && value.claimedTimestamp > props.upstreamDeeds[index].lastSeen ? (
                                               <div>
                                                   <button
                                                       className="cta-button confirm-button"
@@ -176,7 +176,7 @@ function ClaimEmergency(props: {
                                                   </button>
                                                   <button className="cta-button delete-button">
                                                       <Emojis symbol="⏳" label="hourglass" />
-                                                      {' ' + props.upstreamDeeds[index].withdrawalPeriod / 3600 / 24 + ' days'}
+                                                      {props.upstreamDeeds.length > 0 && ' ' + props.upstreamDeeds[index].withdrawalPeriod / 3600 / 24 + ' days'}
                                                   </button>
                                               </div>
                                           ) : null}
