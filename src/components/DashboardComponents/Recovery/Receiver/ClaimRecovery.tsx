@@ -34,6 +34,8 @@ function ClaimRecovery(props: {
     const [selectedSender, setSelectedSender] = useState<Recovery | undefined>();
 
     const selectedRecovery = props.recoverySendersList?.filter(function (recovery) {
+        if (!selectedSender) return;
+        
         return recovery === selectedSender;
     });
 
@@ -87,7 +89,7 @@ function ClaimRecovery(props: {
                     ))}
             </div>
         ),
-        [props.recoverySendersList]
+        [props]
     );
 
     const redeem = async () => {

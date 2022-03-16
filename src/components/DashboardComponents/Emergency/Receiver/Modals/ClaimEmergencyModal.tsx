@@ -10,6 +10,7 @@ function ClaimEmergencyModal(props: {
     show: boolean;
     onClose: () => void;
     claimRequest: () => void;
+    cancelClaimRequest: () => void;
     selectedSender: Emergency[];
 }) {
     const closeOnEscapeKeyDown = (e: any) => {
@@ -35,11 +36,11 @@ function ClaimEmergencyModal(props: {
                             <h3 className="notariz-modal-title">Claim request</h3>
                         </span>
                     </div>
-                    <p className="hint">
+                    <p><div className="hint">
                         {props.selectedSender.length > 0 && props.selectedSender[0].claimedTimestamp > 0
                             ? 'You are about to cancel this claim request.'
                             : 'Only use in case of emergency.'}
-                    </p>
+                    </div></p>
                     <div className="notariz-modal-body">
                         <button
                             type="submit"

@@ -426,7 +426,7 @@ function Dashboard() {
                         />
                     )}
                 </Tab>
-                <Tab eventKey="about" title="About" className="tab-content">
+                <Tab eventKey="about" title="Why?" className="tab-content">
                     <About />
                 </Tab>
             </Tabs>

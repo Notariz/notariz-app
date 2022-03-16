@@ -211,6 +211,22 @@
       "args": []
     },
     {
+      "name": "cancelEmergency",
+      "accounts": [
+        {
+          "name": "emergency",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "receiver",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "rejectClaim",
       "accounts": [
         {

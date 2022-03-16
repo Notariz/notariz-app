@@ -74,6 +74,21 @@ function ClaimEmergency(props: {
         props.refreshEmergencySendersData();
     };
 
+    const cancelClaimRequest = async () => {
+        if (!selectedEmergency || !props.emergencySenderList) return;
+
+        const emergency = selectedEmergency[0];
+
+        await program.rpc.cancelEmergency({
+            accounts: {
+                emergency: emergency.publicKey,
+                receiver: emergency.receiver,
+            },
+        });
+
+        props.refreshEmergencySendersData();
+    };
+
     const redeem = async () => {
         if (!selectedEmergency || !props.emergencySenderList) return;
 
@@ -122,52 +137,51 @@ function ClaimEmergency(props: {
                                       <div>
                                           {props.upstreamDeeds.length > 0 &&
                                           // value.claimedTimestamp < props.upstreamDeeds[index].lastSeen &&
-                                              Date.now() <
+                                          Date.now() <
                                               value.claimedTimestamp * 1000 +
                                                   props.upstreamDeeds[index].withdrawalPeriod * 1000 ? (
-                                                  <div>
-                                                      <button
-                                                          className="cta-button confirm-button"
-                                                          onClick={() => {
-                                                              setClaimModalShow(true);
-                                                              setSelectedSender(value);
-                                                              props.upstreamDeeds &&
-                                                                  console.log(
-                                                                      value.claimedTimestamp.toString(),
-                                                                      props.upstreamDeeds[index].lastSeen.toString()
-                                                                  );
-                                                          }}
-                                                      >
-                                                          Claimed
-                                                      </button>
-                                                      <button className="cta-button delete-button">
-                                                          <div>
-                                                              <Emojis symbol="⏳" label="hourglass" />
-                                                              <Countdown
-                                                                  date={
-                                                                      value.claimedTimestamp * 1000 +
-                                                                      props.upstreamDeeds[index].withdrawalPeriod * 1000
-                                                                  }
-                                                              />
-                                                          </div>
-                                                      </button>
-                                                  </div>
-                                              ) : (
-                                                  <div>
-                                                      <button
-                                                          className="cta-button confirm-button"
-                                                          onClick={() => (
-                                                              setRedeemModalShow(true), setSelectedSender(value)
-                                                          )}
-                                                      >
-                                                          Redeem
-                                                      </button>
-                                                      <button className="cta-button delete-button">
-                                                          <Emojis symbol="⏳" label="hourglass" /> {'00:00:00:00'}
-                                                      </button>
-                                                  </div>
-                                              )
-                                          }
+                                              <div>
+                                                  <button
+                                                      className="cta-button confirm-button"
+                                                      onClick={() => {
+                                                          setClaimModalShow(true);
+                                                          setSelectedSender(value);
+                                                          props.upstreamDeeds &&
+                                                              console.log(
+                                                                  value.claimedTimestamp.toString(),
+                                                                  props.upstreamDeeds[index].lastSeen.toString()
+                                                              );
+                                                      }}
+                                                  >
+                                                      Claimed
+                                                  </button>
+                                                  <button className="cta-button delete-button">
+                                                      <div>
+                                                          <Emojis symbol="⏳" label="hourglass" />
+                                                          <Countdown
+                                                              date={
+                                                                  value.claimedTimestamp * 1000 +
+                                                                  props.upstreamDeeds[index].withdrawalPeriod * 1000
+                                                              }
+                                                          />
+                                                      </div>
+                                                  </button>
+                                              </div>
+                                          ) : (
+                                              <div>
+                                                  <button
+                                                      className="cta-button confirm-button"
+                                                      onClick={() => (
+                                                          setRedeemModalShow(true), setSelectedSender(value)
+                                                      )}
+                                                  >
+                                                      Redeem
+                                                  </button>
+                                                  <button className="cta-button delete-button">
+                                                      <Emojis symbol="⏳" label="hourglass" /> {'00:00:00:00'}
+                                                  </button>
+                                              </div>
+                                          )}
                                       </div>
                                   ) : (
                                       <div>
@@ -198,7 +212,7 @@ function ClaimEmergency(props: {
                     : null}
             </div>
         ),
-        [props.emergencySenderList, props.upstreamDeeds, selectedUpstreamDeed]
+        [props]
     );
 
     const renderDescription = useMemo(
@@ -206,9 +220,11 @@ function ClaimEmergency(props: {
             <div className="claim-emergency-background">
                 <div className="claim-emergency-item">
                     <h3>Addresses who defined yours as an emergency will lie here once added.</h3>
-                    <p className="hint">
-                        As an emergency, you may claim a given percentage of what these addresses deposited in their
-                        deed account.
+                    <p>
+                        <div className="hint">
+                            As an emergency, you may claim a given percentage of what these addresses deposited in their
+                            deed account.
+                        </div>
                     </p>
                 </div>
             </div>
@@ -225,6 +241,7 @@ function ClaimEmergency(props: {
                         onClose={() => setClaimModalShow(false)}
                         show={showClaimModal}
                         claimRequest={claimRequest}
+                        cancelClaimRequest={cancelClaimRequest}
                         selectedSender={props.emergencySenderList.filter((emergency) => {
                             return selectedSender?.owner === emergency.owner;
                         })}

@@ -75,7 +75,7 @@ function WalletDashboard(props: {
     const getDistribution = useCallback(() => {
         if (!publicKey || !props.openDeed) return;
 
-        if (props.openDeed.leftToBeShared === 100) {
+        if (props.openDeed.leftToBeShared === 90) {
             return setDistribution([
                 { title: publicKey.toString(), value: props.openDeed?.leftToBeShared, color: getColor() },
             ]);
@@ -274,6 +274,7 @@ function WalletDashboard(props: {
                         viewBoxSize={[100, 100]}
                     />
                 </div>
+                <br></br> <br></br>
             </div>
         ),
         [myData]

@@ -1,5 +1,5 @@
 .dashboard-container {
-    margin-top: 10vh;
+    margin-top: 7vh;
     z-index: 0;
     align-items: center;
     display:flex;
@@ -71,7 +71,7 @@ h3 {
 .dashboard-container .tab-content {
     position: relative;
     height: auto;
-    margin-top: -15px;
+    margin-top: -20px;
     padding-top: 10px;
     color: #000;
     z-index: 1000;

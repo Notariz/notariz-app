@@ -58,7 +58,7 @@ function Header(props: {dark: boolean}) {
                         </button>
                     )}
                     <AirdropModal onClose={() => setShow(false)} show={show} />
-                    <WalletMultiButton className="cta-button" />
+                    <WalletMultiButton />
                 </Navbar.Collapse>
             </Container>
         </Navbar>
