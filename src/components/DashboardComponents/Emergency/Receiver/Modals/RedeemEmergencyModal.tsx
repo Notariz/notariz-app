@@ -6,10 +6,10 @@ import Emojis from '../../../../utils/Emojis';
 import { CSSTransition } from 'react-transition-group';
 import '../../../Common.css';
 
-function ClaimEmergencyModal(props: {
+function RedeemEmergencyModal(props: {
     show: boolean;
     onClose: () => void;
-    claimRequest: () => void;
+    redeem: () => void;
     selectedSender: Emergency[];
 }) {
     const closeOnEscapeKeyDown = (e: any) => {
@@ -31,33 +31,25 @@ function ClaimEmergencyModal(props: {
             <div className={`notariz-modal ${props.show ? 'show' : ''}`} onClick={props.onClose}>
                 <div className="notariz-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="notariz-modal-header">
-                        <span>
-                            <h3 className="notariz-modal-title">Claim request</h3>
-                        </span>
+                        <h3 className="notariz-modal-title">Redeem</h3>
+                        <p className="hint">
+                            {props.selectedSender[0] ? 'You are about to redeem ' +
+                                props.selectedSender[0].percentage +
+                                '% of this sender total deposit.' : null}
+                        </p>
                     </div>
-                    <p className="hint">
-                        {props.selectedSender.length > 0 && props.selectedSender[0].claimedTimestamp > 0
-                            ? 'You are about to cancel this claim request.'
-                            : 'Only use in case of emergency.'}
-                    </p>
                     <div className="notariz-modal-body">
                         <button
                             type="submit"
                             onClick={() => {
                                 props.onClose();
-                                props.claimRequest();
+                                props.redeem();
                             }}
                             className="cta-button edit-button"
                         >
-                            {props.selectedSender.length > 0 && props.selectedSender[0].claimedTimestamp > 0 ? (
-                                <div>
-                                    <Emojis symbol="❌" label="cross" /> {' Cancel'}
-                                </div>
-                            ) : (
-                                <div>
-                                    <Emojis symbol="✔️" label="check" /> {' Claim'}
-                                </div>
-                            )}
+                            <div>
+                                <Emojis symbol="✔️" label="check" /> {' Redeem'}
+                            </div>
                         </button>
                     </div>
                 </div>
@@ -66,4 +58,4 @@ function ClaimEmergencyModal(props: {
     );
 }
 
-export default ClaimEmergencyModal;
+export default RedeemEmergencyModal;

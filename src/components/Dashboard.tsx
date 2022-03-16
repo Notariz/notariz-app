@@ -2,7 +2,7 @@ import { Deed } from '../models';
 import { Emergency } from '../models';
 
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import { WalletNotConnectedError } from '@solana/wallet-adapter-base';
 
 import { clusterApiUrl, Connection, Transaction, PublicKey, LAMPORTS_PER_SOL, ConfirmOptions } from '@solana/web3.js';
@@ -41,12 +41,14 @@ const programID = new PublicKey(idl.metadata.address);
 
 function Dashboard() {
     const wallet = useWallet();
-    const { publicKey } = wallet;
+    const { publicKey } = wallet ?? {publicKey: undefined};
     const { connection } = useConnection();
 
     const [notificationsCount, setNotificationsCount] = useState(0);
 
     const [openDeed, setOpenDeed] = useState<Deed | undefined>();
+    const [upstreamDeeds, setUpstreamDeeds] = useState<Deed[] | undefined>();
+
     const [emergencyList, setEmergencyList] = useState<Emergency[] | undefined>([]);
     const [emergencySenderList, setEmergencySenderList] = useState<Emergency[] | undefined>([]);
 
@@ -100,7 +102,7 @@ function Dashboard() {
 
     useEffect(() => {
         document.title = `${notificationsCount > 0 ? `(${notificationsCount})` : ''} Notariz`;
-    }, [openDeed]);
+    }, [openDeed, notificationsCount]);
 
     useEffect(() => {
         localStorage.setItem('emergencyProfile', JSON.stringify(emergencyProfile));
@@ -148,6 +150,42 @@ function Dashboard() {
         refreshDeedData();
     }, [publicKey]);
 
+    const fetchUpstreamDeed = useCallback((upstreamDeedOwner) => {
+        if (!publicKey) throw new WalletNotConnectedError();
+
+        return program.account.deed
+            .all([
+                {
+                    memcmp: {
+                        offset: 8, // Discriminator.
+                        bytes: upstreamDeedOwner.toBase58(),
+                    },
+                },
+            ])
+            .then((upstreamDeed) => {
+                return upstreamDeed.length > 0
+                ? new Deed(upstreamDeed[0].publicKey, upstreamDeed[0].account)
+                : undefined;            
+            });
+    }, [publicKey, program.account.deed]);
+
+    const refreshUpstreamDeedsData = useCallback(async () => {
+        if (!emergencySenderList) return;
+
+        const upstreamDeeds = (await Promise.all(emergencySenderList.map((sending) => fetchUpstreamDeed(sending.owner)))).filter((val) => typeof val !== "undefined") as Deed[];
+
+        if (!upstreamDeeds) return;
+
+        console.log("Upstream deeds: ", upstreamDeeds);
+
+        setUpstreamDeeds(upstreamDeeds);
+
+    }, [fetchDeeds, program.provider.connection, emergencySenderList, fetchUpstreamDeed]);
+
+    useEffect(() => {
+        refreshUpstreamDeedsData();
+    }, [publicKey, emergencySenderList]);
+
     const getUserBalance = useCallback(() => {
         if (!publicKey) throw new WalletNotConnectedError();
 
@@ -176,7 +214,6 @@ function Dashboard() {
                 )
                 .catch(() => alert('Cannot fetch upstream deed balance!'))
         );
-        console.log("Upstream deed balance: ", upstreamDeedsBalance);
     }, [publicKey, connection, emergencySenderList, upstreamDeedsBalance]);
 
     const fetchEmergencies = useCallback(() => {
@@ -294,6 +331,7 @@ function Dashboard() {
                             emergencySenderList={emergencySenderList}
                             setEmergencySenderList={setEmergencySenderList}
                             refreshEmergencySendersData={refreshEmergencySendersData}
+                            upstreamDeeds={upstreamDeeds}
                         />
                     )}
                 </Tab>
@@ -322,7 +360,10 @@ function Dashboard() {
             setRecoveryToggle,
             userBalance,
             emergencySenderList,
-            claimingEmergencies
+            claimingEmergencies,
+            getUpstreamDeedsBalance,
+            refreshEmergencySendersData,
+            upstreamDeedsBalance
         ]
     );
 

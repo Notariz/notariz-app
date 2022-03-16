@@ -1,4 +1,4 @@
-import { Deed } from '../../../models';
+import { Deed } from '../../../models/Deed';
 
 import { WalletNotConnectedError } from '@solana/wallet-adapter-base';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
@@ -241,10 +241,29 @@ function WalletDashboard(props: {
             <div className="wallet-item">
                 <h3>Last recorded on-chain activity</h3>
                 <h1>{props.openDeed ? toDate(props.openDeed.lastSeen) : 'NA'}</h1>
+                <button onClick={() => keepAlive()} className='cta-button confirm-button'>Keep alive</button>
             </div>
         ),
         [props.openDeed]
     );
+
+    const keepAlive = async () => {
+        if (!publicKey) throw new WalletNotConnectedError();
+
+        if (!props.openDeed) return;
+
+            if (publicKey) {
+
+                await program.rpc.keepAlive({
+                    accounts: {
+                      deed: props.openDeed.publicKey,
+                      owner: publicKey                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+                    },
+                  }).then((res) => program.provider.connection.confirmTransaction(res)).catch(console.log)
+
+                props.refreshDeedData();
+            }
+    };
 
     const renderShares = useMemo(
         () => (

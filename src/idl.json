@@ -143,6 +143,32 @@
       ]
     },
     {
+      "name": "editPercentage",
+      "accounts": [
+        {
+          "name": "emergency",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "deed",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "newPercentage",
+          "type": "u8"
+        }
+      ]
+    },
+    {
       "name": "deleteEmergency",
       "accounts": [
         {
@@ -185,6 +211,22 @@
       "args": []
     },
     {
+      "name": "rejectClaim",
+      "accounts": [
+        {
+          "name": "emergency",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "redeemEmergency",
       "accounts": [
         {
@@ -194,7 +236,7 @@
         },
         {
           "name": "deed",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -206,6 +248,105 @@
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "addRecovery",
+      "accounts": [
+        {
+          "name": "recovery",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "deed",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "receiver",
+          "type": "publicKey"
+        }
+      ]
+    },
+    {
+      "name": "deleteRecovery",
+      "accounts": [
+        {
+          "name": "recovery",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "deed",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "redeemRecovery",
+      "accounts": [
+        {
+          "name": "recovery",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "deed",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "receiver",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "keepAlive",
+      "accounts": [
+        {
+          "name": "deed",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
         }
       ],
       "args": []
@@ -258,10 +399,6 @@
             "type": "u8"
           },
           {
-            "name": "withdrawalPeriod",
-            "type": "i64"
-          },
-          {
             "name": "claimedTimestamp",
             "type": "i64"
           }
@@ -293,22 +430,32 @@
     {
       "code": 6000,
       "name": "LamportTransferError",
-      "msg": "The account does not have the lamports it is willing to transfer"
+      "msg": "The account does not have the lamports it is willing to transfer."
     },
     {
       "code": 6001,
-      "name": "ClaimTimestampGreaterThanZeroError",
-      "msg": "This emergency has already been claimed."
+      "name": "DeedWithdrawalTimeout",
+      "msg": "You must wait longer before claiming."
     },
     {
       "code": 6002,
-      "name": "ClaimTimestampEqualsToZeroError",
-      "msg": "This emergency has yet to be claimed."
+      "name": "EmergencyAlreadyClaimed",
+      "msg": "This emergency transfer has already been claimed.."
     },
     {
       "code": 6003,
+      "name": "ClaimNeededToRedeem",
+      "msg": "This emergency has yet to be claimed."
+    },
+    {
+      "code": 6004,
       "name": "RedeemTimestampError",
       "msg": "This emergency cannot be redeemed yet."
+    },
+    {
+      "code": 6005,
+      "name": "PercentageError",
+      "msg": "Percentage attribution is not compatible with the current deed distribution."
     }
   ],
   "metadata": {

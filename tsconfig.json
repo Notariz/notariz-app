@@ -3,8 +3,8 @@
     "exclude": ["node_modules"],
     "compilerOptions": {
         "noEmit": true,
-        "target": "esnext",
-        "module": "none",
+        "target": "es2019",
+        "module": "commonjs",
         "moduleResolution": "node",
         "jsx": "react-jsx",
         "strict": true,

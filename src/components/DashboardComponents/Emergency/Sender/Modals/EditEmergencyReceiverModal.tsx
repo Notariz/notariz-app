@@ -1,3 +1,5 @@
+import { Emergency } from '../../../../../models/Emergency';
+
 import { clusterApiUrl, Connection, Transaction, PublicKey, LAMPORTS_PER_SOL, ConfirmOptions } from '@solana/web3.js';
 
 import { useState, useEffect, useCallback } from 'react';
@@ -5,19 +7,12 @@ import { CSSTransition } from 'react-transition-group';
 import Emojis from '../../../../utils/Emojis';
 import '../../../Common.css';
 
-interface EmergencyDetails {
-    receiver: string;
-    alias: string;
-    percentage: number;
-    delay: number;
-    status: string;
-}
 
 function EditEmergencyReceiverModal(props: {
     show: boolean;
     onClose: () => void;
     selectedField: string;
-    selectedReceiver: PublicKey | undefined;
+    selectedEmergency: Emergency[];
     formIsCorrect: boolean;
     editEmergency: (inputValue: string) => void;
 }) {
@@ -46,26 +41,22 @@ function EditEmergencyReceiverModal(props: {
                         {props.selectedField === 'alias' && (
                             <div>
                                 <h3 className="notariz-modal-title">Edit nickname</h3>
-                                <div className="notariz-modal-text">
-                                    Nicknames are stored in your sole <span>browser</span>, they will not persist on another one. Make sure to write them down!
-                                </div>
+                                <p className="hint">
+                                    Nicknames are stored locally in your browser, off-chain.
+                                </p>
                             </div>
                         )}
                         {props.selectedField === 'percentage' && (
                             <div>
                                 <h3 className="notariz-modal-title">Edit percentage</h3>
-                            </div>
-                        )}
-                        {props.selectedField === 'delay' && (
-                            <div>
-                                <h3 className="notariz-modal-title">Edit withdrawal period</h3>
+                                <p className='hint'>{props.selectedEmergency ? 'Current percentage: ' + props.selectedEmergency[0].percentage + '%' : null}</p>
                             </div>
                         )}
                         {props.selectedField === 'cancel' && (
                             <div>
-                                <h3 className="notariz-modal-title">Claim request</h3>
+                                <h3 className="notariz-modal-title">Claim request rejection</h3>
                                 <div className="hint">
-                                    Rejecting this claim request will also cancel the others.
+                                    You are about to reject this claim request. This does not prevent this emergency address to make a new request afterwards.
                                 </div>
                             </div>
                         )}
@@ -83,18 +74,17 @@ function EditEmergencyReceiverModal(props: {
                         >
                             {props.selectedField === 'alias' && (
                                 <div>
-                                    <span className="hint">Your emergency's public key is {props.selectedReceiver}</span>
                                     {!props.formIsCorrect && isSubmitted ? (
                                         <div>
-                                            <span className="hint">
-                                                Your emergency's nickname should be 5-character long max.
-                                            </span>
+                                            <p className="hint">
+                                                Emergency address's alias should be 5-character long max.
+                                            </p>
                                         </div>
                                     ) : null}
                                     <input
                                         name="alias"
                                         type="text"
-                                        placeholder={"Your emergency's nickname"}
+                                        placeholder={"Emergency address nickname"}
                                         value={inputValue}
                                         onChange={(e) => setInputValue(e.target.value)}
                                         required
@@ -114,25 +104,6 @@ function EditEmergencyReceiverModal(props: {
                                         name="percentage"
                                         type="number"
                                         placeholder={"Your emergency's claimable percentage"}
-                                        value={inputValue}
-                                        onChange={(e) => setInputValue(e.target.value)}
-                                        required
-                                    />
-                                </div>
-                            )}
-                            {props.selectedField === 'delay' && (
-                                <div>
-                                    {!props.formIsCorrect && isSubmitted ? (
-                                        <div>
-                                            <span className="hint">
-                                                Your withdrawal period value should be an integer greater than 0.
-                                            </span>
-                                        </div>
-                                    ) : null}
-                                    <input
-                                        name="delay"
-                                        type="number"
-                                        placeholder={'Your withdrawal period (in days)'}
                                         value={inputValue}
                                         onChange={(e) => setInputValue(e.target.value)}
                                         required

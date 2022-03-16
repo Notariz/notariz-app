@@ -96,6 +96,7 @@ function SendEmergency(props: {
         if (!props.openDeed) return;
 
         if (inputValues.percentage > 0 && inputValues.percentage <= props.openDeed.leftToBeShared) {
+            
             const emergency = props.emergencyList?.filter(function (value) {
                 return value.receiver === inputValues.receiver;
             });
@@ -144,6 +145,8 @@ function SendEmergency(props: {
     };
 
     const editEmergency = async (inputValue: any) => {
+        if (!props.openDeed) return;
+
         if (!selectedEmergency) return;
 
         const id = selectedEmergency[0].receiver;
@@ -162,21 +165,44 @@ function SendEmergency(props: {
                     setFormIsCorrect(false);
                 }
                 break;
-            case 'share':
-                if (inputValue > 0 && inputValue <= 100 && Math.round(inputValue) == inputValue) {
+            case 'percentage':
+
+                if (inputValue > 0 && inputValue <= props.openDeed.leftToBeShared) {
                     setFormIsCorrect(true);
+
+                    await program.rpc.editPercentage(inputValue, {
+                        accounts: {
+                            emergency: selectedEmergency[0].publicKey,
+                            deed: props.openDeed.publicKey,
+                            owner: provider.wallet.publicKey,
+                        },
+                    });
+            
+                    props.refreshEmergenciesData();
+
+                    
                     newEmergencies.map((value) =>
-                        value.receiver === id ? (value.percentage = inputValue) : value.percentage
+                        value.receiver === id ? value.percentage = inputValue : value.percentage
                     );
-                    props.setEmergencyList(newEmergencies);
+                    props.setEmergencyList(newEmergencies); 
                 } else {
                     setFormIsCorrect(false);
                 }
                 break;
             case 'cancel':
                 setFormIsCorrect(true);
+
+                await program.rpc.rejectClaim({
+                    accounts: {
+                        emergency: selectedEmergency[0].publicKey,
+                        owner: provider.wallet.publicKey,
+                    },
+                });
+        
+                props.refreshEmergenciesData();
+
                 newEmergencies.map((value) =>
-                    value.claimedTimestamp > 0 ? (value.claimedTimestamp = 0) : value.claimedTimestamp
+                    value.receiver === id ? (value.claimedTimestamp = 0) : value.claimedTimestamp
                 );
                 props.setEmergencyList(newEmergencies);
                 break;
@@ -200,6 +226,8 @@ function SendEmergency(props: {
                 systemProgram: SystemProgram.programId,
             },
         });
+
+        props.refreshEmergenciesData();
 
         const newEmergencies = props.emergencyList.filter(function (e) {
             return e.receiver != emergency.receiver;
@@ -227,7 +255,6 @@ function SendEmergency(props: {
                                         setEditModalShow(true);
                                         setSelectedField('percentage');
                                         setSelectedReceiver(value.receiver);
-                                        console.log(showEditModal);
                                     }}
                                     className="receiver-text"
                                 >
@@ -278,15 +305,16 @@ function SendEmergency(props: {
                                     setSelectedReceiver(value.receiver);
                                 }}
                                 className="cta-button status-button"
-                                disabled={value.claimedTimestamp === 0}
+                                disabled={value.claimedTimestamp == 0}
                             >
                                 {value.claimedTimestamp > 0 ? 'Claimed' : 'Unclaimed'}
                             </button>
-                            {value.claimedTimestamp > 0 ? (
-                                <button className="cta-button status-button">
+                            {value.claimedTimestamp > 0 && props.openDeed ? (
+                                <button className="cta-button delete-button">
                                     <div>
                                         <Emojis symbol="⏳" label="hourglass" />
-                                        <Countdown date={Date.now() + WITHDRAWAL_PERIOD * 3600 * 24 * 1000} />
+                                        <Countdown date={value.claimedTimestamp * 1000 + props.openDeed.withdrawalPeriod * 1000} />
+                                        {console.log(props.openDeed.withdrawalPeriod)}
                                     </div>
                                 </button>
                             ) : (
@@ -321,7 +349,7 @@ function SendEmergency(props: {
                     >
                         ADD A RECEIVING ADDRESS
                     </button>
-                    {props.emergencyList && props.deedBalance ? (
+                    {props.emergencyList && selectedEmergency && props.deedBalance ? (
                         <div>
                             <AddEmergencyReceiverModal
                                 onClose={() => setAddModalShow(false)}
@@ -346,7 +374,7 @@ function SendEmergency(props: {
                                 editEmergency={editEmergency}
                                 formIsCorrect={formIsCorrect}
                                 selectedField={selectedField}
-                                selectedReceiver={selectedReceiver}
+                                selectedEmergency={selectedEmergency}
                             />
                         </div>
                     ) : (
