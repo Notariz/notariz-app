@@ -48,12 +48,25 @@ function SendRecovery(props: {
         return recovery.receiver === selectedReceiver;
     });
 
+    const renderNoOpenDeedDescription = useMemo(
+        () => (
+            <div className="recovery-item-background">
+                <h3>No open deed.</h3>
+                <p>
+                    <div className="hint">Please open a deed to add emergency addresses.</div>
+                </p>
+            </div>
+        ),
+        []
+    );
+
+
     const renderDescription = useMemo(
         () => (
             <div className="recovery-item-background">
                 <div className="recovery-item">
                     <h3>Your recovery addresses will lie here once added.</h3>
-                    <p className="hint">Once set, a recovery address can redeem 100% of your total deposit.</p>
+                    <p><div className="hint">Once set, a recovery address can redeem 100% of your total deposit.</div></p>
                 </div>
             </div>
         ),
@@ -63,7 +76,8 @@ function SendRecovery(props: {
     const renderRecoveryList = useMemo(
         () => (
             <div>
-                {props.recoveryList && props.deedBalance &&
+                {props.recoveryList &&
+                    props.deedBalance &&
                     props.recoveryList.length > 0 &&
                     props.recoveryList.map((value, index) => (
                         <div key={index} className="recovery-item-background">
@@ -130,10 +144,7 @@ function SendRecovery(props: {
             .fetch(recoveryKeypair.publicKey)
             .then((account) => {
                 props.recoveryList
-                    ? props.setRecoveryList([
-                          ...props.recoveryList,
-                          new Recovery(recoveryKeypair.publicKey, account),
-                      ])
+                    ? props.setRecoveryList([...props.recoveryList, new Recovery(recoveryKeypair.publicKey, account)])
                     : props.setRecoveryList([new Recovery(recoveryKeypair.publicKey, account)]);
             })
             .catch(console.log);
@@ -173,37 +184,43 @@ function SendRecovery(props: {
 
     return (
         <div className="recovery-container">
-            <button
-                onClick={() => {
-                    setRecoveryKeypair(web3.Keypair.generate());
-                    setAddModalShow(true);
-                }}
-                className="cta-button confirm-button"
-            >
-                New recovery address
-            </button>
             {props.openDeed ? (
                 <div>
-                    <AddRecoverySendingModal
-                        isMentioned={isMentioned}
-                        addRecovery={addRecovery}
-                        onClose={() => {
-                            setAddModalShow(false);
+                    <button
+                        onClick={() => {
+                            setRecoveryKeypair(web3.Keypair.generate());
+                            setAddModalShow(true);
                         }}
-                        show={showAddModal}
-                        openDeed={props.openDeed}
-                        recoveryPk={recoveryKeypair.publicKey}
-                    />
-                    <DeleteRecoveryModal
-                        onClose={() => setDeleteModalShow(false)}
-                        show={showDeleteModal}
-                        deleteRecovery={deleteRecovery}
-                    />
+                        className="cta-button confirm-button"
+                    >
+                        New recovery address
+                    </button>
+                    {props.openDeed ? (
+                        <div>
+                            <AddRecoverySendingModal
+                                isMentioned={isMentioned}
+                                addRecovery={addRecovery}
+                                onClose={() => {
+                                    setAddModalShow(false);
+                                }}
+                                show={showAddModal}
+                                openDeed={props.openDeed}
+                                recoveryPk={recoveryKeypair.publicKey}
+                            />
+                            <DeleteRecoveryModal
+                                onClose={() => setDeleteModalShow(false)}
+                                show={showDeleteModal}
+                                deleteRecovery={deleteRecovery}
+                            />
+                        </div>
+                    ) : null}
+                    <div className="recovery-list">
+                        {props.recoveryList && props.recoveryList.length > 0 ? renderRecoveryList : renderDescription}
+                    </div>
                 </div>
-            ) : null}
-            <div className="recovery-list">
-                {props.recoveryList && props.recoveryList.length > 0 ? renderRecoveryList : renderDescription}
-            </div>
+            ) : (
+                <div className='recovery-list'>{renderNoOpenDeedDescription}</div>
+            )}
         </div>
     );
 }

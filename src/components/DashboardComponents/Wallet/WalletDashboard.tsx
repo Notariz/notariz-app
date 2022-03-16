@@ -24,6 +24,7 @@ import EditWithdrawalPeriodModal from './Modals/EditWithdrawalPeriod';
 import Emojis from '../../utils/Emojis';
 import './WalletDashboard.css';
 import '../Common.css';
+import { Emergency } from '../../../models';
 
 const { SystemProgram, Keypair } = web3;
 
@@ -33,7 +34,14 @@ const opts: ConfirmOptions = {
 
 const programID = new PublicKey(idl.metadata.address);
 
+interface Distribution {
+    title: string;
+    value: number;
+    color: string;
+}
+
 function WalletDashboard(props: {
+    emergencyList: Emergency[] | undefined;
     userBalance: string;
     deedBalance: number | undefined;
     openDeed: Deed | undefined;
@@ -56,11 +64,46 @@ function WalletDashboard(props: {
     const [editWithdrawalPeriodModalShow, setEditWithdrawalPeriodModalShow] = useState(false);
     const [editWithdrawalPeriodFormIsCorrect, setEditWithdrawalPeriodFormIsCorrect] = useState(false);
 
+    const [distribution, setDistribution] = useState<Distribution[] | undefined>();
+
+    const colors = ['#F56998', '#F67CA4', '#F78FB0', '#F8A2BD', '#F9B5C9', '#FAC8D5'];
+
+    const getColor = () => {
+        return colors[Math.floor(Math.random() * (colors.length - 1))];
+    };
+
+    const getDistribution = useCallback(() => {
+        if (!publicKey || !props.openDeed) return;
+
+        if (props.openDeed.leftToBeShared === 100) {
+            return setDistribution([
+                { title: publicKey.toString(), value: props.openDeed?.leftToBeShared, color: getColor() },
+            ]);
+        }
+
+        /*
+        if (!props.emergencyList || !distribution) return;
+
+        setDistribution([{ title: publicKey.toString(), value: props.openDeed?.leftToBeShared, color: getColor() }]);
+
+        props.emergencyList.map(
+            (emergency) =>
+                distribution.length > 0 &&
+                setDistribution([
+                    ...distribution,
+                    { title: emergency.receiver.toString(), value: emergency.percentage, color: getColor() },
+                ])
+    
+        ); */
+    }, [publicKey, props.openDeed, props.emergencyList]);
+
+    useEffect(() => getDistribution(), [props]);
+
     const myData = useMemo(
         () => [
-            { title: 'Dogs', value: 100, color: '#fd1d68' },
-            { title: 'Cats', value: 50, color: '#ed729b' },
-            { title: 'Dragons', value: 15, color: 'purple' },
+            { title: 'Dogs', value: 100, color: colors[Math.floor(Math.random() * (colors.length - 1))] },
+            { title: 'Cats', value: 50, color: colors[Math.floor(Math.random() * (colors.length - 1))] },
+            { title: 'Dragons', value: 15, color: colors[Math.floor(Math.random() * (colors.length - 1))] },
         ],
         []
     );
@@ -107,15 +150,16 @@ function WalletDashboard(props: {
         provider.wallet.publicKey,
         publicKey,
         wallet.signTransaction,
-        props
+        props,
     ]);
 
     const renderCreateAccount = useMemo(
         () => (
             <div className="wallet-item">
                 <h3>Create a Notariz account</h3>
-                <p className="hint">
-                    It looks like you do not have any open deed. Deeds keep track of your interactions with Notariz.
+                <p>
+                    <div className="hint">It looks like you do not have any open deed.</div>
+                    <div className="hint"> Deeds keep track of your interactions with Notariz.</div>
                 </p>
                 <button onClick={() => createDeed()} className="cta-button confirm-button">
                     Open a deed
@@ -131,7 +175,6 @@ function WalletDashboard(props: {
 
             if (!deed) return;
 
-            /* interact with the program via rpc */
             return program.rpc
                 .deleteDeed({
                     accounts: {
@@ -226,7 +269,7 @@ function WalletDashboard(props: {
                 <div className="pie-chart-item">
                     <PieChart
                         // your data
-                        data={myData}
+                        data={distribution}
                         // width and height of the view box
                         viewBoxSize={[100, 100]}
                     />
@@ -241,17 +284,19 @@ function WalletDashboard(props: {
 
         if (!props.openDeed) return;
 
-            if (publicKey) {
-
-                await program.rpc.keepAlive({
+        if (publicKey) {
+            await program.rpc
+                .keepAlive({
                     accounts: {
-                      deed: props.openDeed.publicKey,
-                      owner: publicKey                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+                        deed: props.openDeed.publicKey,
+                        owner: publicKey,
                     },
-                  }).then((res) => program.provider.connection.confirmTransaction(res)).catch(console.log)
+                })
+                .then((res) => program.provider.connection.confirmTransaction(res))
+                .catch(console.log);
 
-                props.refreshDeedData();
-            }
+            props.refreshDeedData();
+        }
     };
 
     const renderOnChainActivity = useMemo(
@@ -259,13 +304,13 @@ function WalletDashboard(props: {
             <div className="wallet-item">
                 <h3>Last recorded on-chain activity</h3>
                 <h1>{props.openDeed ? toDate(props.openDeed.lastSeen) : 'NA'}</h1>
-                <button onClick={() => keepAlive()} className='cta-button confirm-button'>Keep alive</button>
+                <button onClick={() => keepAlive()} className="cta-button confirm-button">
+                    Keep alive
+                </button>
             </div>
         ),
         [props.openDeed, keepAlive]
     );
-
-    
 
     const renderShares = useMemo(
         () => (
@@ -316,14 +361,16 @@ function WalletDashboard(props: {
             setTopUpFormIsCorrect(true);
 
             if (publicKey) {
-
-                await program.rpc.withdrawDeedLamports(new BN(inputValue * LAMPORTS_PER_SOL), {
-                    accounts: {
-                      deed: props.openDeed.publicKey,
-                      owner: publicKey,
-                      systemProgram: SystemProgram.programId,
-                    },
-                  }).then((res) => program.provider.connection.confirmTransaction(res)).catch(console.log)
+                await program.rpc
+                    .withdrawDeedLamports(new BN(inputValue * LAMPORTS_PER_SOL), {
+                        accounts: {
+                            deed: props.openDeed.publicKey,
+                            owner: publicKey,
+                            systemProgram: SystemProgram.programId,
+                        },
+                    })
+                    .then((res) => program.provider.connection.confirmTransaction(res))
+                    .catch(console.log);
 
                 props.refreshDeedData();
             }
@@ -411,7 +458,7 @@ function WalletDashboard(props: {
                     />
                 </Container>
             ) : (
-                <div className="wallet-item-background">{renderCreateAccount}</div>
+                <div className="wallet-not-connected-item-background">{renderCreateAccount}</div>
             )}
         </div>
     );

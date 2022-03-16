@@ -140,7 +140,7 @@ function Dashboard() {
 
         const deedAccountBalance = await program.provider.connection
             .getAccountInfo(deed.publicKey)
-            .then((res) => res?.lamports)
+            .then((res: any) => res?.lamports)
             .catch(console.log);
 
         if (deedAccountBalance) {
@@ -371,6 +371,7 @@ function Dashboard() {
                         deedBalance={deedBalance}
                         openDeed={openDeed}
                         setOpenDeed={setOpenDeed}
+                        emergencyList={emergencyList}
                     />
                 </Tab>
                 <Tab
