@@ -49,7 +49,7 @@ function EditEmergencyReceiverModal(props: {
                         {props.selectedField === 'percentage' && (
                             <div>
                                 <h3 className="notariz-modal-title">Edit percentage</h3>
-                                <p className='hint'>{props.selectedEmergency ? 'Current percentage: ' + props.selectedEmergency[0].percentage + '%' : null}</p>
+                                <p className='hint'>{props.selectedEmergency.length > 0 ? ('Current percentage: ' + props.selectedEmergency[0].percentage + '%') : null}</p>
                             </div>
                         )}
                         {props.selectedField === 'cancel' && (
