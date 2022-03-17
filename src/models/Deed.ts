@@ -6,6 +6,7 @@ export class Deed {
     public lastSeen: number;
     public leftToBeShared: number;
     public withdrawalPeriod: number;
+    public alreadyRedeemed: number;
 
     constructor (publicKey: PublicKey, accountData: any) {
         this.publicKey = publicKey
@@ -13,6 +14,7 @@ export class Deed {
         this.lastSeen = accountData.lastSeen
         this.leftToBeShared = accountData.leftToBeShared
         this.withdrawalPeriod = accountData.withdrawalPeriod
+        this.alreadyRedeemed = accountData.alreadyRedeemed
     }
 
     get key() {

@@ -251,7 +251,7 @@ function SendEmergency(props: {
                                 >
                                     {props.deedBalance && props.openDeed
                                         ? ' ' + value.percentage + '% (' +
-                                          parseFloat(((props.deedBalance * value.percentage) / 100).toString()).toFixed(
+                                          parseFloat(((props.deedBalance * value.percentage) / (100 - props.openDeed.alreadyRedeemed)).toString()).toFixed(
                                               5
                                           ) +
                                           ' SOL) '
