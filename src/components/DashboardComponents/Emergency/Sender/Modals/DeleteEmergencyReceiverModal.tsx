@@ -28,10 +28,10 @@ function DeleteEmergencyReceiverModal(props: {
             <div className={`notariz-modal ${props.show ? 'show' : ''}`} onClick={props.onClose}>
                 <div className="notariz-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="notariz-modal-header">
-                        <h3 className="notariz-modal-title">DELETE EMERGENCY</h3>
-                        <div className="hint">
+                        <h3 className="notariz-modal-title">Delete emergency</h3>
+                        <p className="hint">
                             You are about to delete this emergency.
-                        </div>
+                        </p>
                     </div>
                     <div className="notariz-modal-body">
                         <button onClick={() => { props.deleteEmergency(); props.onClose() }} className="cta-button edit-button">

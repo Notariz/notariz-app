@@ -24,7 +24,7 @@ function Header(props: {dark: boolean}) {
         setShow(true);
         if (!publicKey) return;
 
-        let connection = new Connection(clusterApiUrl('devnet'));
+        const connection = new Connection(clusterApiUrl('devnet'));
 
         connection
             .requestAirdrop(publicKey, LAMPORTS_PER_SOL)
@@ -34,7 +34,7 @@ function Header(props: {dark: boolean}) {
                  setAirdropping(false);
                  setShow(false);
                 })
-    }, [publicKey, connection]);
+    }, [publicKey, airdropping, connection]);
 
     const setDisplayToggle = () => {
         setDark(!dark)
@@ -63,6 +63,6 @@ function Header(props: {dark: boolean}) {
             </Container>
         </Navbar>
     );
-};
+}
 
 export default Header;

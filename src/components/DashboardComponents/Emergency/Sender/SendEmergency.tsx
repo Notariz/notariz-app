@@ -67,7 +67,15 @@ function SendEmergency(props: {
     const renderDescription = useMemo(
         () => (
             <div className="emergency-item-background">
-                <h3>Your emergencies will lie here.</h3>
+                <div className="emergency-item">
+                    <h3>Your emergencies will lie here.</h3>
+                    <p>
+                        <div className="hint">
+                            Once set, an emergency address owner can claim and redeem a set percentage of your total
+                            deposit.
+                        </div>
+                    </p>
+                </div>
             </div>
         ),
         []
@@ -91,9 +99,8 @@ function SendEmergency(props: {
         if (!props.openDeed) return;
 
         if (inputValues.percentage > 0 && inputValues.percentage <= props.openDeed.leftToBeShared) {
-
             setFormIsCorrect(true);
-            
+
             const emergency = props.emergencyList?.filter(function (value) {
                 return value.receiver !== inputValues.receiver;
             });
@@ -157,7 +164,6 @@ function SendEmergency(props: {
                 }
                 break;
             case 'percentage':
-
                 if (inputValue > 0 && inputValue <= props.openDeed.leftToBeShared) {
                     setFormIsCorrect(true);
 
@@ -168,14 +174,13 @@ function SendEmergency(props: {
                             owner: provider.wallet.publicKey,
                         },
                     });
-            
+
                     props.refreshEmergenciesData();
 
-                    
                     newEmergencies.map((value) =>
-                        value.receiver === id ? value.percentage = inputValue : value.percentage
+                        value.receiver === id ? (value.percentage = inputValue) : value.percentage
                     );
-                    props.setEmergencyList(newEmergencies); 
+                    props.setEmergencyList(newEmergencies);
                 } else {
                     setFormIsCorrect(false);
                 }
@@ -189,7 +194,7 @@ function SendEmergency(props: {
                         owner: provider.wallet.publicKey,
                     },
                 });
-        
+
                 props.refreshEmergenciesData();
 
                 newEmergencies.map((value) =>
@@ -250,10 +255,15 @@ function SendEmergency(props: {
                                     className="receiver-text"
                                 >
                                     {props.deedBalance && props.openDeed
-                                        ? ' ' + value.percentage + '% (' +
-                                          parseFloat(((props.deedBalance * value.percentage) / (100 - props.openDeed.alreadyRedeemed)).toString()).toFixed(
-                                              5
-                                          ) +
+                                        ? ' ' +
+                                          value.percentage +
+                                          '% (' +
+                                          parseFloat(
+                                              (
+                                                  (props.deedBalance * value.percentage) /
+                                                  (100 - props.openDeed.alreadyRedeemed)
+                                              ).toString()
+                                          ).toFixed(5) +
                                           ' SOL) '
                                         : null}
                                 </span>
@@ -304,7 +314,11 @@ function SendEmergency(props: {
                                 <button className="cta-button delete-button">
                                     <div>
                                         <Emojis symbol="⏳" label="hourglass" />
-                                        <Countdown date={value.claimedTimestamp * 1000 + props.openDeed.withdrawalPeriod * 1000} />
+                                        <Countdown
+                                            date={
+                                                value.claimedTimestamp * 1000 + props.openDeed.withdrawalPeriod * 1000
+                                            }
+                                        />
                                     </div>
                                 </button>
                             ) : (
@@ -367,11 +381,11 @@ function SendEmergency(props: {
                                 selectedEmergency={selectedEmergency}
                             />
                         </div>
-                    ) : (
-                        null
-                    )}
+                    ) : null}
                     <div className="emergency-list">
-                        {props.emergencyList && props.emergencyList.length > 0 ? renderEmergencyList : renderDescription}
+                        {props.emergencyList && props.emergencyList.length > 0
+                            ? renderEmergencyList
+                            : renderDescription}
                     </div>
                 </div>
             ) : (

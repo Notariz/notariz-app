@@ -11,6 +11,6 @@ function Emojis(props: any) {
             {props.symbol}
         </span>
     )
-};
+}
 
 export default Emojis;

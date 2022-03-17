@@ -31,7 +31,7 @@ function ClaimRecoveryModal(props: {
                     <div className="notariz-modal-header">
                         <span>
                             <h3 className="notariz-modal-title">Redeem</h3>
-                            <p><div className='hint'>You are about to receive 100% of this sending address assets.</div></p>
+                            <p className="hint">You are about to receive 100% of this sending address assets.</p>
                         </span>
                     </div>
                     <div className="notariz-modal-body">

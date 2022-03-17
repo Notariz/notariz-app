@@ -24,7 +24,7 @@ function DeleteDeedModal(props: { show: boolean; onClose: () => void; deleteDeed
                 <div className="notariz-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="notariz-modal-header">
                         <h3 className="notariz-modal-title">Deed deletion</h3>
-                        <p><div className="hint">You are about to delete your deed. Once your deed deleted, you will not be able to recover your current emergencies and recoveries ever again.</div></p>
+                        <p className="hint">You are about to delete your deed. Once your deed deleted, you will not be able to recover your current emergencies and recoveries ever again.</p>
                     </div>
                     <div className="notariz-modal-body">
                         <button

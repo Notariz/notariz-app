@@ -53,8 +53,7 @@ function SendRecovery(props: {
         () => (
             <div className="recovery-item-background">
                 <h3>No open deed.</h3>
-                <p>
-                    <div className="hint">Please open a deed to add emergency addresses.</div>
+                <p className="hint">Please open a deed to add emergency addresses.
                 </p>
             </div>
         ),
@@ -67,7 +66,7 @@ function SendRecovery(props: {
             <div className="recovery-item-background">
                 <div className="recovery-item">
                     <h3>Your recovery addresses will lie here once added.</h3>
-                    <p><div className="hint">Once set, a recovery address can redeem 100% of your total deposit.</div></p>
+                    <p className="hint">Once set, a recovery address can redeem 100% of your total deposit.</p>
                 </div>
             </div>
         ),

@@ -1,20 +1,15 @@
 .emergency-container {
-    position: relative;
-    color: var(--text-color);
-    text-align: center;
-    display: block;
     margin-top: 30px;
     width: 60%;
     margin-left: 20%;
 }
 
 .emergency-list {
-    margin-top: 30px;
+    margin-top: 20px;
 }
 
 .emergency-item-background {
     background-color: var(--main-item-color);
-    padding-top: 20px;
     padding: 10px;
     margin-top: 30px;
     border-radius: 20px;
@@ -23,7 +18,7 @@
 .emergency-item {
     margin-left: 10%;
     margin-right: 10%;
-    padding-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .emergency-item i {
@@ -50,8 +45,8 @@
 }
 
 .emergency-container h3 {
-    margin-top: 20px;
     font-size: 18px;
+    padding-top: 20px;
     margin-bottom: 30px;
 }
 

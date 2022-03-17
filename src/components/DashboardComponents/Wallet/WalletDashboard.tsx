@@ -34,7 +34,7 @@ const opts: ConfirmOptions = {
 
 const programID = new PublicKey(idl.metadata.address);
 
-interface Distribution {
+interface Data {
     title: string;
     value: number;
     color: string;
@@ -65,20 +65,13 @@ function WalletDashboard(props: {
     const [editWithdrawalPeriodModalShow, setEditWithdrawalPeriodModalShow] = useState(false);
     const [editWithdrawalPeriodFormIsCorrect, setEditWithdrawalPeriodFormIsCorrect] = useState(false);
 
-    const [distribution, setDistribution] = useState<Distribution[] | undefined>();
+    const [distribution, setDistribution] = useState<Data[] | undefined>();
 
     const colors = [
-        '#D8094E',
-        '#D91858',
-        '#DA2762',
-        '#DC366C',
-        '#DD4576',
-        '#DE5480',
-        '#DF638B',
-        '#E07295',
-        '#E49FB3',
-        '#E6BDC7',
-        '#E1819F',
+        '#F75538',
+        '#F56728',
+        '#F47A18',
+        '#F28D08',
     ];
 
     const getColor = () => {
@@ -88,20 +81,24 @@ function WalletDashboard(props: {
     const computeDistribution = useCallback(() => {
         if (!publicKey || !props.openDeed) return;
 
-        setDistribution([{ title: publicKey.toString(), value: props.openDeed.leftToBeShared, color: getColor() }]);
+        let distribution = [{ title: publicKey.toString(), value: props.openDeed.leftToBeShared, color: '#FC1C67' }];
 
-        if (props.emergencyList && distribution)
-            return props.emergencyList.map((emergency) =>
-                setDistribution([
-                    ...distribution,
-                    { title: emergency.receiver.toString(), value: emergency.percentage, color: getColor() },
-                ])
+        if (props.emergencyList && distribution) {
+            distribution = distribution.concat(
+                props.emergencyList.map((e) => ({
+                    title: e.receiver.toString(),
+                    value: e.percentage,
+                    color: getColor(),
+                }))
             );
-    }, [publicKey, props.openDeed, props.emergencyList, distribution, getColor]);
+        }
+
+        setDistribution(distribution);
+    }, [publicKey, props.openDeed, props.emergencyList, getColor]);
 
     useEffect(() => {
         computeDistribution();
-    }, [publicKey, props.emergencyList]);
+    }, [publicKey, props]);
 
     function toDate(timestamp: number) {
         const date = new Date(timestamp * 1000);
@@ -262,12 +259,14 @@ function WalletDashboard(props: {
             <div className="wallet-item pie-chart-container">
                 <h3>Assets distribution</h3>
                 <div className="pie-chart-item">
-                    <PieChart
-                        // your data
-                        data={distribution}
-                        // width and height of the view box
-                        viewBoxSize={[100, 100]}
-                    />
+                    {distribution && (
+                        <PieChart
+                            // your data
+                            data={distribution}
+                            // width and height of the view box
+                            viewBoxSize={[100, 100]}
+                        />
+                    )}
                 </div>
                 <br></br> <br></br>
             </div>
@@ -316,11 +315,11 @@ function WalletDashboard(props: {
     const renderShares = useMemo(
         () => (
             <div className="wallet-item">
-                <h3>Shared deposit total</h3>
+                <h3>Left to be shared</h3>
                 <h1>{props.openDeed ? props.openDeed.leftToBeShared + '%' : 'NA'}</h1>
             </div>
         ),
-        [props.openDeed]
+        [props]
     );
 
     const topUp = async (inputValue: number) => {

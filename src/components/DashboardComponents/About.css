@@ -4,11 +4,18 @@
     margin-left: 20%;
 }
 
+
 .about-container p {
     margin-top: 20px;
+    opacity: .8;
 }
 
 .about-container h3 {
     font-size: 22px;
     margin-bottom: 30px;
+}
+
+.about-container span {
+    color: var(--notariz-pink);
+    font-weight: bold;
 }

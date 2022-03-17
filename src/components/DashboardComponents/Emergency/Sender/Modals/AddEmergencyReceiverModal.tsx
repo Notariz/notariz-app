@@ -49,7 +49,7 @@ function AddEmergencyReceiverModal(props: {
         setInputValues((prevState) => ({ ...prevState, [name]: value }));
     };
 
-    const renderLeftToBeShared = useMemo(() => (<div className='hint'>{props.openDeed.leftToBeShared + '% left to be shared'}</div>), [props.openDeed])
+    const renderLeftToBeShared = useMemo(() => (<p className='hint'>{props.openDeed.leftToBeShared + '% left to be shared'}</p>), [props.openDeed])
 
     return (
         <CSSTransition in={props.show} unmountOnExit timeout={{ enter: 0, exit: 300 }}>

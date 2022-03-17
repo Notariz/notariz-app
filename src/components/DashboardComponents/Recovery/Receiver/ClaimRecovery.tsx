@@ -50,7 +50,7 @@ function ClaimRecovery(props: {
             <div className="recovery-item-background">
                 <div className="recovery-item">
                     <h3>Addresses who defined you as a recovery will lie here.</h3>
-                    <p><div className="hint">As a recovery address, you may redeem 100% of what these addresses deposited in their deed account.</div></p>
+                    <p className="hint">As a recovery address, you may redeem 100% of what these addresses deposited in their deed account.</p>
                 </div>
             </div>
         ),
