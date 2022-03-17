@@ -48,7 +48,7 @@ function TopUpModal(props: {
                 <div className="notariz-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="notariz-modal-header">
                         {renderUserBalance}
-                        <div className="hint">Think of keeping some SOL left to pay for withdraw transactions.</div>
+                        {props.userBalance === inputValue.toString() && <p className="hint">Think of keeping some SOL left to pay for withdraw transactions.</p>}
                     </div>
                     <div className="notariz-modal-body">
                         <form

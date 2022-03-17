@@ -27,7 +27,7 @@ function EditWithdrawalPeriodModal(props: {
 
     const handleInputChange = (e: React.FormEvent<HTMLInputElement>) => {
         const { value } = e.currentTarget;
-        setInputValue(parseInt(value));
+        setInputValue(parseFloat(value));
     };
 
     return (
@@ -43,18 +43,23 @@ function EditWithdrawalPeriodModal(props: {
                                 event.preventDefault();
                                 {
                                     setIsSubmitted(true);
-                                    props.formIsCorrect
-                                        ? (setInputValue(0), props.onClose(), setIsSubmitted(false))
-                                        : null;
+                                    setInputValue(0);
+                                    props.onClose();
+                                    setIsSubmitted(false);
                                 }
                             }}
                         >
-                            {isSubmitted && !props.formIsCorrect ? <span className="hint">Given withdrawal period should be at least 2 days long.</span> : null}
+                            {!isNaN(inputValue) && <p className="hint">
+                                {'Your emergencies will be allowed to redeem their share ' +
+                                    inputValue +
+                                    ' hours after their claim.'}
+                            </p>}
+                            {inputValue < 24 && <p className="hint">{inputValue + ' hours is maybe a tad short for a withdrawal period.'}</p>}
                             <input
                                 name="balance"
                                 type="number"
-                                step="1"
-                                placeholder="Withdrawal period (in days)"
+                                step="0.0001"
+                                placeholder="Withdrawal period (in hours)"
                                 value={inputValue}
                                 onChange={handleInputChange}
                                 required

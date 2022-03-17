@@ -67,12 +67,7 @@ function WalletDashboard(props: {
 
     const [distribution, setDistribution] = useState<Data[] | undefined>();
 
-    const colors = [
-        '#F75538',
-        '#F56728',
-        '#F47A18',
-        '#F28D08',
-    ];
+    const colors = ['#F75538', '#F56728', '#F47A18', '#F28D08'];
 
     const getColor = () => {
         return colors[Math.floor(Math.random() * (colors.length - 1))];
@@ -109,8 +104,8 @@ function WalletDashboard(props: {
         return [day, month, year].join('/');
     }
 
-    function fromSecondsToDays(duration: number) {
-        return duration / 24 / 3600;
+    function fromSecondsToHours(duration: number) {
+        return duration / 3600;
     }
 
     const createDeed = useCallback(async () => {
@@ -217,7 +212,7 @@ function WalletDashboard(props: {
         () => (
             <div className="wallet-item">
                 <h3>Total deposit</h3>
-                <h1>{props.deedBalance + ' SOL'}</h1>
+                <h1>{props.deedBalance + ' SOL '}</h1>
                 <button
                     onClick={() => {
                         setTopUpModalShow(true);
@@ -245,7 +240,12 @@ function WalletDashboard(props: {
         () => (
             <div className="wallet-item">
                 <h3>Withdrawal period</h3>
-                <h1>{props.openDeed ? fromSecondsToDays(props.openDeed.withdrawalPeriod) + ' days' : 'Unknown'}</h1>
+                <h1>
+                    {props.openDeed
+                        ? fromSecondsToHours(props.openDeed.withdrawalPeriod) +
+                          (fromSecondsToHours(props.openDeed.withdrawalPeriod) > 1 ? ' hours' : ' hour')
+                        : 'Unknown'}
+                </h1>
                 <button onClick={() => setEditWithdrawalPeriodModalShow(true)} className="cta-button confirm-button">
                     Edit
                 </button>
@@ -384,11 +384,11 @@ function WalletDashboard(props: {
 
         if (!props.openDeed) return;
 
-        if (inputValue >= 2) {
+        if (inputValue >= 0) {
             setEditWithdrawalPeriodFormIsCorrect(true);
             /* interact with the program via rpc */
             await program.rpc
-                .editWithdrawalPeriod(new BN(inputValue * 24 * 3600), {
+                .editWithdrawalPeriod(new BN(inputValue * 3600), {
                     accounts: {
                         deed: props.openDeed.publicKey,
                         owner: props.openDeed.owner,
@@ -407,7 +407,7 @@ function WalletDashboard(props: {
 
     return (
         <div className="wallet-container">
-            {props.openDeed ? (
+            {props.openDeed && typeof props.openDeed !== 'undefined' ? (
                 <Container>
                     <Row>
                         <Col xs={6}>

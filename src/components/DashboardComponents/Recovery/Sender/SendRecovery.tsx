@@ -52,9 +52,10 @@ function SendRecovery(props: {
     const renderNoOpenDeedDescription = useMemo(
         () => (
             <div className="recovery-item-background">
+                <div className="recovery-item">
                 <h3>No open deed.</h3>
                 <p className="hint">Please open a deed to add emergency addresses.
-                </p>
+                </p></div>
             </div>
         ),
         []

@@ -52,6 +52,8 @@
         "victory-pie": "^36.3.0"
     },
     "devDependencies": {
+        "@parcel/packager-raw-url": "^2.3.2",
+        "@parcel/transformer-webmanifest": "^2.3.2",
         "@types/eslint": "^8.2.2",
         "@types/eslint-plugin-prettier": "^3.1.0",
         "@types/jquery": "^3.5.14",

@@ -84,10 +84,11 @@ function SendEmergency(props: {
     const renderNoOpenDeedDescription = useMemo(
         () => (
             <div className="emergency-item-background">
+                <div className="emergency-item">
                 <h3>No open deed.</h3>
                 <p>
                     <div className="hint">Please open a deed to add emergency addresses.</div>
-                </p>
+                </p></div>
             </div>
         ),
         []
