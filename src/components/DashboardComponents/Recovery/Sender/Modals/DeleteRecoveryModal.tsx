@@ -28,9 +28,9 @@ function DeleteRecoveryModal(props: {
                 <div className="notariz-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="notariz-modal-header">
                         <h3 className="notariz-modal-title">Delete recovery address</h3>
-                        <div className="hint">
+                        <p><div className="hint">
                             You are about to delete this recovery address.
-                        </div>
+                        </div></p>
                     </div>
                     <div className="notariz-modal-body">
                         <button onClick={() => { props.deleteRecovery(); props.onClose() }} className="cta-button edit-button">

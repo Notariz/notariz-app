@@ -38,9 +38,6 @@ function ClaimEmergency(props: {
     const [showRedeemModal, setRedeemModalShow] = useState(false);
     const [showClaimModal, setClaimModalShow] = useState(false);
     const [selectedSender, setSelectedSender] = useState<Emergency | undefined>();
-    const [formIsCorrect, setFormIsCorrect] = useState(false);
-    const [senderExists, setSenderExists] = useState(false);
-    const [senderIsMentioned, setSenderIsMentioned] = useState(false);
 
     const wallet = useWallet();
     const { publicKey, sendTransaction } = wallet;
@@ -52,11 +49,6 @@ function ClaimEmergency(props: {
     const selectedEmergency = props.emergencySenderList?.filter(function (emergency) {
         if (!selectedSender) return;
         return emergency.owner === selectedSender?.owner;
-    });
-
-    const selectedUpstreamDeed = props.upstreamDeeds?.filter(function (deed) {
-        if (!selectedEmergency || !selectedSender) return;
-        return deed.owner === selectedEmergency[0].owner;
     });
 
     const claimRequest = async () => {
@@ -79,7 +71,7 @@ function ClaimEmergency(props: {
 
         const emergency = selectedEmergency[0];
 
-        await program.rpc.cancelEmergency({
+        await program.rpc.cancelClaimRequest({
             accounts: {
                 emergency: emergency.publicKey,
                 receiver: emergency.receiver,
