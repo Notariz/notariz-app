@@ -183,8 +183,6 @@ function Dashboard() {
 
         if (!upstreamDeeds) return;
 
-        console.log('Upstream deeds: ', upstreamDeeds);
-
         setUpstreamDeeds(upstreamDeeds);
     }, [emergencySenderList, fetchUpstreamDeed]);
 
@@ -428,7 +426,7 @@ function Dashboard() {
                         />
                     )}
                 </Tab>
-                <Tab eventKey="about" title="Why?" className="tab-content">
+                <Tab eventKey="about" title="How to" className="tab-content">
                     <About />
                 </Tab>
             </Tabs>

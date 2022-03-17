@@ -68,7 +68,7 @@ function ClaimEmergency(props: {
             accounts: {
                 emergency: emergency.publicKey,
                 receiver: emergency.receiver,
-            },
+            }
         });
 
         props.refreshEmergencySendersData();
@@ -83,7 +83,7 @@ function ClaimEmergency(props: {
             accounts: {
                 emergency: emergency.publicKey,
                 receiver: emergency.receiver,
-            },
+            }
         });
 
         props.refreshEmergencySendersData();
@@ -146,11 +146,6 @@ function ClaimEmergency(props: {
                                                       onClick={() => {
                                                           setClaimModalShow(true);
                                                           setSelectedSender(value);
-                                                          props.upstreamDeeds &&
-                                                              console.log(
-                                                                  value.claimedTimestamp.toString(),
-                                                                  props.upstreamDeeds[index].lastSeen.toString()
-                                                              );
                                                       }}
                                                   >
                                                       Claimed

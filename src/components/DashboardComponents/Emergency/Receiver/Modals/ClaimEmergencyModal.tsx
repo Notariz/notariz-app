@@ -42,7 +42,21 @@ function ClaimEmergencyModal(props: {
                             : 'Only use in case of emergency.'}
                     </div></p>
                     <div className="notariz-modal-body">
+                    {props.selectedSender.length > 0 && props.selectedSender[0].claimedTimestamp > 0 ?
+
                         <button
+                            type="submit"
+                            onClick={() => {
+                                props.onClose();
+                                props.cancelClaimRequest();
+                            }}
+                            className="cta-button edit-button"
+                        >
+                                <div>
+                                    <Emojis symbol="❌" label="cross" /> {' Cancel'}
+                                </div>
+                                </button>
+                            : <button
                             type="submit"
                             onClick={() => {
                                 props.onClose();
@@ -50,16 +64,9 @@ function ClaimEmergencyModal(props: {
                             }}
                             className="cta-button edit-button"
                         >
-                            {props.selectedSender.length > 0 && props.selectedSender[0].claimedTimestamp > 0 ? (
-                                <div>
-                                    <Emojis symbol="❌" label="cross" /> {' Cancel'}
-                                </div>
-                            ) : (
                                 <div>
                                     <Emojis symbol="✔️" label="check" /> {' Claim'}
-                                </div>
-                            )}
-                        </button>
+                                </div></button>}
                     </div>
                 </div>
             </div>

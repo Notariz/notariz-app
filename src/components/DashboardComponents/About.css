@@ -4,6 +4,10 @@
     margin-left: 20%;
 }
 
+.about-container p {
+    margin-top: 20px;
+}
+
 .about-container h3 {
     font-size: 22px;
     margin-bottom: 30px;

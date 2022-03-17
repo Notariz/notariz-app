@@ -305,7 +305,6 @@ function SendEmergency(props: {
                                     <div>
                                         <Emojis symbol="⏳" label="hourglass" />
                                         <Countdown date={value.claimedTimestamp * 1000 + props.openDeed.withdrawalPeriod * 1000} />
-                                        {console.log(props.openDeed.withdrawalPeriod)}
                                     </div>
                                 </button>
                             ) : (

@@ -51,7 +51,7 @@ function Header(props: {dark: boolean}) {
                     <Nav className="me-auto">
                         
                     </Nav>
-                    <DisplayButton dark={dark} setToggle={setDisplayToggle} />
+                    {/*<DisplayButton dark={dark} setToggle={setDisplayToggle} />*/}
                     {publicKey && (
                         <button className="cta-button airdrop-button" onClick={claimAirdrop} disabled={airdropping}>
                             Airdrop

@@ -211,7 +211,7 @@
       "args": []
     },
     {
-      "name": "cancelEmergency",
+      "name": "cancelClaimRequest",
       "accounts": [
         {
           "name": "emergency",
@@ -231,6 +231,11 @@
       "accounts": [
         {
           "name": "emergency",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "deed",
           "isMut": true,
           "isSigner": false
         },

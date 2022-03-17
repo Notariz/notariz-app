@@ -269,7 +269,6 @@ function WalletDashboard(props: {
                         viewBoxSize={[100, 100]}
                     />
                 </div>
-                {console.log(distribution)}
                 <br></br> <br></br>
             </div>
         ),
@@ -303,7 +302,6 @@ function WalletDashboard(props: {
                 <h1>{props.openDeed ? toDate(props.openDeed.lastSeen) : 'NA'}</h1>
                 <button
                     onClick={() => {
-                        console.log(distribution);
                         keepAlive();
                     }}
                     className="cta-button confirm-button"
