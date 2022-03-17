@@ -1,4 +1,4 @@
-import NotarizLogo from '../../img/logo.png'
+import NotarizLogo from '../../img/logo.png';
 import './Common.css';
 import './About.css';
 
@@ -141,6 +141,26 @@ function About() {
         </div>
     );
 
+    const renderAlias = () => (
+        <div className="item-background">
+            <div className="item">
+                <h3>What is a nickname?</h3>
+                <p>
+                    <div className="hint">
+                        Deed owners can define name aliases for their emergency addresses to help them remember
+                        which belongs to whom. 
+                    </div>
+                </p>
+                <p>
+                    <div className="hint">
+                        Since aliases are mere front-end helpers, they are stored locally and they will not persist in another browser. 
+                        Therefore, deed owners should keep track of the nicknames they defined on their own.
+                    </div>
+                </p>
+            </div>
+        </div>
+    );
+
     return (
         <div className="about-container">
             {renderIntro()}
@@ -149,6 +169,7 @@ function About() {
             {renderWithdrawalPeriod()}
             {renderRecovery()}
             {renderKeepAlive()}
+            {renderAlias()}
         </div>
     );
 }
