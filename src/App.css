@@ -13,10 +13,10 @@
 :root {
   --main-bg-color: #1a202c;
   --modal-bg-color: #2e3646;
-  --main-item-color: #1e2430;
+  --main-item-color: #232835;
   --notariz-pink: #fd1d68;
   --notariz-light-pink: #f36d8e;
-  --notariz-purple: purple;
+  --notariz-purple: rgb(175, 20, 175);
   --notariz-orange: #fa8f03;
   --text-color: white;
   --text-color-transparent: #617496;

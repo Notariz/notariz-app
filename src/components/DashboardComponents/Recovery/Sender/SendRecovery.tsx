@@ -12,6 +12,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import AddRecoverySendingModal from './Modals/AddRecoverySendingModal';
 import DeleteRecoveryModal from './Modals/DeleteRecoveryModal';
 import './SendRecovery.css';
+import Emojis from '../../../utils/Emojis';
 
 const { SystemProgram, Keypair } = web3;
 
@@ -99,6 +100,15 @@ function SendRecovery(props: {
                                         '..' +
                                         value.receiver.toString().substring(value.receiver.toString().length - 5) +
                                         ' '}
+                                    <a
+                                    href={
+                                        'https://explorer.solana.com/address/' +
+                                        value.publicKey.toString() +
+                                        '?cluster=devnet'
+                                    }
+                                >
+                                    <Emojis symbol="📜" label="scroll" />
+                                </a>
                                 </p>
                                 <button
                                     onClick={() => (setSelectedReceiver(value.receiver), setDeleteModalShow(true))}

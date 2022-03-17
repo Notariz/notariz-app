@@ -9,6 +9,7 @@ import idl from '../../../../idl.json';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import ClaimRecoveryModal from './Modals/ClaimRecoveryModal';
 import '../Sender/SendRecovery.css';
+import Emojis from '../../../utils/Emojis';
 
 const { SystemProgram, Keypair } = web3;
 
@@ -35,7 +36,7 @@ function ClaimRecovery(props: {
 
     const selectedRecovery = props.recoverySendersList?.filter(function (recovery) {
         if (!selectedSender) return;
-        
+
         return recovery === selectedSender;
     });
 
@@ -77,6 +78,15 @@ function ClaimRecovery(props: {
                                         <i className="fa fa-arrow-right"></i>
                                     </span>
                                     {' Me'}
+                                    <a
+                                    href={
+                                        'https://explorer.solana.com/address/' +
+                                        value.publicKey.toString() +
+                                        '?cluster=devnet'
+                                    }
+                                >
+                                    <Emojis symbol="📜" label="scroll" />
+                                </a>
                                 </p>
                                 <button
                                     onClick={() => (setSelectedSender(value), setClaimModalShow(true))}

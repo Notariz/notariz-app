@@ -47,6 +47,7 @@ function WalletDashboard(props: {
     openDeed: Deed | undefined;
     getUserBalance: () => string;
     refreshDeedData: () => any;
+    refreshEmergenciesData: () => any;
     setOpenDeed: (deed: Deed | undefined) => void;
 }) {
     const wallet = useWallet();
@@ -66,47 +67,41 @@ function WalletDashboard(props: {
 
     const [distribution, setDistribution] = useState<Distribution[] | undefined>();
 
-    const colors = ['#F56998', '#F67CA4', '#F78FB0', '#F8A2BD', '#F9B5C9', '#FAC8D5'];
+    const colors = [
+        '#D8094E',
+        '#D91858',
+        '#DA2762',
+        '#DC366C',
+        '#DD4576',
+        '#DE5480',
+        '#DF638B',
+        '#E07295',
+        '#E49FB3',
+        '#E6BDC7',
+        '#E1819F',
+    ];
 
     const getColor = () => {
         return colors[Math.floor(Math.random() * (colors.length - 1))];
     };
 
-    const getDistribution = useCallback(() => {
+    const computeDistribution = useCallback(() => {
         if (!publicKey || !props.openDeed) return;
 
-        if (props.openDeed.leftToBeShared === 90) {
-            return setDistribution([
-                { title: publicKey.toString(), value: props.openDeed?.leftToBeShared, color: getColor() },
-            ]);
-        }
+        setDistribution([{ title: publicKey.toString(), value: props.openDeed.leftToBeShared, color: getColor() }]);
 
-        /*
-        if (!props.emergencyList || !distribution) return;
-
-        setDistribution([{ title: publicKey.toString(), value: props.openDeed?.leftToBeShared, color: getColor() }]);
-
-        props.emergencyList.map(
-            (emergency) =>
-                distribution.length > 0 &&
+        if (props.emergencyList && distribution)
+            return props.emergencyList.map((emergency) =>
                 setDistribution([
                     ...distribution,
                     { title: emergency.receiver.toString(), value: emergency.percentage, color: getColor() },
                 ])
-    
-        ); */
-    }, [publicKey, props.openDeed, props.emergencyList]);
+            );
+    }, [publicKey, props.openDeed, props.emergencyList, distribution, getColor]);
 
-    useEffect(() => getDistribution(), [props]);
-
-    const myData = useMemo(
-        () => [
-            { title: 'Dogs', value: 100, color: colors[Math.floor(Math.random() * (colors.length - 1))] },
-            { title: 'Cats', value: 50, color: colors[Math.floor(Math.random() * (colors.length - 1))] },
-            { title: 'Dragons', value: 15, color: colors[Math.floor(Math.random() * (colors.length - 1))] },
-        ],
-        []
-    );
+    useEffect(() => {
+        computeDistribution();
+    }, [publicKey, props.emergencyList]);
 
     function toDate(timestamp: number) {
         const date = new Date(timestamp * 1000);
@@ -185,7 +180,7 @@ function WalletDashboard(props: {
                 .then((res) => program.provider.connection.confirmTransaction(res))
                 .catch(console.log);
         },
-        [program.provider.connection, publicKey]
+        [program.provider.connection, publicKey, program.rpc]
     );
 
     const renderAccountName = useMemo(
@@ -193,6 +188,11 @@ function WalletDashboard(props: {
             <div>
                 <h3>Deed account</h3>
                 <p>
+                    {props.openDeed?.publicKey.toString().substring(0, 5) +
+                        '..' +
+                        props.openDeed?.publicKey
+                            .toString()
+                            .substring(props.openDeed?.publicKey.toString().length - 5)}{' '}
                     <a
                         href={
                             'https://explorer.solana.com/address/' +
@@ -200,13 +200,8 @@ function WalletDashboard(props: {
                             '?cluster=devnet'
                         }
                     >
-                        {props.openDeed?.publicKey.toString().substring(0, 5) +
-                            '..' +
-                            props.openDeed?.publicKey
-                                .toString()
-                                .substring(props.openDeed?.publicKey.toString().length - 5)}
-                    </a>{' '}
-                    <Emojis symbol="📜" label="scroll" />
+                        <Emojis symbol="📜" label="scroll" />
+                    </a>
                 </p>
                 <button
                     onClick={() => {
@@ -274,10 +269,11 @@ function WalletDashboard(props: {
                         viewBoxSize={[100, 100]}
                     />
                 </div>
+                {console.log(distribution)}
                 <br></br> <br></br>
             </div>
         ),
-        [myData]
+        [distribution]
     );
 
     const keepAlive = async () => {
@@ -305,7 +301,13 @@ function WalletDashboard(props: {
             <div className="wallet-item">
                 <h3>Last recorded on-chain activity</h3>
                 <h1>{props.openDeed ? toDate(props.openDeed.lastSeen) : 'NA'}</h1>
-                <button onClick={() => keepAlive()} className="cta-button confirm-button">
+                <button
+                    onClick={() => {
+                        console.log(distribution);
+                        keepAlive();
+                    }}
+                    className="cta-button confirm-button"
+                >
                     Keep alive
                 </button>
             </div>

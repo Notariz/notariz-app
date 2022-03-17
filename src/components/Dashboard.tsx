@@ -249,6 +249,7 @@ function Dashboard() {
         if (!emergencies) return;
 
         setEmergencyList(emergencies);
+        
     }, [fetchEmergencies]);
 
     useEffect(() => {
@@ -372,6 +373,7 @@ function Dashboard() {
                         openDeed={openDeed}
                         setOpenDeed={setOpenDeed}
                         emergencyList={emergencyList}
+                        refreshEmergenciesData={refreshEmergenciesData}
                     />
                 </Tab>
                 <Tab
