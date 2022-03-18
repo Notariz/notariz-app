@@ -19,3 +19,12 @@
     color: var(--notariz-pink);
     font-weight: bold;
 }
+
+.about-container button {
+    margin-top: 20px;
+}
+
+.about-container button:hover {
+    opacity: 1;
+    cursor:initial;
+}

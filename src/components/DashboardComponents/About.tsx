@@ -11,7 +11,7 @@ function About() {
                 <p className="hint">
                     Notariz is a <span>decentralized</span> application based on the Solana blockchain. Its purpose is
                     to solve one of the main issues with holding assets in a decentralized way: funds being lost forever
-                    when holders cannot access their wallets anymore.
+                    when holders can longer access their wallets.
                 </p>
                 <p className="hint">Thanks to Notariz, no held assets can be lost anymore.</p>
             </div>
@@ -30,8 +30,9 @@ function About() {
                 <p className="hint">
                     Each user can open up to one deed; emergency and recovery addresses do not need to open a deed to{' '}
                     <span>redeem</span> funds. To open a deed, head to the dashboard and click on the button.
+                    <br></br>
+                    <button className="cta-button confirm-button">Open a deed</button>
                 </p>
-                <button className="cta-button confirm-button">Open a deed</button>
                 <p className="hint">
                     Once their deed deleted, users will <span>recover</span> their deposit.
                 </p>
@@ -55,10 +56,12 @@ function About() {
                 </p>
                 <p className="hint">
                     To define a new emergency address, head to the emergencies tab and click on the button.
+                    <br></br>
+                    <button className="cta-button confirm-button">New emergency address</button>
                 </p>
-                <button className="cta-button confirm-button">New emergency address</button>
+                
                 <p className="hint">
-                    Once deed owners delete their deed, emergency address owners will obviously not be able to redeem
+                    Once deed owners have deleted their deed, emergency address owners will obviously not be able to redeem
                     anything.
                 </p>
             </div>
@@ -79,8 +82,9 @@ function About() {
                     Default withdrawal period is set to 48 hours but you can set it to anything you want. Choose it
                     wisely since your emergencies will be able to redeem their share whenever it has expired. To edit
                     your withdrawal period, head to the dashboard and click on the edit button.
+                    <br></br>
+                    <button className="cta-button confirm-button">Edit</button>
                 </p>
-                <button className="cta-button confirm-button">Edit</button>
                 <p className="hint">
                     Furthermore, Notariz keeps track of deed owners' <span>on-chain activity</span> to prevent any
                     abusive asset redemption.
@@ -100,8 +104,9 @@ function About() {
                 </p>
                 <p className="hint">
                     To define a new recovery address, head to the recoveries tab and click on the button.
+                    <br></br>
+                    <button className="cta-button confirm-button">New recovery address</button>
                 </p>
-                <button className="cta-button confirm-button">New recovery address</button>
                 <p className="hint">
                     They can be removed from deed owners' list at any time. Once deed owners delete their deed, they
                     will obviously not be able to redeem anything through their recovery address.
@@ -122,8 +127,10 @@ function About() {
                     Sending a keep alive signal through the dashboard allows users to <span>update</span> their last
                     on-chain activity timestamp without having to perform any other tx.
                 </p>
-                <p className="hint">To send a keep alive signal, head to the dashboard tab and click on the button.</p>
-                <button className="cta-button confirm-button">Keep alive</button>
+                <p className="hint">To send a keep alive signal, head to the dashboard tab and click on the button.
+                <br></br>
+                    <button className="cta-button confirm-button">Keep alive</button>
+                </p>
             </div>
         </div>
     );
@@ -156,8 +163,9 @@ function About() {
                     Think of switching your wallet to the devnet otherwise you won't be able to perform any
                     transactions. Therefore, think of airdropping you some devnet lamports by clicking on the airdrop
                     button nested in the app header.
+                    <br></br>
+                    <button className="cta-button airdrop-button">Airdrop</button>
                 </p>
-                <button className="cta-button airdrop-button">Airdrop</button>
             </div>
         </div>
     );
