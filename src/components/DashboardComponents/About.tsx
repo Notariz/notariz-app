@@ -96,16 +96,15 @@ function About() {
                 <p className="hint">
                     Notariz users can define <span>recovery</span> addresses. Recovery addresses supposedly belong to
                     the users who defined them. They are meant to recover <span>100%</span> of users' deposit in case,
-                    for instance, users lose their main wallet seed phrase. They can be removed from deed owners' list
-                    at any time.
+                    for instance, users lose their main wallet seed phrase. They are like recovery email addresses but with wallets!
                 </p>
                 <p className="hint">
                     To define a new recovery address, head to the recoveries tab and click on the button.
                 </p>
                 <button className="cta-button confirm-button">New recovery address</button>
                 <p className="hint">
-                    Once deed owners delete their deed, they will obviously not be able to redeem anything through their
-                    recovery address.
+                    They can be removed from deed owners' list at any time. Once deed owners delete their deed, they
+                    will obviously not be able to redeem anything through their recovery address.
                 </p>
             </div>
         </div>
