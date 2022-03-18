@@ -18,11 +18,13 @@ import ClaimEmergency from './DashboardComponents/Emergency/Receiver/ClaimEmerge
 import SendRecovery from './DashboardComponents/Recovery/Sender/SendRecovery';
 import ClaimRecovery from './DashboardComponents/Recovery/Receiver/ClaimRecovery';
 import ProfileButton from './utils/ProfileButton';
-import WalletDashboard from './DashboardComponents/Wallet/WalletDashboard';
+import DeedAccount from './DashboardComponents/Deed/Deed';
 import About from './DashboardComponents/About';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Dashboard.css';
 import './DashboardComponents/Common.css';
+import NotarizLogo from '../img/logo.png';
+
 import { useMemo } from 'react';
 import { resourceUsage } from 'process';
 
@@ -78,6 +80,7 @@ function Dashboard() {
         () => (
             <div className="not-connected-container">
                 <Container>
+                    <img height="100px" width="200px" alt="Notariz" src={NotarizLogo}></img>
                     <h3>Think of tomorrow.</h3>
                     <Row>
                         <Col></Col>
@@ -363,7 +366,7 @@ function Dashboard() {
         () => (
             <Tabs defaultActiveKey="wallet" id="tabs" className="mb-3">
                 <Tab eventKey="wallet" title="Dashboard" className="tab-content">
-                    <WalletDashboard
+                    <DeedAccount
                         getUserBalance={getUserBalance}
                         refreshDeedData={refreshDeedData}
                         userBalance={userBalance}
@@ -372,6 +375,8 @@ function Dashboard() {
                         setOpenDeed={setOpenDeed}
                         emergencyList={emergencyList}
                         refreshEmergenciesData={refreshEmergenciesData}
+                        recoveryList={recoveryList}
+                        refreshRecoveriesData={refreshRecoveriesData}
                     />
                 </Tab>
                 <Tab

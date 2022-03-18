@@ -22,9 +22,9 @@ import DeleteDeedModal from './Modals/DeleteDeedModal';
 import WithdrawModal from './Modals/WithdrawModal';
 import EditWithdrawalPeriodModal from './Modals/EditWithdrawalPeriod';
 import Emojis from '../../utils/Emojis';
-import './WalletDashboard.css';
+import './Deed.css';
 import '../Common.css';
-import { Emergency } from '../../../models';
+import { Emergency, Recovery } from '../../../models';
 
 const { SystemProgram, Keypair } = web3;
 
@@ -40,14 +40,16 @@ interface Data {
     color: string;
 }
 
-function WalletDashboard(props: {
+function DeedAccount(props: {
     emergencyList: Emergency[] | undefined;
+    recoveryList: Recovery[] | undefined;
+    refreshEmergenciesData: () => any;
+    refreshRecoveriesData: () => any;
     userBalance: string;
     deedBalance: number | undefined;
     openDeed: Deed | undefined;
     getUserBalance: () => string;
     refreshDeedData: () => any;
-    refreshEmergenciesData: () => any;
     setOpenDeed: (deed: Deed | undefined) => void;
 }) {
     const wallet = useWallet();
@@ -178,7 +180,7 @@ function WalletDashboard(props: {
     const renderAccountName = useMemo(
         () => (
             <div>
-                <h3>Deed account</h3>
+                <h3>Your deed account</h3>
                 <p>
                     {props.openDeed?.publicKey.toString().substring(0, 5) +
                         '..' +
@@ -197,6 +199,8 @@ function WalletDashboard(props: {
                 </p>
                 <button
                     onClick={() => {
+                        props.refreshEmergenciesData;
+                        props.refreshRecoveriesData;
                         setDeleteModalShow(true);
                     }}
                     className="cta-button delete-button"
@@ -454,6 +458,8 @@ function WalletDashboard(props: {
                     <DeleteDeedModal
                         onClose={() => setDeleteModalShow(false)}
                         show={showDeleteModal}
+                        emergencyList={props.emergencyList}
+                        recoveryList={props.recoveryList}
                         deleteDeed={() => deleteDeed(props.openDeed)}
                     />
                 </Container>
@@ -464,4 +470,4 @@ function WalletDashboard(props: {
     );
 }
 
-export default WalletDashboard;
+export default DeedAccount;

@@ -25,7 +25,7 @@
 }
 
 .not-connected-container {
-    margin-top: 10vh;
+    margin-top: 7vh;
 }
 
 .not-connected-container p {
@@ -49,6 +49,10 @@ h3 {
     background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 7vh;
+}
+
+.not-connected-container h3 {
+    margin-top: 7vh;
 }
 
 .not-connected-container, .dashboard-container span {

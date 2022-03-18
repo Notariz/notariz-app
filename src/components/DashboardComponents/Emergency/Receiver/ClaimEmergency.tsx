@@ -186,8 +186,8 @@ function ClaimEmergency(props: {
                                                       <Emojis symbol="⏳" label="hourglass" />
                                                       {props.upstreamDeeds.length > 0 &&
                                                           ' ' +
-                                                              props.upstreamDeeds[index].withdrawalPeriod / 3600 / 24 +
-                                                              ' days'}
+                                                              props.upstreamDeeds[index].withdrawalPeriod / 3600 +
+                                                              ' hours'}
                                                   </button>
                                               </div>
                                           ) : null}
