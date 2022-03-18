@@ -32,7 +32,7 @@ function WithdrawModal(props: {
         setInputValue(parseFloat(value));
     };
 
-    const renderDeedBalance = useMemo(() => (<div><h3 className="notariz-modal-title">{'Deed balance'}</h3><p className='hint'>{props.deedBalance + ' SOL'}</p></div>), [props.deedBalance])
+    const renderDeedBalance = useMemo(() => (<div><h3 className="notariz-modal-title">{'Withdraw from deed account'}</h3><p className='hint'>{'Deed balance: ' + props.deedBalance + ' SOL'}</p></div>), [props.deedBalance])
 
     return (
         <CSSTransition in={props.show} unmountOnExit timeout={{ enter: 0, exit: 300 }}>
@@ -40,7 +40,9 @@ function WithdrawModal(props: {
                 <div className="notariz-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="notariz-modal-header">
                         {renderDeedBalance}
-                        <div className='hint'>Think of keeping some lamports on your deed account to keep it alive; the Solana blockchain will delete it otherwise.</div>
+                        {inputValue === props.deedBalance && <p className='hint'>Think of keeping some lamports on your deed account to keep it alive; the Solana blockchain will delete it otherwise.</p>}
+                        {inputValue > props.deedBalance && <p className='hint'>Unsufficient deed balance.</p>}
+
                     </div>
                     <div className="notariz-modal-body">
                         <form
@@ -69,10 +71,11 @@ function WithdrawModal(props: {
                                 type="submit"
                                 onClick={() => props.withdraw(inputValue)}
                                 className="cta-button confirm-button"
+                                disabled={inputValue >= props.deedBalance}
                             >
                                 Submit
                             </button>
-                            <button type="button" onClick={() => setInputValue(props.deedBalance)} className="cta-button edit-button">Max</button>
+                            <button type="button" onClick={() => setInputValue(props.deedBalance-0.001)} className="cta-button edit-button">Max</button>
                         </form>
                     </div>
                 </div>

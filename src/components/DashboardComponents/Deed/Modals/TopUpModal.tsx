@@ -78,12 +78,13 @@ function TopUpModal(props: {
                                 type="submit"
                                 onClick={() => props.topUp(inputValue)}
                                 className="cta-button confirm-button"
+                                disabled={inputValue >= parseFloat(props.userBalance)}
                             >
                                 Submit
                             </button>
                             <button
                                 type="button"
-                                onClick={() => setInputValue(parseFloat(props.userBalance))}
+                                onClick={() => setInputValue(parseFloat(props.userBalance)-0.001)}
                                 className="cta-button edit-button"
                             >
                                 Max

@@ -64,6 +64,8 @@ function DeedAccount(props: {
 
     const [showDeleteModal, setDeleteModalShow] = useState(false);
     const [showWithdrawModal, setWithdrawModalShow] = useState(false);
+    const [withdrawFormIsCorrect, setWithdrawFormIsCorrect] = useState(false);
+
     const [editWithdrawalPeriodModalShow, setEditWithdrawalPeriodModalShow] = useState(false);
     const [editWithdrawalPeriodFormIsCorrect, setEditWithdrawalPeriodFormIsCorrect] = useState(false);
 
@@ -331,7 +333,7 @@ function DeedAccount(props: {
 
         if (!props.openDeed) return;
 
-        if (inputValue > 0 && inputValue <= parseFloat(props.userBalance)) {
+        if (inputValue > 0 && inputValue < parseFloat(props.userBalance)) {
             setTopUpFormIsCorrect(true);
 
             if (publicKey) {
@@ -361,8 +363,8 @@ function DeedAccount(props: {
 
         if (!props.deedBalance) return;
 
-        if (inputValue > 0 && inputValue <= props.deedBalance) {
-            setTopUpFormIsCorrect(true);
+        if (inputValue > 0 && inputValue < props.deedBalance) {
+            setWithdrawFormIsCorrect(true);
 
             if (publicKey) {
                 await program.rpc
@@ -379,7 +381,7 @@ function DeedAccount(props: {
                 props.refreshDeedData();
             }
         } else {
-            setTopUpFormIsCorrect(false);
+            setWithdrawFormIsCorrect(false);
         }
     };
 
@@ -428,7 +430,7 @@ function DeedAccount(props: {
                                     <WithdrawModal
                                         show={showWithdrawModal}
                                         onClose={() => setWithdrawModalShow(false)}
-                                        formIsCorrect={topUpFormIsCorrect}
+                                        formIsCorrect={withdrawFormIsCorrect}
                                         withdraw={withdraw}
                                         deedBalance={props.deedBalance}
                                     />
