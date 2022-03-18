@@ -8,6 +8,8 @@ import '../../../Common.css';
 import { PublicKey } from '@solana/web3.js';
 import { web3 } from '@project-serum/anchor';
 
+let dummyAddress = web3.Keypair.generate();
+
 function AddRecoverySendingModal(props: {
     show: boolean;
     onClose: () => void;
@@ -22,7 +24,7 @@ function AddRecoverySendingModal(props: {
         publicKey: props.recoveryPk,
         upstreamDeed: props.openDeed.publicKey,
         owner: props.openDeed.owner,
-        receiver: web3.Keypair.generate().publicKey,
+        receiver: dummyAddress.publicKey,
     });
 
     const closeOnEscapeKeyDown = (e: any) => {
@@ -51,6 +53,7 @@ function AddRecoverySendingModal(props: {
                     <div className="notariz-modal-header">
                         <h3 className="notariz-modal-title">New receiving address</h3>
                     </div>
+                    {inputValue.receiver.toString() === dummyAddress.publicKey.toString() ? <p className='hint'>Replace default dummy address with your actual recovery's.</p>:null}
                     <div className="notariz-modal-body">
                         <form
                             onSubmit={(event) => {

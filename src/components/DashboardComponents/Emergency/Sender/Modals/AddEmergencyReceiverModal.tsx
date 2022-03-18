@@ -10,6 +10,8 @@ import Emojis from '../../../../utils/Emojis';
 
 import '../../../Common.css';
 
+const dummyAddress = web3.Keypair.generate();
+
 function AddEmergencyReceiverModal(props: {
     show: boolean;
     onClose: () => void;
@@ -20,11 +22,12 @@ function AddEmergencyReceiverModal(props: {
     openDeed: Deed;
 }) {
     const [isSubmitted, setIsSubmitted] = useState(false);
+
     const [inputValues, setInputValues] = useState<Emergency>({
         publicKey: props.emergencyPk,
         upstreamDeed: props.openDeed.publicKey,
         owner: props.openDeed.owner,
-        receiver: web3.Keypair.generate().publicKey,
+        receiver: dummyAddress.publicKey,
         percentage: 0,
         claimedTimestamp: 0,
     });
@@ -59,6 +62,7 @@ function AddEmergencyReceiverModal(props: {
                         <h3 className="notariz-modal-title">New receiving address</h3>
                         {renderLeftToBeShared}
                     </div>
+                    {inputValues.receiver.toString() === dummyAddress.publicKey.toString() ? <p className='hint'>Replace default dummy address with your actual emergency's.</p>:null}
                     <div className="notariz-modal-body">
                         <form
                             onSubmit={(event) => {
@@ -78,7 +82,6 @@ function AddEmergencyReceiverModal(props: {
                                           setIsSubmitted(false))
                                         : null;
                                 }
-                                /* Call program entry point here */
                             }}
                         >
                             {isSubmitted && props.emergencyIsAlreadyMentioned ? (
@@ -115,7 +118,7 @@ function AddEmergencyReceiverModal(props: {
                                     props.addEmergency(inputValues);
                                 }}
                                 className="cta-button edit-button"
-                                disabled={!inputValues.percentage || !inputValues.receiver}
+                                disabled={!inputValues.percentage || !inputValues.receiver || inputValues.receiver === dummyAddress.publicKey}
                             >
                                 <div>
                                     <Emojis symbol="✔️" label="check" /> {' Submit'}
