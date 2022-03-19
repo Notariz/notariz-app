@@ -11,6 +11,7 @@ function RedeemEmergencyModal(props: {
     onClose: () => void;
     redeem: () => void;
     selectedSender: Emergency[];
+    userBalance: string;
 }) {
     const closeOnEscapeKeyDown = (e: any) => {
         if ((e.charCode || e.keyCode) === 27) {
@@ -32,6 +33,9 @@ function RedeemEmergencyModal(props: {
                 <div className="notariz-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="notariz-modal-header">
                         <h3 className="notariz-modal-title">Redeem</h3>
+                        {parseFloat(props.userBalance) < 0.002 && (
+                        <p className="hint">Your balance is too low to confirm the transaction.</p>
+                    )}
                         <p className="hint">
                             {props.selectedSender[0] ? 'You are about to redeem ' +
                                 props.selectedSender[0].percentage +
@@ -45,6 +49,7 @@ function RedeemEmergencyModal(props: {
                                 props.onClose();
                                 props.redeem();
                             }}
+                            disabled={parseFloat(props.userBalance) < 0.002}
                             className="cta-button edit-button"
                         >
                             <div>

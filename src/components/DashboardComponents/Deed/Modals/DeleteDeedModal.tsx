@@ -10,6 +10,7 @@ function DeleteDeedModal(props: {
     show: boolean;
     onClose: () => void;
     deleteDeed: () => void;
+    userBalance: string;
 }) {
     const closeOnEscapeKeyDown = (e: any) => {
         if ((e.charCode || e.keyCode) === 27) {
@@ -31,7 +32,11 @@ function DeleteDeedModal(props: {
                 <div className="notariz-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="notariz-modal-header">
                         <h3 className="notariz-modal-title">Deed deletion</h3>
-                        {(props.emergencyList && props.emergencyList.length > 0) ||
+                        {parseFloat(props.userBalance) < 0.002 && (
+                        <p className="hint">Your balance is too low to confirm the transaction.</p>
+                    )}
+                    </div>
+                    {(props.emergencyList && props.emergencyList.length > 0) ||
                         (props.recoveryList && props.recoveryList.length > 0) ? (
                             <div>
                                 {props.recoveryList && props.recoveryList.length > 0 ? (
@@ -54,7 +59,6 @@ function DeleteDeedModal(props: {
                                 afterwards.
                             </p>
                         )}
-                    </div>
                     <div className="notariz-modal-body">
                         <button
                             onClick={() => {
@@ -64,7 +68,7 @@ function DeleteDeedModal(props: {
                             className="cta-button edit-button"
                             disabled={
                                 (props.emergencyList && props.emergencyList.length > 0) ||
-                                (props.recoveryList && props.recoveryList.length > 0)
+                                (props.recoveryList && props.recoveryList.length > 0) || parseFloat(props.userBalance) < 0.002
                             }
                         >
                             <Emojis symbol="🗑️" label="wastebasket" /> Delete

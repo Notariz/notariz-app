@@ -12,6 +12,7 @@ function ClaimEmergencyModal(props: {
     claimRequest: () => void;
     cancelClaimRequest: () => void;
     selectedSender: Emergency[];
+    userBalance: string;
 }) {
     const closeOnEscapeKeyDown = (e: any) => {
         if ((e.charCode || e.keyCode) === 27) {
@@ -34,6 +35,9 @@ function ClaimEmergencyModal(props: {
                     <div className="notariz-modal-header">
                         <span>
                             <h3 className="notariz-modal-title">Claim request</h3>
+                            {parseFloat(props.userBalance) < 0.002 && (
+                        <p className="hint">Your balance is too low to confirm the transaction.</p>
+                    )}
                         </span>
                     </div>
                     <p className="hint">
@@ -43,13 +47,13 @@ function ClaimEmergencyModal(props: {
                     </p>
                     <div className="notariz-modal-body">
                     {props.selectedSender.length > 0 && props.selectedSender[0].claimedTimestamp > 0 ?
-
                         <button
                             type="submit"
                             onClick={() => {
                                 props.onClose();
                                 props.cancelClaimRequest();
                             }}
+                            disabled={parseFloat(props.userBalance) < 0.002}
                             className="cta-button edit-button"
                         >
                                 <div>
@@ -62,6 +66,7 @@ function ClaimEmergencyModal(props: {
                                 props.onClose();
                                 props.claimRequest();
                             }}
+                            disabled={parseFloat(props.userBalance) < 0.002}
                             className="cta-button edit-button"
                         >
                                 <div>

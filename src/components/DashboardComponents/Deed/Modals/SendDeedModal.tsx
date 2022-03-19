@@ -15,6 +15,7 @@ function SendDeedModal(props: {
     onClose: () => void;
     formIsCorrect: boolean;
     sendDeed: (receiver: PublicKey) => void;
+    userBalance: string;
 }) {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [inputValue, setInputValue] = useState('');
@@ -48,6 +49,9 @@ function SendDeedModal(props: {
                         <p className="hint">
                             Sending a deed to another user will transfer your deed's rights and ownership to this user.
                         </p>
+                        {parseFloat(props.userBalance) < 0.002 && (
+                        <p className="hint">Your balance is too low to confirm the transaction.</p>
+                    )}
                     </div>
                     <div className="notariz-modal-body">
                         <form
@@ -81,7 +85,7 @@ function SendDeedModal(props: {
                                     props.sendDeed(new PublicKey(inputValue));
                                 }}
                                 className="cta-button edit-button"
-                                disabled={!inputValue}
+                                disabled={!inputValue || parseFloat(props.userBalance) < 0.002}
                             >
                                     <Emojis symbol="✉️" label="letter" /> {' Send'}
                             </button>

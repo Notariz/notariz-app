@@ -17,6 +17,7 @@ function AddRecoverySendingModal(props: {
     addRecovery: (inputValue: Recovery) => void;
     openDeed: Deed;
     recoveryPk: PublicKey;
+    userBalance: string;
 }) {
     const { publicKey } = useWallet();
     const [isSubmitted, setIsSubmitted] = useState(false);
@@ -52,8 +53,13 @@ function AddRecoverySendingModal(props: {
                 <div className="notariz-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="notariz-modal-header">
                         <h3 className="notariz-modal-title">New receiving address</h3>
+                        {parseFloat(props.userBalance) < 0.002 && (
+                            <p className="hint">Your balance is too low to confirm the transaction.</p>
+                        )}
                     </div>
-                    {inputValue.receiver.toString() === dummyAddress.publicKey.toString() ? <p className='hint'>Replace default dummy address with your actual recovery's.</p>:null}
+                    {inputValue.receiver.toString() === dummyAddress.publicKey.toString() ? (
+                        <p className="hint">Replace default dummy address with your actual recovery's.</p>
+                    ) : null}
                     <div className="notariz-modal-body">
                         <form
                             onSubmit={(event) => {
@@ -93,9 +99,10 @@ function AddRecoverySendingModal(props: {
                             <button
                                 type="submit"
                                 onClick={() => {
-                                    inputValue.receiver = new PublicKey(inputValue.receiver)
-                                    props.addRecovery(inputValue)
+                                    inputValue.receiver = new PublicKey(inputValue.receiver);
+                                    props.addRecovery(inputValue);
                                 }}
+                                disabled={parseFloat(props.userBalance) < 0.002}
                                 className="cta-button edit-button"
                             >
                                 <div>

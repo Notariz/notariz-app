@@ -433,6 +433,7 @@ function DeedAccount(props: {
                                         formIsCorrect={withdrawFormIsCorrect}
                                         withdraw={withdraw}
                                         deedBalance={props.deedBalance}
+                                        userBalance={props.userBalance}
                                     />
                                 </div>
                             ) : null}
@@ -444,6 +445,7 @@ function DeedAccount(props: {
                                 onClose={() => setEditWithdrawalPeriodModalShow(false)}
                                 formIsCorrect={editWithdrawalPeriodFormIsCorrect}
                                 editWithdrawalPeriod={editWithdrawalPeriod}
+                                userBalance={props.userBalance}
                             />
                         </Col>
                     </Row>
@@ -463,6 +465,7 @@ function DeedAccount(props: {
                         emergencyList={props.emergencyList}
                         recoveryList={props.recoveryList}
                         deleteDeed={() => deleteDeed(props.openDeed)}
+                        userBalance={props.userBalance}
                     />
                 </Container>
             ) : (

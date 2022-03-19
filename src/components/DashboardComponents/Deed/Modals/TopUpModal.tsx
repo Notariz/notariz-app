@@ -46,11 +46,15 @@ function TopUpModal(props: {
         <CSSTransition in={props.show} unmountOnExit timeout={{ enter: 0, exit: 300 }}>
             <div className={`notariz-modal ${props.show ? 'show' : ''}`} onClick={props.onClose}>
                 <div className="notariz-modal-content" onClick={(e) => e.stopPropagation()}>
-                    <div className="notariz-modal-header">
-                        {renderUserBalance}
-                        {parseFloat(props.userBalance) === inputValue && <p className="hint">Think of keeping some SOL left to pay for transactions.</p>}
-                        {parseFloat(props.userBalance) < inputValue && <p className="hint">Unsufficient balance.</p>}
-                    </div>
+                    <div className="notariz-modal-header">{renderUserBalance}</div>
+                    {parseFloat(props.userBalance) < 0.002 && (
+                        <p className="hint">Your balance is too low to confirm the transaction.</p>
+                    )}
+                    {parseFloat(props.userBalance) === inputValue && (
+                        <p className="hint">Think of keeping some SOL left to pay for transactions.</p>
+                    )}
+                    {parseFloat(props.userBalance) < inputValue && <p className="hint">Insufficient balance.</p>}
+                    
                     <div className="notariz-modal-body">
                         <form
                             onSubmit={(event) => {
@@ -78,13 +82,15 @@ function TopUpModal(props: {
                                 type="submit"
                                 onClick={() => props.topUp(inputValue)}
                                 className="cta-button confirm-button"
-                                disabled={inputValue >= parseFloat(props.userBalance)}
+                                disabled={
+                                    inputValue >= parseFloat(props.userBalance) || parseFloat(props.userBalance) < 0.002
+                                }
                             >
                                 Submit
                             </button>
                             <button
                                 type="button"
-                                onClick={() => setInputValue(parseFloat(props.userBalance)-0.001)}
+                                onClick={() => setInputValue(parseFloat(props.userBalance) - 0.001)}
                                 className="cta-button edit-button"
                             >
                                 Max

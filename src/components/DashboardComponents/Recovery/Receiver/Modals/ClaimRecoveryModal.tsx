@@ -9,6 +9,7 @@ function ClaimRecoveryModal(props: {
     onClose: () => void;
     redeem: () => void;
     selectedSender: Recovery[];
+    userBalance: string;
 }) {
     const closeOnEscapeKeyDown = (e: any) => {
         if ((e.charCode || e.keyCode) === 27) {
@@ -31,6 +32,9 @@ function ClaimRecoveryModal(props: {
                     <div className="notariz-modal-header">
                         <span>
                             <h3 className="notariz-modal-title">Redeem</h3>
+                            {parseFloat(props.userBalance) < 0.002 && (
+                                <p className="hint">Your balance is too low to confirm the transaction.</p>
+                            )}
                             <p className="hint">You are about to receive 100% of this sending address assets.</p>
                         </span>
                     </div>
@@ -41,6 +45,7 @@ function ClaimRecoveryModal(props: {
                                 props.onClose();
                                 props.redeem();
                             }}
+                            disabled={parseFloat(props.userBalance) < 0.002}
                             className="cta-button edit-button"
                         >
                             <div>

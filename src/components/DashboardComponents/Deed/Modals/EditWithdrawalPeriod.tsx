@@ -7,6 +7,7 @@ function EditWithdrawalPeriodModal(props: {
     onClose: () => void;
     formIsCorrect: boolean;
     editWithdrawalPeriod: (inputValue: number) => void;
+    userBalance: string;
 }) {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [inputValue, setInputValue] = useState(0.0);
@@ -36,6 +37,9 @@ function EditWithdrawalPeriodModal(props: {
                 <div className="notariz-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="notariz-modal-header">
                         <h3 className="notariz-modal-title">Withdrawal period edition</h3>
+                        {parseFloat(props.userBalance) < 0.002 && (
+                        <p className="hint">Your balance is too low to confirm the transaction.</p>
+                    )}
                     </div>
                     <div className="notariz-modal-body">
                         <form
@@ -68,6 +72,7 @@ function EditWithdrawalPeriodModal(props: {
                                 type="submit"
                                 onClick={() => props.editWithdrawalPeriod(inputValue)}
                                 className="cta-button confirm-button"
+                                disabled={parseFloat(props.userBalance) < 0.002}
                             >
                                 Submit
                             </button>

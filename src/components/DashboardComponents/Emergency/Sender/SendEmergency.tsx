@@ -37,6 +37,7 @@ function SendEmergency(props: {
     deedBalance: number | undefined;
     refreshDeedData: () => any;
     refreshEmergenciesData: () => any;
+    userBalance: string;
 }) {
     const wallet = useWallet();
     const { publicKey, sendTransaction } = wallet;
@@ -85,10 +86,11 @@ function SendEmergency(props: {
         () => (
             <div className="emergency-item-background">
                 <div className="emergency-item">
-                <h3>No open deed.</h3>
-                <p>
-                    <div className="hint">Please open a deed to add emergency addresses.</div>
-                </p></div>
+                    <h3>No open deed.</h3>
+                    <p>
+                        <div className="hint">Please open a deed to add emergency addresses.</div>
+                    </p>
+                </div>
             </div>
         ),
         []
@@ -158,7 +160,7 @@ function SendEmergency(props: {
                 if (inputValue.length <= 15) {
                     setFormIsCorrect(true);
                     newEmergencies.map((value) =>
-                        value.receiver === id ? setAliasList([...aliasList, { receiver: id, alias: inputValue }]) : null
+                        value.receiver === id ? setAliasList([{ receiver: id, alias: inputValue }]) : null
                     );
                 } else {
                     setFormIsCorrect(false);
@@ -270,7 +272,7 @@ function SendEmergency(props: {
                                         : null}
                                 </span>
                                 <i className="fa fa-arrow-right"></i>
-
+                                {' '}
                                 <span
                                     onClick={() => {
                                         setEditModalShow(true);
@@ -281,15 +283,20 @@ function SendEmergency(props: {
                                 >
                                     {aliasList.map((alias, index) => (
                                         <span key={index.toString()} className="receiver-name">
-                                            {alias.receiver === value.receiver && ' ' + alias.alias + ' '}
+                                            {alias.receiver === value.receiver && alias.alias + ' ('}
                                         </span>
                                     ))}
-                                    {' ' +
-                                        value.receiver.toString().substring(0, 5) +
+                                    {value.receiver.toString().substring(0, 5) +
                                         '..' +
-                                        value.receiver.toString().substring(value.receiver.toString().length - 5) +
-                                        ' '}
+                                        value.receiver.toString().substring(value.receiver.toString().length - 5)
+                                        }
                                 </span>
+                                {aliasList.map((alias, index) => (
+                                    <span key={index.toString()} className="receiver-name">
+                                        {alias.receiver === value.receiver && alias.alias.toString().length > 0 && ')'}
+                                    </span>
+                                ))}
+                                {' '}
                                 <a
                                     href={
                                         'https://explorer.solana.com/address/' +
@@ -365,12 +372,14 @@ function SendEmergency(props: {
                                 formIsCorrect={formIsCorrect}
                                 emergencyIsAlreadyMentioned={emergencyIsAlreadyMentioned}
                                 openDeed={props.openDeed}
+                                userBalance={props.userBalance}
                             />
                             <DeleteEmergencyReceiverModal
                                 onClose={() => setDeleteModalShow(false)}
                                 show={showDeleteModal}
                                 deleteEmergency={deleteEmergency}
                                 selectedField={selectedField}
+                                userBalance={props.userBalance}
                             />
                             <EditEmergencyReceiverModal
                                 onClose={() => {
@@ -381,6 +390,7 @@ function SendEmergency(props: {
                                 formIsCorrect={formIsCorrect}
                                 selectedField={selectedField}
                                 selectedEmergency={selectedEmergency}
+                                userBalance={props.userBalance}
                             />
                         </div>
                     ) : null}

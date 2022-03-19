@@ -7,6 +7,7 @@ function DeleteRecoveryModal(props: {
     show: boolean;
     onClose: () => void;
     deleteRecovery: () => void;
+    userBalance: string;
 }) {
     const closeOnEscapeKeyDown = (e: any) => {
         if ((e.charCode || e.keyCode) === 27) {
@@ -28,12 +29,20 @@ function DeleteRecoveryModal(props: {
                 <div className="notariz-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="notariz-modal-header">
                         <h3 className="notariz-modal-title">Delete recovery address</h3>
-                        <p className="hint">
-                            You are about to delete this recovery address.
-                        </p>
+                        {parseFloat(props.userBalance) < 0.002 && (
+                            <p className="hint">Your balance is too low to confirm the transaction.</p>
+                        )}
+                        <p className="hint">You are about to delete this recovery address.</p>
                     </div>
                     <div className="notariz-modal-body">
-                        <button onClick={() => { props.deleteRecovery(); props.onClose() }} className="cta-button edit-button">
+                        <button
+                            onClick={() => {
+                                props.deleteRecovery();
+                                props.onClose();
+                            }}
+                            disabled={parseFloat(props.userBalance) < 0.002}
+                            className="cta-button edit-button"
+                        >
                             <Emojis symbol="🗑️" label="wastebasket" /> Delete
                         </button>
                     </div>

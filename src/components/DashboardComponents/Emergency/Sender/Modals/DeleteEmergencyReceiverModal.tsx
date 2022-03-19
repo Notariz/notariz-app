@@ -8,6 +8,7 @@ function DeleteEmergencyReceiverModal(props: {
     onClose: () => void;
     selectedField: string;
     deleteEmergency: () => void;
+    userBalance: string;
 }) {
     const closeOnEscapeKeyDown = (e: any) => {
         if ((e.charCode || e.keyCode) === 27) {
@@ -29,12 +30,17 @@ function DeleteEmergencyReceiverModal(props: {
                 <div className="notariz-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="notariz-modal-header">
                         <h3 className="notariz-modal-title">Delete emergency</h3>
+                        {parseFloat(props.userBalance) < 0.002 && (
+                        <p className="hint">Your balance is too low to confirm the transaction.</p>
+                    )}
                         <p className="hint">
                             You are about to delete this emergency.
+                            
                         </p>
                     </div>
                     <div className="notariz-modal-body">
-                        <button onClick={() => { props.deleteEmergency(); props.onClose() }} className="cta-button edit-button">
+                        
+                        <button onClick={() => { props.deleteEmergency(); props.onClose() }} disabled={parseFloat(props.userBalance) < 0.002} className="cta-button edit-button">
                             <Emojis symbol="🗑️" label="wastebasket" /> Delete
                         </button>
                     </div>

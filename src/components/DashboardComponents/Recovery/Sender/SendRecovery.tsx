@@ -30,6 +30,7 @@ function SendRecovery(props: {
     refreshDeedData: () => any;
     refreshRecoveriesData: () => any;
     deedBalance: number | undefined;
+    userBalance: string;
 }) {
     const wallet = useWallet();
     const { publicKey, sendTransaction } = wallet;
@@ -216,11 +217,13 @@ function SendRecovery(props: {
                                 show={showAddModal}
                                 openDeed={props.openDeed}
                                 recoveryPk={recoveryKeypair.publicKey}
+                                userBalance={props.userBalance}
                             />
                             <DeleteRecoveryModal
                                 onClose={() => setDeleteModalShow(false)}
                                 show={showDeleteModal}
                                 deleteRecovery={deleteRecovery}
+                                userBalance={props.userBalance}
                             />
                         </div>
                     ) : null}

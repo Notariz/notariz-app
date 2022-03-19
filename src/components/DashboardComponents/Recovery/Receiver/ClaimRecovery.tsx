@@ -24,6 +24,7 @@ function ClaimRecovery(props: {
     setRecoverySendersList: (emergencies: Recovery[] | undefined) => void;
     refreshRecoverySendersData: () => any;
     upstreamDeeds: Deed[] | undefined;
+    userBalance: string;
 }) {
     const wallet = useWallet();
     const { publicKey, sendTransaction } = wallet;
@@ -129,6 +130,7 @@ function ClaimRecovery(props: {
                     selectedSender={props.recoverySendersList.filter((recovery) => {
                         return selectedSender === recovery;
                     })}
+                    userBalance={props.userBalance}
                 />
             )}
             <div className="recovery-list">

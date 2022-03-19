@@ -34,6 +34,7 @@ function ClaimEmergency(props: {
     setEmergencySenderList: (emergencies: Emergency[] | undefined) => void;
     refreshEmergencySendersData: () => any;
     upstreamDeeds: Deed[] | undefined;
+    userBalance: string;
 }) {
     const [showRedeemModal, setRedeemModalShow] = useState(false);
     const [showClaimModal, setClaimModalShow] = useState(false);
@@ -232,6 +233,7 @@ function ClaimEmergency(props: {
                         selectedSender={props.emergencySenderList.filter((emergency) => {
                             return selectedSender?.owner === emergency.owner;
                         })}
+                        userBalance={props.userBalance}
                     />
                     <RedeemEmergencyModal
                         onClose={() => setRedeemModalShow(false)}
@@ -240,6 +242,7 @@ function ClaimEmergency(props: {
                         selectedSender={props.emergencySenderList.filter((emergency) => {
                             return selectedSender?.owner === emergency.owner;
                         })}
+                        userBalance={props.userBalance}
                     />
                 </div>
             ) : (

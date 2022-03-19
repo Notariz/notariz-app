@@ -20,6 +20,7 @@ function AddEmergencyReceiverModal(props: {
     formIsCorrect: boolean;
     emergencyIsAlreadyMentioned: boolean;
     openDeed: Deed;
+    userBalance: string;
 }) {
     const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -52,7 +53,10 @@ function AddEmergencyReceiverModal(props: {
         setInputValues((prevState) => ({ ...prevState, [name]: value }));
     };
 
-    const renderLeftToBeShared = useMemo(() => (<p className='hint'>{props.openDeed.leftToBeShared + '% left to be shared'}</p>), [props.openDeed])
+    const renderLeftToBeShared = useMemo(
+        () => <p className="hint">{props.openDeed.leftToBeShared + '% left to be shared'}</p>,
+        [props.openDeed]
+    );
 
     return (
         <CSSTransition in={props.show} unmountOnExit timeout={{ enter: 0, exit: 300 }}>
@@ -60,9 +64,14 @@ function AddEmergencyReceiverModal(props: {
                 <div className="notariz-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="notariz-modal-header">
                         <h3 className="notariz-modal-title">New receiving address</h3>
+                        {parseFloat(props.userBalance) < 0.002 && (
+                            <p className="hint">Your balance is too low to confirm the transaction.</p>
+                        )}
                         {renderLeftToBeShared}
                     </div>
-                    {inputValues.receiver.toString() === dummyAddress.publicKey.toString() ? <p className='hint'>Replace default dummy address with your actual emergency's.</p>:null}
+                    {inputValues.receiver.toString() === dummyAddress.publicKey.toString() ? (
+                        <p className="hint">Replace default dummy address with your actual emergency's.</p>
+                    ) : null}
                     <div className="notariz-modal-body">
                         <form
                             onSubmit={(event) => {
@@ -114,11 +123,16 @@ function AddEmergencyReceiverModal(props: {
                             <button
                                 type="submit"
                                 onClick={() => {
-                                    inputValues.receiver = new PublicKey(inputValues.receiver)
+                                    inputValues.receiver = new PublicKey(inputValues.receiver);
                                     props.addEmergency(inputValues);
                                 }}
                                 className="cta-button edit-button"
-                                disabled={!inputValues.percentage || !inputValues.receiver || inputValues.receiver === dummyAddress.publicKey}
+                                disabled={
+                                    !inputValues.percentage ||
+                                    !inputValues.receiver ||
+                                    inputValues.receiver === dummyAddress.publicKey ||
+                                    parseFloat(props.userBalance) < 0.002
+                                }
                             >
                                 <div>
                                     <Emojis symbol="✔️" label="check" /> {' Submit'}

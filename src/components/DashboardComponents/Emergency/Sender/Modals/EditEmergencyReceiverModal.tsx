@@ -7,7 +7,6 @@ import { CSSTransition } from 'react-transition-group';
 import Emojis from '../../../../utils/Emojis';
 import '../../../Common.css';
 
-
 function EditEmergencyReceiverModal(props: {
     show: boolean;
     onClose: () => void;
@@ -15,6 +14,7 @@ function EditEmergencyReceiverModal(props: {
     selectedEmergency: Emergency[];
     formIsCorrect: boolean;
     editEmergency: (inputValue: string) => void;
+    userBalance: string;
 }) {
     const [inputValue, setInputValue] = useState('');
     const [isSubmitted, setIsSubmitted] = useState(false);
@@ -41,22 +41,31 @@ function EditEmergencyReceiverModal(props: {
                         {props.selectedField === 'alias' && (
                             <div>
                                 <h3 className="notariz-modal-title">Edit nickname</h3>
-                                <p className="hint">
-                                    Nicknames are stored locally in your browser, off-chain.
-                                </p>
+                                <p className="hint">Nicknames are stored locally in your browser, off-chain.</p>
                             </div>
                         )}
                         {props.selectedField === 'percentage' && (
                             <div>
                                 <h3 className="notariz-modal-title">Edit percentage</h3>
-                                <p className='hint'>{props.selectedEmergency.length > 0 ? ('Current percentage: ' + props.selectedEmergency[0].percentage + '%') : null}</p>
+                                {parseFloat(props.userBalance) < 0.002 && (
+                                    <p className="hint">Your balance is too low to confirm the transaction.</p>
+                                )}
+                                <p className="hint">
+                                    {props.selectedEmergency.length > 0
+                                        ? 'Current percentage: ' + props.selectedEmergency[0].percentage + '%'
+                                        : null}
+                                </p>
                             </div>
                         )}
                         {props.selectedField === 'cancel' && (
                             <div>
                                 <h3 className="notariz-modal-title">Claim request rejection</h3>
+                                {parseFloat(props.userBalance) < 0.002 && (
+                                    <p className="hint">Your balance is too low to confirm the transaction.</p>
+                                )}
                                 <div className="hint">
-                                    You are about to reject this claim request. This does not prevent this emergency address to make a new request afterwards.
+                                    You are about to reject this claim request. This does not prevent this emergency
+                                    address to make a new request afterwards.
                                 </div>
                             </div>
                         )}
@@ -77,17 +86,16 @@ function EditEmergencyReceiverModal(props: {
                                     {!props.formIsCorrect && isSubmitted ? (
                                         <div>
                                             <p className="hint">
-                                                Emergency address's alias should be 5-character long max.
+                                                Emergency address's alias should be 15-character long max.
                                             </p>
                                         </div>
                                     ) : null}
                                     <input
                                         name="alias"
                                         type="text"
-                                        placeholder={"Emergency address nickname"}
+                                        placeholder={'Emergency address nickname'}
                                         value={inputValue}
                                         onChange={(e) => setInputValue(e.target.value)}
-                                        required
                                     />
                                 </div>
                             )}
@@ -115,9 +123,17 @@ function EditEmergencyReceiverModal(props: {
                                 onClick={() => {
                                     props.editEmergency(inputValue);
                                 }}
+                                disabled={parseFloat(props.userBalance) < 0.002}
                                 className="cta-button edit-button"
                             >
-                                {props.selectedField === 'cancel' ? <div><Emojis symbol="❌" label="cross" />{' Reject'}</div> : 'Submit'}
+                                {props.selectedField === 'cancel' ? (
+                                    <div>
+                                        <Emojis symbol="❌" label="cross" />
+                                        {' Reject'}
+                                    </div>
+                                ) : (
+                                    'Submit'
+                                )}
                             </button>
                         </form>
                     </div>
