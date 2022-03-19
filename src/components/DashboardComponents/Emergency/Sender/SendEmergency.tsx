@@ -192,6 +192,7 @@ function SendEmergency(props: {
                 await program.rpc.rejectClaim({
                     accounts: {
                         emergency: selectedEmergency[0].publicKey,
+                        deed: selectedEmergency[0].upstreamDeed,
                         owner: provider.wallet.publicKey,
                     },
                 });
