@@ -25,6 +25,7 @@ function ClaimRecovery(props: {
     refreshRecoverySendersData: () => any;
     upstreamDeeds: Deed[] | undefined;
     userBalance: string;
+    getUserBalance: () => string;
 }) {
     const wallet = useWallet();
     const { publicKey, sendTransaction } = wallet;
@@ -51,7 +52,10 @@ function ClaimRecovery(props: {
             <div className="recovery-item-background">
                 <div className="recovery-item">
                     <h3>Addresses who defined you as a recovery will lie here.</h3>
-                    <p className="hint">As a recovery address, you may redeem 100% of what these addresses deposited in their deed account.</p>
+                    <p className="hint">
+                        As a recovery address, you may redeem 100% of what these addresses deposited in their deed
+                        account.
+                    </p>
                 </div>
             </div>
         ),
@@ -80,17 +84,21 @@ function ClaimRecovery(props: {
                                     </span>
                                     {' Me'}
                                     <a
-                                    href={
-                                        'https://explorer.solana.com/address/' +
-                                        value.publicKey.toString() +
-                                        '?cluster=devnet'
-                                    }
-                                >
-                                    <Emojis symbol="📜" label="scroll" />
-                                </a>
+                                        href={
+                                            'https://explorer.solana.com/address/' +
+                                            value.publicKey.toString() +
+                                            '?cluster=devnet'
+                                        }
+                                    >
+                                        <Emojis symbol="📜" label="scroll" />
+                                    </a>
                                 </p>
                                 <button
-                                    onClick={() => (setSelectedSender(value), setClaimModalShow(true))}
+                                    onClick={() => {
+                                        setSelectedSender(value);
+                                        setClaimModalShow(true);
+                                        props.getUserBalance();
+                                    }}
                                     className="cta-button status-button"
                                 >
                                     Redeem

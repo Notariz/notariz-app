@@ -38,6 +38,7 @@ function SendEmergency(props: {
     refreshDeedData: () => any;
     refreshEmergenciesData: () => any;
     userBalance: string;
+    getUserBalance: () => string;
 }) {
     const wallet = useWallet();
     const { publicKey, sendTransaction } = wallet;
@@ -255,6 +256,7 @@ function SendEmergency(props: {
                                         setEditModalShow(true);
                                         setSelectedField('percentage');
                                         setSelectedReceiver(value.receiver);
+                                        props.getUserBalance();
                                     }}
                                     className="receiver-text"
                                 >
@@ -278,6 +280,7 @@ function SendEmergency(props: {
                                         setEditModalShow(true);
                                         setSelectedField('alias');
                                         setSelectedReceiver(value.receiver);
+                                        props.getUserBalance();
                                     }}
                                     className="receiver-text"
                                 >
@@ -313,6 +316,7 @@ function SendEmergency(props: {
                                     setEditModalShow(true);
                                     setSelectedField('cancel');
                                     setSelectedReceiver(value.receiver);
+                                    props.getUserBalance();
                                 }}
                                 className="cta-button status-button"
                                 disabled={value.claimedTimestamp == 0}
@@ -335,6 +339,7 @@ function SendEmergency(props: {
                                     onClick={() => {
                                         setDeleteModalShow(true);
                                         setSelectedReceiver(value.receiver);
+                                        props.getUserBalance();
                                     }}
                                     className="cta-button delete-button"
                                 >
@@ -357,6 +362,7 @@ function SendEmergency(props: {
                         onClick={() => {
                             setAddModalShow(true);
                             setEmergencyKeypair(web3.Keypair.generate());
+                            props.getUserBalance();
                         }}
                         className="cta-button confirm-button"
                     >

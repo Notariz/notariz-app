@@ -35,6 +35,7 @@ function ClaimEmergency(props: {
     refreshEmergencySendersData: () => any;
     upstreamDeeds: Deed[] | undefined;
     userBalance: string;
+    getUserBalance: () => string;
 }) {
     const [showRedeemModal, setRedeemModalShow] = useState(false);
     const [showClaimModal, setClaimModalShow] = useState(false);
@@ -61,7 +62,7 @@ function ClaimEmergency(props: {
             accounts: {
                 emergency: emergency.publicKey,
                 receiver: emergency.receiver,
-            }
+            },
         });
 
         props.refreshEmergencySendersData();
@@ -76,7 +77,7 @@ function ClaimEmergency(props: {
             accounts: {
                 emergency: emergency.publicKey,
                 receiver: emergency.receiver,
-            }
+            },
         });
 
         props.refreshEmergencySendersData();
@@ -139,6 +140,7 @@ function ClaimEmergency(props: {
                                                       onClick={() => {
                                                           setClaimModalShow(true);
                                                           setSelectedSender(value);
+                                                          props.getUserBalance();
                                                       }}
                                                   >
                                                       Claimed
@@ -159,9 +161,11 @@ function ClaimEmergency(props: {
                                               <div>
                                                   <button
                                                       className="cta-button confirm-button"
-                                                      onClick={() => (
-                                                          setRedeemModalShow(true), setSelectedSender(value)
-                                                      )}
+                                                      onClick={() => {
+                                                          setRedeemModalShow(true);
+                                                          setSelectedSender(value);
+                                                          props.getUserBalance();
+                                                      }}
                                                   >
                                                       Redeem
                                                   </button>
@@ -177,9 +181,11 @@ function ClaimEmergency(props: {
                                               <div>
                                                   <button
                                                       className="cta-button status-button"
-                                                      onClick={() => (
-                                                          setClaimModalShow(true), setSelectedSender(value)
-                                                      )}
+                                                      onClick={() => {
+                                                          setClaimModalShow(true);
+                                                          setSelectedSender(value);
+                                                          props.getUserBalance();
+                                                      }}
                                                   >
                                                       Claim
                                                   </button>

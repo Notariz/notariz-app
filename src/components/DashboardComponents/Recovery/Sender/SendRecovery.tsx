@@ -31,6 +31,7 @@ function SendRecovery(props: {
     refreshRecoveriesData: () => any;
     deedBalance: number | undefined;
     userBalance: string;
+    getUserBalance: () => string;
 }) {
     const wallet = useWallet();
     const { publicKey, sendTransaction } = wallet;
@@ -112,7 +113,7 @@ function SendRecovery(props: {
                                 </a>
                                 </p>
                                 <button
-                                    onClick={() => (setSelectedReceiver(value.receiver), setDeleteModalShow(true))}
+                                    onClick={() => {setSelectedReceiver(value.receiver); setDeleteModalShow(true); props.getUserBalance();}}
                                     className="cta-button delete-button"
                                 >
                                     Delete
@@ -201,6 +202,7 @@ function SendRecovery(props: {
                         onClick={() => {
                             setRecoveryKeypair(web3.Keypair.generate());
                             setAddModalShow(true);
+                            props.getUserBalance();
                         }}
                         className="cta-button confirm-button"
                     >

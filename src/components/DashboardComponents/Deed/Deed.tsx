@@ -152,7 +152,13 @@ function DeedAccount(props: {
                     <div className="hint">It looks like you do not have any open deed.</div>
                     <div className="hint"> Deeds keep track of your interactions with Notariz.</div>
                 </p>
-                <button onClick={() => createDeed()} className="cta-button confirm-button">
+                <button
+                    onClick={() => {
+                        createDeed();
+                        props.getUserBalance();
+                    }}
+                    className="cta-button confirm-button"
+                >
                     Open a deed
                 </button>
             </div>
@@ -203,6 +209,7 @@ function DeedAccount(props: {
                     onClick={() => {
                         props.refreshEmergenciesData;
                         props.refreshRecoveriesData;
+                        props.getUserBalance();
                         setDeleteModalShow(true);
                     }}
                     className="cta-button delete-button"
@@ -231,7 +238,7 @@ function DeedAccount(props: {
                 <button
                     onClick={() => {
                         setWithdrawModalShow(true);
-                        props.deedBalance;
+                        props.getUserBalance();
                     }}
                     className="cta-button delete-button"
                 >
@@ -252,7 +259,13 @@ function DeedAccount(props: {
                           (fromSecondsToHours(props.openDeed.withdrawalPeriod) > 1 ? ' hours' : ' hour')
                         : 'Unknown'}
                 </h1>
-                <button onClick={() => setEditWithdrawalPeriodModalShow(true)} className="cta-button confirm-button">
+                <button
+                    onClick={() => {
+                        setEditWithdrawalPeriodModalShow(true);
+                        props.getUserBalance();
+                    }}
+                    className="cta-button confirm-button"
+                >
                     Edit
                 </button>
             </div>
@@ -308,6 +321,7 @@ function DeedAccount(props: {
                 <button
                     onClick={() => {
                         keepAlive();
+                        props.getUserBalance();
                     }}
                     className="cta-button confirm-button"
                 >
