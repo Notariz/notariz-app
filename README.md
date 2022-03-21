@@ -18,3 +18,7 @@ Notariz should allow its users to stake their deposits. Implementing this featur
 ## Vesting
 
 Notariz should allow its users to split their emergency transfers across time, with a fixed number of payments for each user.
+
+## SPL tokens compliance
+
+Notariz should its users to send every kind of SPL tokens, not solely native SOL.
