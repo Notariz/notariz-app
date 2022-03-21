@@ -29,4 +29,4 @@ Notariz should allow its users to send every kind of SPL tokens, not solely nati
 
 ### Wallet browser extension
 
-Notariz should allow its users to define their emergency and recovery lists directly through a dedicated wallet extension.
+Notariz should allow its users to define their lists and interact with their deed accounts directly through a dedicated wallet extension.
