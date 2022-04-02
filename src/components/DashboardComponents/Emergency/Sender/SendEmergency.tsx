@@ -200,6 +200,28 @@ function SendEmergency(props: {
                     setFormIsCorrect(false);
                 }
                 break;
+            case 'payments':
+                if (inputValue.numberOfPayments > 0 && inputValue.timeBetweenPayments >= 0) {
+                    setFormIsCorrect(true);
+
+                    await program.rpc.editPayments(new BN(inputValue.timeBetweenPayments * 3600 * 24), inputValue.numberOfPayments, {
+                        accounts: {
+                            emergency: selectedEmergency[0].publicKey,
+                            deed: props.openDeed.publicKey,
+                            owner: provider.wallet.publicKey,
+                        },
+                    });
+
+                    props.refreshEmergenciesData();
+
+                    newEmergencies.map((value) =>
+                        value.receiver === id ? (value.numberOfPayments = inputValue.numberOfPayments, value.timeBetweenPayments = inputValue.timeBetweenPayments) : (value.numberOfPayments, value.timeBetweenPayments)
+                    );
+                    props.setEmergencyList(newEmergencies);
+                } else {
+                    setFormIsCorrect(false);
+                }
+                break;
             case 'cancel':
                 setFormIsCorrect(true);
 
@@ -320,7 +342,8 @@ function SendEmergency(props: {
                             </p>
                             <button
                                 onClick={() => {
-                                    setDeleteModalShow(true);
+                                    setEditModalShow(true);
+                                    setSelectedField('payments');
                                     setSelectedReceiver(value.receiver);
                                     props.getUserBalance();
                                 }}

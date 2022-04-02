@@ -158,8 +158,7 @@ function ClaimEmergency(props: {
                                                   />
                                               </button>
                                           ) : (
-                                              value.numberOfPayments !== value.paymentsLeft &&
-                                              value.redeemTimestamp > 0 &&
+                                                value.redeemTimestamp > 0 &&
                                               Date.now() <
                                                   value.redeemTimestamp * 1000 + value.timeBetweenPayments * 1000 && (
                                                   <button
