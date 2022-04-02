@@ -29,8 +29,12 @@ function AddEmergencyReceiverModal(props: {
         upstreamDeed: props.openDeed.publicKey,
         owner: props.openDeed.owner,
         receiver: dummyAddress.publicKey,
-        percentage: 0,
         claimedTimestamp: 0,
+        redeemTimestamp: 0,
+        timeBetweenPayments: 0,
+        percentage: 0,
+        numberOfPayments: 0,
+        paymentsLeft: 1,
     });
 
     const closeOnEscapeKeyDown = (e: any) => {
@@ -67,11 +71,11 @@ function AddEmergencyReceiverModal(props: {
                         {parseFloat(props.userBalance) < 0.002 && (
                             <p className="hint">Your balance is too low to confirm the transaction.</p>
                         )}
+                        {inputValues.numberOfPayments < 1 && (
+                            <p className="hint">The total number of payments should be greater than 0.</p>
+                        )}
                         {renderLeftToBeShared}
                     </div>
-                    {inputValues.receiver.toString() === dummyAddress.publicKey.toString() ? (
-                        <p className="hint">Replace default dummy address with your actual emergency's.</p>
-                    ) : null}
                     <div className="notariz-modal-body">
                         <form
                             onSubmit={(event) => {
@@ -84,8 +88,12 @@ function AddEmergencyReceiverModal(props: {
                                               upstreamDeed: props.openDeed.publicKey,
                                               owner: props.openDeed.owner,
                                               receiver: inputValues.receiver,
-                                              percentage: inputValues.percentage,
                                               claimedTimestamp: 0,
+                                              redeemTimestamp: 0,
+                                              timeBetweenPayments: inputValues.timeBetweenPayments,
+                                              percentage: inputValues.percentage,
+                                              numberOfPayments: inputValues.numberOfPayments,
+                                              paymentsLeft: inputValues.paymentsLeft
                                           }),
                                           props.onClose(),
                                           setIsSubmitted(false))
@@ -105,7 +113,7 @@ function AddEmergencyReceiverModal(props: {
                                 name="receiver"
                                 type="text"
                                 placeholder="Your emergency's public address"
-                                value={inputValues.receiver.toString()}
+                                value={inputValues.receiver.toString() === dummyAddress.publicKey.toString() ? "" : inputValues.receiver.toString()}
                                 onChange={handleInputChange}
                                 required
                             />
@@ -120,10 +128,28 @@ function AddEmergencyReceiverModal(props: {
                                 onChange={handleInputChange}
                                 required
                             />
+                            <input
+                                name="numberOfPayments"
+                                type="number"
+                                placeholder="Total number of payments"
+                                value={inputValues.numberOfPayments === 0 ? undefined : inputValues.numberOfPayments}
+                                onChange={handleInputChange}
+                                required
+                            />
+                            {inputValues.numberOfPayments > 1 &&
+                            <input
+                                name="timeBetweenPayments"
+                                type="number"
+                                placeholder="Delay between each payment (in days)"
+                                value={inputValues.timeBetweenPayments === 0 ? undefined : inputValues.timeBetweenPayments}
+                                onChange={handleInputChange}
+                                required
+                            />}
                             <button
                                 type="submit"
                                 onClick={() => {
                                     inputValues.receiver = new PublicKey(inputValues.receiver);
+                                    inputValues.paymentsLeft = inputValues.numberOfPayments;
                                     props.addEmergency(inputValues);
                                 }}
                                 className="cta-button edit-button"
@@ -131,6 +157,8 @@ function AddEmergencyReceiverModal(props: {
                                     !inputValues.percentage ||
                                     !inputValues.receiver ||
                                     inputValues.receiver === dummyAddress.publicKey ||
+                                    inputValues.numberOfPayments < 1 ||
+                                    inputValues.timeBetweenPayments < 0 ||
                                     parseFloat(props.userBalance) < 0.002
                                 }
                             >

@@ -398,6 +398,8 @@ function Dashboard() {
                             refreshEmergenciesData={refreshEmergenciesData}
                             openDeed={openDeed}
                             setOpenDeed={setOpenDeed}
+                            userBalance={userBalance}
+                            getUserBalance={getUserBalance}
                         />
                     )) || (
                         <ClaimEmergency
@@ -407,6 +409,8 @@ function Dashboard() {
                             setEmergencySenderList={setEmergencySenderList}
                             refreshEmergencySendersData={refreshEmergencySendersData}
                             upstreamDeeds={upstreamDeeds}
+                            userBalance={userBalance}
+                            getUserBalance={getUserBalance}
                         />
                     )}
                 </Tab>
@@ -421,6 +425,8 @@ function Dashboard() {
                             deedBalance={deedBalance}
                             recoveryList={recoveryList}
                             setRecoveryList={setRecoveryList}
+                            userBalance={userBalance}
+                            getUserBalance={getUserBalance}
                         />
                     )) || (
                         <ClaimRecovery
@@ -428,6 +434,8 @@ function Dashboard() {
                             recoverySendersList={recoverySenderList}
                             setRecoverySendersList={setRecoverySenderList}
                             upstreamDeeds={upstreamDeeds}
+                            userBalance={userBalance}
+                            getUserBalance={getUserBalance}
                         />
                     )}
                 </Tab>

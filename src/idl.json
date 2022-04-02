@@ -139,6 +139,14 @@
         {
           "name": "percentage",
           "type": "u8"
+        },
+        {
+          "name": "numberOfPayments",
+          "type": "u8"
+        },
+        {
+          "name": "timeBetweenPayments",
+          "type": "i64"
         }
       ]
     },
@@ -164,6 +172,36 @@
       "args": [
         {
           "name": "newPercentage",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "editPayments",
+      "accounts": [
+        {
+          "name": "emergency",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "deed",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "timeBetweenPayments",
+          "type": "i64"
+        },
+        {
+          "name": "numberOfPayments",
           "type": "u8"
         }
       ]
@@ -420,12 +458,28 @@
             "type": "publicKey"
           },
           {
+            "name": "claimedTimestamp",
+            "type": "i64"
+          },
+          {
+            "name": "redeemTimestamp",
+            "type": "i64"
+          },
+          {
+            "name": "timeBetweenPayments",
+            "type": "i64"
+          },
+          {
             "name": "percentage",
             "type": "u8"
           },
           {
-            "name": "claimedTimestamp",
-            "type": "i64"
+            "name": "numberOfPayments",
+            "type": "u8"
+          },
+          {
+            "name": "paymentsLeft",
+            "type": "u8"
           }
         ]
       }
@@ -459,28 +513,33 @@
     },
     {
       "code": 6001,
-      "name": "DeedWithdrawalTimeout",
-      "msg": "You must wait longer before claiming."
+      "name": "ClaimNeededToRedeemError",
+      "msg": "This emergency transfer has yet to be claimed."
     },
     {
       "code": 6002,
-      "name": "EmergencyAlreadyClaimed",
-      "msg": "This emergency transfer has already been claimed.."
+      "name": "WithdrawalPeriodError",
+      "msg": "This emergency transfer cannot be executed before the withdrawal period has expired."
     },
     {
       "code": 6003,
-      "name": "ClaimNeededToRedeem",
-      "msg": "This emergency has yet to be claimed."
+      "name": "TimeBetweenPaymentsError",
+      "msg": "This emergency transfer cannot be executed before the time between payments has passed."
     },
     {
       "code": 6004,
-      "name": "RedeemTimestampError",
-      "msg": "This emergency cannot be redeemed yet."
+      "name": "EmergencyEditError",
+      "msg": "This emergency transfer cannot be edited because the redeem timestamp is greater than zero."
     },
     {
       "code": 6005,
       "name": "PercentageError",
       "msg": "Percentage attribution is not compatible with the current deed distribution."
+    },
+    {
+      "code": 6006,
+      "name": "NegativeTimestampError",
+      "msg": "The input timestamp cannot be negative."
     }
   ],
   "metadata": {

@@ -31,7 +31,7 @@ function SendRecovery(props: {
     refreshRecoveriesData: () => any;
     deedBalance: number | undefined;
     userBalance: string;
-    getUserBalance: () => string;
+    getUserBalance: () => string | undefined;
 }) {
     const wallet = useWallet();
     const { publicKey, sendTransaction } = wallet;

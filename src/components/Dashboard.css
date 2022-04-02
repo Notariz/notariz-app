@@ -100,6 +100,8 @@ h3 {
 
 .dashboard-container .nav-tabs {
     border-bottom: 1px solid var(--main-bg-color);
+    top: 0;
+    position: sticky;
 }
 
 .dashboard-container .nav-link.active {

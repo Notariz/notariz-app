@@ -5,33 +5,25 @@ export class Emergency {
     public upstreamDeed: PublicKey;
     public owner: PublicKey;
     public receiver: PublicKey; 
-    public percentage: number;
     public claimedTimestamp: number;
+    public redeemTimestamp: number;
+    public timeBetweenPayments: number;
+    public percentage: number;
+    public numberOfPayments: number;
+    public paymentsLeft: number;
 
     constructor (publicKey: PublicKey, accountData: any) {
         this.publicKey = publicKey
         this.upstreamDeed = accountData.upstreamDeed
         this.owner = accountData.owner
         this.receiver = accountData.receiver
-        this.percentage = accountData.percentage
         this.claimedTimestamp = accountData.claimedTimestamp
+        this.redeemTimestamp = accountData.redeemTimestamp
+        this.timeBetweenPayments = accountData.timeBetweenPayments
+        this.percentage = accountData.percentage
+        this.numberOfPayments = accountData.numberOfPayments
+        this.paymentsLeft = accountData.paymentsLeft
+
     }
-
-    /*
-
-    get key() {
-        return this.publicKey.toBase58()
-    }
-
-    get owner_display() {
-        const owner = this.owner.toBase58()
-        return owner.slice(0,4) + '..' + owner.slice(-4)
-    }
-
-    get receiver_display() {
-        const receiver = this.receiver.toBase58()
-        return receiver.slice(0,4) + '..' + receiver.slice(-4)
-    }
-
-    */
+    
 }

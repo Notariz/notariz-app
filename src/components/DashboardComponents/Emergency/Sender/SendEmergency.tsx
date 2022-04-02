@@ -38,7 +38,7 @@ function SendEmergency(props: {
     refreshDeedData: () => any;
     refreshEmergenciesData: () => any;
     userBalance: string;
-    getUserBalance: () => string;
+    getUserBalance: () => string | undefined;
 }) {
     const wallet = useWallet();
     const { publicKey, sendTransaction } = wallet;
@@ -102,7 +102,12 @@ function SendEmergency(props: {
 
         if (!props.openDeed) return;
 
-        if (inputValues.percentage > 0 && inputValues.percentage <= props.openDeed.leftToBeShared) {
+        if (
+            inputValues.percentage > 0 &&
+            inputValues.percentage <= props.openDeed.leftToBeShared &&
+            inputValues.numberOfPayments > 0 &&
+            inputValues.timeBetweenPayments >= 0
+        ) {
             setFormIsCorrect(true);
 
             const emergency = props.emergencyList?.filter(function (value) {
@@ -112,15 +117,21 @@ function SendEmergency(props: {
             if (!emergency) return setEmergencyIsAlreadyMentioned(true);
 
             await program.rpc
-                .addEmergency(inputValues.receiver, inputValues.percentage, {
-                    accounts: {
-                        emergency: emergencyKeypair.publicKey,
-                        deed: props.openDeed.publicKey,
-                        owner: provider.wallet.publicKey,
-                        systemProgram: SystemProgram.programId,
-                    },
-                    signers: [emergencyKeypair],
-                })
+                .addEmergency(
+                    inputValues.receiver,
+                    inputValues.percentage,
+                    inputValues.numberOfPayments,
+                    new BN(inputValues.timeBetweenPayments * 3600 * 24),
+                    {
+                        accounts: {
+                            emergency: emergencyKeypair.publicKey,
+                            deed: props.openDeed.publicKey,
+                            owner: provider.wallet.publicKey,
+                            systemProgram: SystemProgram.programId,
+                        },
+                        signers: [emergencyKeypair],
+                    }
+                )
                 .then((res) => program.provider.connection.confirmTransaction(res))
                 .catch(console.log);
 
@@ -273,8 +284,7 @@ function SendEmergency(props: {
                                           ' SOL) '
                                         : null}
                                 </span>
-                                <i className="fa fa-arrow-right"></i>
-                                {' '}
+                                <i className="fa fa-arrow-right"></i>{' '}
                                 <span
                                     onClick={() => {
                                         setEditModalShow(true);
@@ -291,15 +301,13 @@ function SendEmergency(props: {
                                     ))}
                                     {value.receiver.toString().substring(0, 5) +
                                         '..' +
-                                        value.receiver.toString().substring(value.receiver.toString().length - 5)
-                                        }
+                                        value.receiver.toString().substring(value.receiver.toString().length - 5)}
                                 </span>
                                 {aliasList.map((alias, index) => (
                                     <span key={index.toString()} className="receiver-name">
                                         {alias.receiver === value.receiver && alias.alias.toString().length > 0 && ')'}
                                     </span>
-                                ))}
-                                {' '}
+                                ))}{' '}
                                 <a
                                     href={
                                         'https://explorer.solana.com/address/' +
@@ -310,29 +318,47 @@ function SendEmergency(props: {
                                     <Emojis symbol="📜" label="scroll" />
                                 </a>
                             </p>
-
                             <button
                                 onClick={() => {
-                                    setEditModalShow(true);
-                                    setSelectedField('cancel');
+                                    setDeleteModalShow(true);
                                     setSelectedReceiver(value.receiver);
                                     props.getUserBalance();
                                 }}
                                 className="cta-button status-button"
-                                disabled={value.claimedTimestamp == 0}
                             >
-                                {value.claimedTimestamp > 0 ? 'Claimed' : 'Unclaimed'}
+                                {value.paymentsLeft > 1
+                                    ? value.paymentsLeft + ' payments left'
+                                    : value.paymentsLeft + ' payment left'}
                             </button>
+
                             {value.claimedTimestamp > 0 && props.openDeed ? (
-                                <button className="cta-button delete-button">
-                                    <div>
-                                        <Emojis symbol="⏳" label="hourglass" />
-                                        <Countdown
-                                            date={
-                                                value.claimedTimestamp * 1000 + props.openDeed.withdrawalPeriod * 1000
-                                            }
-                                        />
-                                    </div>
+                                <button
+                                    className="cta-button delete-button"
+                                    onClick={() => {
+                                        setEditModalShow(true);
+                                        setSelectedField('cancel');
+                                        setSelectedReceiver(value.receiver);
+                                        props.getUserBalance();
+                                    }}
+                                >
+                                    {value.redeemTimestamp == 0 ? (
+                                        <div>
+                                            <Emojis symbol="⏳" label="hourglass" />
+                                            <Countdown
+                                                date={
+                                                    value.claimedTimestamp * 1000 +
+                                                    props.openDeed.withdrawalPeriod * 1000
+                                                }
+                                            />
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            <Emojis symbol="⏳" label="hourglass" />
+                                            <Countdown
+                                                date={value.redeemTimestamp * 1000 + value.timeBetweenPayments * 1000}
+                                            />
+                                        </div>
+                                    )}
                                 </button>
                             ) : (
                                 <button

@@ -60,7 +60,7 @@ function EditWithdrawalPeriodModal(props: {
                             </p>}
                             {inputValue < 24 && <p className="hint">{inputValue + ' hours is maybe a tad short for a withdrawal period.'}</p>}
                             <input
-                                name="balance"
+                                name="withdrawal"
                                 type="number"
                                 step="0.0001"
                                 placeholder="Withdrawal period (in hours)"

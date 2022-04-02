@@ -1,5 +1,6 @@
 .wallet-adapter-button {
     background: -webkit-linear-gradient(left, var(--notariz-pink), var(--notariz-light-pink));
+    border-radius: 10px !important;
 }
 
 span {

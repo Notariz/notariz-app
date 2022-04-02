@@ -48,7 +48,7 @@ function DeedAccount(props: {
     userBalance: string;
     deedBalance: number | undefined;
     openDeed: Deed | undefined;
-    getUserBalance: () => string;
+    getUserBalance: () => string | undefined;
     refreshDeedData: () => any;
     setOpenDeed: (deed: Deed | undefined) => void;
 }) {

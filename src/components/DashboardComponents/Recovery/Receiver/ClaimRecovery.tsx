@@ -25,7 +25,7 @@ function ClaimRecovery(props: {
     refreshRecoverySendersData: () => any;
     upstreamDeeds: Deed[] | undefined;
     userBalance: string;
-    getUserBalance: () => string;
+    getUserBalance: () => string | undefined;
 }) {
     const wallet = useWallet();
     const { publicKey, sendTransaction } = wallet;

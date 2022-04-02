@@ -27,6 +27,10 @@
     margin-bottom: 10px;
 }
 
+.claim-emergency-item button {
+    height: 64px;
+}
+
 .claim-emergency-item i {
     color: var(--notariz-pink);
 }
