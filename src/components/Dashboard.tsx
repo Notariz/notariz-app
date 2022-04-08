@@ -19,7 +19,6 @@ import SendRecovery from './DashboardComponents/Recovery/Sender/SendRecovery';
 import ClaimRecovery from './DashboardComponents/Recovery/Receiver/ClaimRecovery';
 import ProfileButton from './utils/ProfileButton';
 import DeedAccount from './DashboardComponents/Deed/Deed';
-import About from './DashboardComponents/About';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Dashboard.css';
 import './DashboardComponents/Common.css';
@@ -365,7 +364,7 @@ function Dashboard() {
     const renderWalletConnected = useMemo(
         () => (
             <Tabs defaultActiveKey="wallet" id="tabs" className="mb-3">
-                <Tab eventKey="wallet" title="Dashboard" className="tab-content">
+                <Tab eventKey="wallet" title="Deed" className="tab-content">
                     <DeedAccount
                         getUserBalance={getUserBalance}
                         refreshDeedData={refreshDeedData}
@@ -438,9 +437,6 @@ function Dashboard() {
                             getUserBalance={getUserBalance}
                         />
                     )}
-                </Tab>
-                <Tab eventKey="about" title="How to" className="tab-content">
-                    <About />
                 </Tab>
             </Tabs>
         ),

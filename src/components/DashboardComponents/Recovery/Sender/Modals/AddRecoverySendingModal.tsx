@@ -57,9 +57,6 @@ function AddRecoverySendingModal(props: {
                             <p className="hint">Your balance is too low to confirm the transaction.</p>
                         )}
                     </div>
-                    {inputValue.receiver.toString() === dummyAddress.publicKey.toString() ? (
-                        <p className="hint">Replace default dummy address with your actual recovery's.</p>
-                    ) : null}
                     <div className="notariz-modal-body">
                         <form
                             onSubmit={(event) => {
@@ -92,7 +89,7 @@ function AddRecoverySendingModal(props: {
                                 name="receiver"
                                 type="text"
                                 placeholder="Your receiving recovery address"
-                                value={inputValue.receiver.toString()}
+                                value={inputValue.receiver.toString() === dummyAddress.publicKey.toString() ? "" : inputValue.receiver.toString()}
                                 onChange={handleInputChange}
                                 required
                             />
@@ -102,7 +99,7 @@ function AddRecoverySendingModal(props: {
                                     inputValue.receiver = new PublicKey(inputValue.receiver);
                                     props.addRecovery(inputValue);
                                 }}
-                                disabled={parseFloat(props.userBalance) < 0.002}
+                                disabled={parseFloat(props.userBalance) < 0.002 || inputValue.receiver.toString() === dummyAddress.publicKey.toString() || inputValue.receiver.toString().length < 44}
                                 className="cta-button edit-button"
                             >
                                 <div>

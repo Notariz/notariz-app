@@ -4,12 +4,14 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { clusterApiUrl, Connection, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { useCallback, useState } from 'react';
 import { Container, Nav, Navbar, ToggleButton } from 'react-bootstrap';
+import { NavLink } from "react-router-dom";
+
 import AirdropModal from './AirdropModal';
-import NotarizLogo from '../img/logo.png'
+import NotarizLogo from '../img/logo.png';
 import './DashboardComponents/Common.css';
 import './Header.css';
 
-function Header(props: {dark: boolean}) {
+function Header(props: { dark: boolean }) {
     const { connection } = useConnection();
     const { publicKey } = useWallet();
     const [airdropping, setAirdropping] = useState(false);
@@ -30,13 +32,13 @@ function Header(props: {dark: boolean}) {
             .then((confirmation) => connection.confirmTransaction(confirmation, 'processed'))
             .catch(() => alert('Airdrop failed!'))
             .finally(() => {
-                 setAirdropping(false);
-                 setShow(false);
-                })
+                setAirdropping(false);
+                setShow(false);
+            });
     }, [publicKey, airdropping, connection]);
 
     const setDisplayToggle = () => {
-        setDark(!dark)
+        setDark(!dark);
     };
 
     return (
@@ -47,9 +49,15 @@ function Header(props: {dark: boolean}) {
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="me-auto">
-                        
-                    </Nav>
+                <Nav>
+                    <NavLink className="nav-link" to="/dashboard">
+                        App
+                    </NavLink>
+                    <NavLink className="nav-link" to="/about">
+                        About
+                    </NavLink>
+                </Nav>
+                    <Nav className="me-auto"></Nav>
                     {/*<DisplayButton dark={dark} setToggle={setDisplayToggle} />*/}
                     {publicKey && (
                         <button className="cta-button airdrop-button" onClick={claimAirdrop} disabled={airdropping}>
