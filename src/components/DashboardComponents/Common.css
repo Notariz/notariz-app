@@ -7,6 +7,10 @@ span {
     color: var(--notariz-pink);
 }
 
+.button-line {
+    display: inline-flex;
+}
+
 .cta-button span {
     color: var(--text-color) !important;
 }

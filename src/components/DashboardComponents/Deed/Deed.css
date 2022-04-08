@@ -13,6 +13,7 @@
 
 .wallet-container button {
     margin-top: 20px;
+    height: 64px;
 }
 
 .wallet-container a:hover {

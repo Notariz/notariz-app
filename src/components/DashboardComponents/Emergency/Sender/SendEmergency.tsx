@@ -204,18 +204,25 @@ function SendEmergency(props: {
                 if (inputValue.numberOfPayments > 0 && inputValue.timeBetweenPayments >= 0) {
                     setFormIsCorrect(true);
 
-                    await program.rpc.editPayments(new BN(inputValue.timeBetweenPayments * 3600 * 24), inputValue.numberOfPayments, {
-                        accounts: {
-                            emergency: selectedEmergency[0].publicKey,
-                            deed: props.openDeed.publicKey,
-                            owner: provider.wallet.publicKey,
-                        },
-                    });
+                    await program.rpc.editPayments(
+                        new BN(inputValue.timeBetweenPayments * 3600 * 24),
+                        inputValue.numberOfPayments,
+                        {
+                            accounts: {
+                                emergency: selectedEmergency[0].publicKey,
+                                deed: props.openDeed.publicKey,
+                                owner: provider.wallet.publicKey,
+                            },
+                        }
+                    );
 
                     props.refreshEmergenciesData();
 
                     newEmergencies.map((value) =>
-                        value.receiver === id ? (value.numberOfPayments = inputValue.numberOfPayments, value.timeBetweenPayments = inputValue.timeBetweenPayments) : (value.numberOfPayments, value.timeBetweenPayments)
+                        value.receiver === id
+                            ? ((value.numberOfPayments = inputValue.numberOfPayments),
+                              (value.timeBetweenPayments = inputValue.timeBetweenPayments))
+                            : (value.numberOfPayments, value.timeBetweenPayments)
                     );
                     props.setEmergencyList(newEmergencies);
                 } else {
@@ -340,61 +347,65 @@ function SendEmergency(props: {
                                     <Emojis symbol="📜" label="scroll" />
                                 </a>
                             </p>
-                            <button
-                                onClick={() => {
-                                    setEditModalShow(true);
-                                    setSelectedField('payments');
-                                    setSelectedReceiver(value.receiver);
-                                    props.getUserBalance();
-                                }}
-                                className="cta-button status-button"
-                            >
-                                {value.paymentsLeft > 1
-                                    ? value.paymentsLeft + ' payments left'
-                                    : value.paymentsLeft + ' payment left'}
-                            </button>
-
-                            {value.claimedTimestamp > 0 && props.openDeed ? (
+                            <div className="button-line">
                                 <button
-                                    className="cta-button delete-button"
                                     onClick={() => {
                                         setEditModalShow(true);
-                                        setSelectedField('cancel');
+                                        setSelectedField('payments');
                                         setSelectedReceiver(value.receiver);
                                         props.getUserBalance();
                                     }}
+                                    className="cta-button status-button"
                                 >
-                                    {value.redeemTimestamp == 0 ? (
-                                        <div>
-                                            <Emojis symbol="⏳" label="hourglass" />
-                                            <Countdown
-                                                date={
-                                                    value.claimedTimestamp * 1000 +
-                                                    props.openDeed.withdrawalPeriod * 1000
-                                                }
-                                            />
-                                        </div>
-                                    ) : (
-                                        <div>
-                                            <Emojis symbol="⏳" label="hourglass" />
-                                            <Countdown
-                                                date={value.redeemTimestamp * 1000 + value.timeBetweenPayments * 1000}
-                                            />
-                                        </div>
-                                    )}
+                                    {value.paymentsLeft > 1
+                                        ? value.paymentsLeft + ' payments left'
+                                        : value.paymentsLeft + ' payment left'}
                                 </button>
-                            ) : (
-                                <button
-                                    onClick={() => {
-                                        setDeleteModalShow(true);
-                                        setSelectedReceiver(value.receiver);
-                                        props.getUserBalance();
-                                    }}
-                                    className="cta-button delete-button"
-                                >
-                                    Delete
-                                </button>
-                            )}
+
+                                {value.claimedTimestamp > 0 && props.openDeed ? (
+                                    <button
+                                        className="cta-button delete-button"
+                                        onClick={() => {
+                                            setEditModalShow(true);
+                                            setSelectedField('cancel');
+                                            setSelectedReceiver(value.receiver);
+                                            props.getUserBalance();
+                                        }}
+                                    >
+                                        {value.redeemTimestamp == 0 ? (
+                                            <div>
+                                                <Emojis symbol="⏳" label="hourglass" />
+                                                <Countdown
+                                                    date={
+                                                        value.claimedTimestamp * 1000 +
+                                                        props.openDeed.withdrawalPeriod * 1000
+                                                    }
+                                                />
+                                            </div>
+                                        ) : (
+                                            <div>
+                                                <Emojis symbol="⏳" label="hourglass" />
+                                                <Countdown
+                                                    date={
+                                                        value.redeemTimestamp * 1000 + value.timeBetweenPayments * 1000
+                                                    }
+                                                />
+                                            </div>
+                                        )}
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={() => {
+                                            setDeleteModalShow(true);
+                                            setSelectedReceiver(value.receiver);
+                                            props.getUserBalance();
+                                        }}
+                                        className="cta-button delete-button"
+                                    >
+                                        Delete
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     </div>
                 ))}

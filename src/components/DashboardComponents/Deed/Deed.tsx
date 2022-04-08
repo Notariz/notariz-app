@@ -231,7 +231,7 @@ function DeedAccount(props: {
                         setTopUpModalShow(true);
                         props.getUserBalance();
                     }}
-                    className="cta-button confirm-button"
+                    className="cta-button airdrop-button"
                 >
                     Top up
                 </button>

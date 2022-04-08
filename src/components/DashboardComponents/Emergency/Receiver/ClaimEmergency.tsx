@@ -127,40 +127,22 @@ function ClaimEmergency(props: {
                                           <Emojis symbol="📜" label="scroll" />
                                       </a>
                                   </p>
-                                  <button className="cta-button status-button">
-                                      {value.paymentsLeft > 1
-                                          ? value.paymentsLeft + ' payments left'
-                                          : value.paymentsLeft + ' payment left'}
-                                  </button>
-                                  {value.owner &&
-                                  props.upstreamDeeds &&
-                                  props.upstreamDeeds[index] &&
-                                  value.claimedTimestamp > 0 ? (
-                                      <div>
-                                          {Date.now() <
-                                              value.claimedTimestamp * 1000 +
-                                                  props.upstreamDeeds[index].withdrawalPeriod * 1000 &&
-                                          value.redeemTimestamp == 0 ? (
-                                              <button
-                                                  className="cta-button delete-button"
-                                                  onClick={() => {
-                                                      setClaimModalShow(true);
-                                                      setSelectedSender(value);
-                                                      props.getUserBalance();
-                                                  }}
-                                              >
-                                                  <Emojis symbol="⏳" label="hourglass" />
-                                                  <Countdown
-                                                      date={
-                                                          value.claimedTimestamp * 1000 +
-                                                          props.upstreamDeeds[index].withdrawalPeriod * 1000
-                                                      }
-                                                  />
-                                              </button>
-                                          ) : (
-                                                value.redeemTimestamp > 0 &&
-                                              Date.now() <
-                                                  value.redeemTimestamp * 1000 + value.timeBetweenPayments * 1000 && (
+                                  <div className='button-line'>
+                                      <button className="cta-button status-button">
+                                          {value.paymentsLeft > 1
+                                              ? value.paymentsLeft + ' payments left'
+                                              : value.paymentsLeft + ' payment left'}
+                                      </button>
+                                      {console.log(value.redeemTimestamp.toString())}
+                                      {value.owner &&
+                                      props.upstreamDeeds &&
+                                      props.upstreamDeeds[index] &&
+                                      value.claimedTimestamp > 0 ? (
+                                          <div>
+                                              {Date.now() <
+                                                  value.claimedTimestamp * 1000 +
+                                                      props.upstreamDeeds[index].withdrawalPeriod * 1000 &&
+                                              value.redeemTimestamp == 0 ? (
                                                   <button
                                                       className="cta-button delete-button"
                                                       onClick={() => {
@@ -172,44 +154,67 @@ function ClaimEmergency(props: {
                                                       <Emojis symbol="⏳" label="hourglass" />
                                                       <Countdown
                                                           date={
-                                                              value.redeemTimestamp * 1000 +
-                                                              value.timeBetweenPayments * 1000
+                                                              value.claimedTimestamp * 1000 +
+                                                              props.upstreamDeeds[index].withdrawalPeriod * 1000
                                                           }
                                                       />
                                                   </button>
-                                              )
-                                          )}
-                                          {((value.redeemTimestamp > 0 &&
-                                              Date.now() >
-                                                  value.redeemTimestamp * 1000 + value.timeBetweenPayments * 1000) ||
-                                              (Date.now() >
-                                                  value.claimedTimestamp * 1000 +
-                                                      props.upstreamDeeds[index].withdrawalPeriod * 1000 &&
-                                                  value.redeemTimestamp == 0)) && (
+                                              ) : (
+                                                  value.redeemTimestamp > 0 &&
+                                                  Date.now() <
+                                                      value.redeemTimestamp * 1000 +
+                                                          value.timeBetweenPayments * 1000 && (
                                                       <button
-                                                          className="cta-button airdrop-button"
+                                                          className="cta-button delete-button"
                                                           onClick={() => {
-                                                              setRedeemModalShow(true);
+                                                              setClaimModalShow(true);
                                                               setSelectedSender(value);
                                                               props.getUserBalance();
                                                           }}
                                                       >
-                                                          Redeem
+                                                          <Emojis symbol="⏳" label="hourglass" />
+                                                          <Countdown
+                                                              date={
+                                                                  value.redeemTimestamp * 1000 +
+                                                                  value.timeBetweenPayments * 1000
+                                                              }
+                                                          />
                                                       </button>
-                                                  )}
-                                      </div>
-                                  ) : (
-                                      <button
-                                          className="cta-button airdrop-button"
-                                          onClick={() => {
-                                              setClaimModalShow(true);
-                                              setSelectedSender(value);
-                                              props.getUserBalance();
-                                          }}
-                                      >
-                                          Claim
-                                      </button>
-                                  )}
+                                                  )
+                                              )}
+                                              {((value.redeemTimestamp > 0 &&
+                                                  Date.now() >
+                                                      value.redeemTimestamp * 1000 +
+                                                          value.timeBetweenPayments * 1000) ||
+                                                  (Date.now() >
+                                                      value.claimedTimestamp * 1000 +
+                                                          props.upstreamDeeds[index].withdrawalPeriod * 1000 &&
+                                                      value.redeemTimestamp == 0)) && (
+                                                  <button
+                                                      className="cta-button airdrop-button"
+                                                      onClick={() => {
+                                                          setRedeemModalShow(true);
+                                                          setSelectedSender(value);
+                                                          props.getUserBalance();
+                                                      }}
+                                                  >
+                                                      Redeem
+                                                  </button>
+                                              )}
+                                          </div>
+                                      ) : (
+                                          <button
+                                              className="cta-button airdrop-button"
+                                              onClick={() => {
+                                                  setClaimModalShow(true);
+                                                  setSelectedSender(value);
+                                                  props.getUserBalance();
+                                              }}
+                                          >
+                                              Claim
+                                          </button>
+                                      )}
+                                  </div>
                               </div>
                           </div>
                       ))
