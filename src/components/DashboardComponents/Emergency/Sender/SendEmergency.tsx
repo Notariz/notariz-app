@@ -71,12 +71,12 @@ function SendEmergency(props: {
             <div className="emergency-item-background">
                 <div className="emergency-item">
                     <h3>Your emergencies will lie here.</h3>
-                    <p>
-                        <div className="hint">
+                    <div>
+                        <p className="hint">
                             Once set, an emergency address owner can claim and redeem a set percentage of your total
                             deposit.
-                        </div>
-                    </p>
+                        </p>
+                    </div>
                 </div>
             </div>
         ),

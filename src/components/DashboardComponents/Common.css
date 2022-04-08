@@ -100,6 +100,8 @@ input[type='text']:disabled {
 }
 
 .notariz-modal {
+    margin-top: 80px;
+    margin-bottom: 60px;
     position: fixed;
     left: 0;
     top: 0;
@@ -112,8 +114,9 @@ input[type='text']:disabled {
     opacity: 0;
     transition: all 0.3s ease-in-out;
     pointer-events: none;
-    z-index: 1000;
+    z-index: 9999;
     font-weight: bold;
+    overflow-y: scroll;
 }
 
 .notariz-modal.enter-done {
